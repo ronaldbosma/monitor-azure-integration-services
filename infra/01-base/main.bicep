@@ -1,6 +1,5 @@
 //=============================================================================
-// Monitor Azure Integration Services
-// Source: https://github.com/ronaldbosma/monitor-azure-integration-services
+// Monitor Azure Integration Services - Base layer
 //=============================================================================
 
 targetScope = 'subscription'
