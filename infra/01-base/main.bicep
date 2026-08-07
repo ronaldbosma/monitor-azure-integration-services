@@ -129,7 +129,6 @@ module functionApp 'modules/function-app.bicep' = {
     location: location
     tags: tags
     functionAppSettings: functionAppSettings
-    apiManagementSettings: apiManagementSettings
     appInsightsName: appInsightsSettings.appInsightsName
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
@@ -148,7 +147,6 @@ module logicApp 'modules/logic-app.bicep' = {
     location: location
     tags: tags
     logicAppSettings: logicAppSettings
-    apiManagementSettings: apiManagementSettings
     appInsightsName: appInsightsSettings.appInsightsName
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName

@@ -6,8 +6,7 @@
 // Imports
 //=============================================================================
 
-import * as helpers from '../../99-shared/helpers.bicep'
-import { apiManagementSettingsType, functionAppSettingsType } from '../../99-shared/settings.bicep'
+import { functionAppSettingsType } from '../../99-shared/settings.bicep'
 import { tagsType } from '../../99-shared/types.bicep'
 
 //=============================================================================
@@ -22,9 +21,6 @@ param tags tagsType
 
 @description('The settings for the Function App that will be created')
 param functionAppSettings functionAppSettingsType
-
-@description('The settings for the API Management Service')
-param apiManagementSettings apiManagementSettingsType
 
 @description('The name of the App Insights instance that will be used by the Function App')
 param appInsightsName string
@@ -61,9 +57,6 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
   WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionString
   WEBSITE_CONTENTSHARE: toLower(functionAppSettings.functionAppName)
   WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED: '1'
-
-  // API Management App Settings
-  ApiManagement__GatewayUrl: helpers.getApiManagementGatewayUrl(apiManagementSettings.serviceName)
 }
 
 //=============================================================================

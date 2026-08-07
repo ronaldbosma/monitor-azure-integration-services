@@ -6,8 +6,7 @@
 // Imports
 //=============================================================================
 
-import * as helpers from '../../99-shared/helpers.bicep'
-import { apiManagementSettingsType, logicAppSettingsType } from '../../99-shared/settings.bicep'
+import { logicAppSettingsType } from '../../99-shared/settings.bicep'
 import { tagsType } from '../../99-shared/types.bicep'
 
 //=============================================================================
@@ -22,9 +21,6 @@ param tags tagsType
 
 @description('The settings for the Logic App that will be created')
 param logicAppSettings logicAppSettingsType
-
-@description('The settings for the API Management Service')
-param apiManagementSettings apiManagementSettingsType
 
 @description('The name of the App Insights instance that will be used by the Logic App')
 param appInsightsName string
@@ -67,10 +63,6 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
   WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionString
   WEBSITE_CONTENTSHARE: toLower(logicAppSettings.logicAppName)
   WEBSITE_NODE_DEFAULT_VERSION: '~22'
-
-  // API Management App Settings
-  ApiManagement_gatewayUrl: helpers.getApiManagementGatewayUrl(apiManagementSettings.serviceName)
-  ApiManagement_subscriptionKey: helpers.getKeyVaultSecretReference(keyVaultName, 'apim-master-subscription-key')
 }
 
 //=============================================================================
