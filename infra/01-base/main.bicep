@@ -87,6 +87,14 @@ module keyVault 'modules/key-vault.bicep' = {
     keyVaultName: keyVaultName
   }
 }
+module serviceBus 'modules/service-bus.bicep' = {
+  scope: resourceGroup
+  params: {
+    location: location
+    tags: tags
+    serviceBusSettings: serviceBusSettings
+  }
+}
 
 module storageAccount 'modules/storage-account.bicep' = {
   scope: resourceGroup
