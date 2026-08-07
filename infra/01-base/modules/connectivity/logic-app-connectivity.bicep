@@ -34,7 +34,7 @@ param storageAccountName string
 var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.properties = {
   // API Management App Settings
   ApiManagement_gatewayUrl: helpers.getApiManagementGatewayUrl(apiManagementServiceName)
-  ApiManagement_subscriptionKey: helpers.getKeyVaultSecretReference(keyVaultName, 'logic-app-subscription-key')
+  ApiManagement_subscriptionKey: helpers.getKeyVaultSecretReference(keyVaultName, 'logic-app-apim-subscription-key')
 
   // Service Bus App Settings
   ServiceBus_fullyQualifiedNamespace: helpers.getServiceBusFullyQualifiedNamespace(serviceBusNamespaceName)
@@ -68,7 +68,7 @@ resource logicApp 'Microsoft.Web/sites@2025-03-01' existing = {
 
 // Logic App Subscription on all APIs in API Management Service
 
-resource logicAppSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
+resource logicAppApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
   parent: apiManagementService
   name: 'logic-app'
   properties: {
@@ -78,11 +78,11 @@ resource logicAppSubscription 'Microsoft.ApiManagement/service/subscriptions@202
   }
 }
 
-resource logicAppSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
-  name: 'logic-app-subscription-key'
+resource logicAppApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
+  name: 'logic-app-apim-subscription-key'
   parent: keyVault
   properties: {
-    value: logicAppSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
+    value: logicAppApimSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
   }
 }
 
@@ -97,6 +97,6 @@ module setLogicAppSettings '../../../99-shared/merge-app-settings.bicep' = {
     newAppSettings: appSettings
   }
   dependsOn: [
-    logicAppSubscriptionKeySecret
+    logicAppApimSubscriptionKeySecret
   ]
 }

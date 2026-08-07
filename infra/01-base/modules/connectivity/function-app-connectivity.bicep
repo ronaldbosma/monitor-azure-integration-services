@@ -34,7 +34,7 @@ param storageAccountName string
 var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.properties = {
   // API Management App Settings
   ApiManagement__GatewayUrl: helpers.getApiManagementGatewayUrl(apiManagementServiceName)
-  ApiManagement__SubscriptionKey: helpers.getKeyVaultSecretReference(keyVaultName, 'function-app-subscription-key')
+  ApiManagement__SubscriptionKey: helpers.getKeyVaultSecretReference(keyVaultName, 'function-app-apim-subscription-key')
 
   // Service Bus App Settings
   ServiceBusConnection__fullyQualifiedNamespace: helpers.getServiceBusFullyQualifiedNamespace(serviceBusNamespaceName)
@@ -68,7 +68,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
 
 // Function App Subscription on all APIs in API Management Service
 
-resource functionAppSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
+resource functionAppApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
   parent: apiManagementService
   name: 'function-app'
   properties: {
@@ -78,11 +78,11 @@ resource functionAppSubscription 'Microsoft.ApiManagement/service/subscriptions@
   }
 }
 
-resource functionAppSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
-  name: 'function-app-subscription-key'
+resource functionAppApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
+  name: 'function-app-apim-subscription-key'
   parent: keyVault
   properties: {
-    value: functionAppSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
+    value: functionAppApimSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
   }
 }
 
@@ -97,6 +97,6 @@ module setFunctionAppSettings '../../../99-shared/merge-app-settings.bicep' = {
     newAppSettings: appSettings
   }
   dependsOn: [
-    functionAppSubscriptionKeySecret
+    functionAppApimSubscriptionKeySecret
   ]
 }
