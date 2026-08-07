@@ -15,7 +15,6 @@ on:
       - main
     paths:
       - ".github/workflows/azure-dev.yml"
-      - "hooks/**"
       - "infra/**"
       - "src/**"
       - "tests/IntegrationTests/**"
