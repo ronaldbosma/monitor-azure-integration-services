@@ -21,6 +21,12 @@ param appInsightsName string
 @description('The name of the Key Vault on which to assign roles')
 param keyVaultName string
 
+@description('The name of the Service Bus namespace on which to assign roles')
+param serviceBusNamespaceName string
+
+@description('The name of the Storage Account on which to assign roles')
+param storageAccountName string
+
 //=============================================================================
 // Variables
 //=============================================================================
@@ -28,6 +34,20 @@ param keyVaultName string
 var keyVaultRoleName string = isAdmin ? 'Key Vault Administrator' : 'Key Vault Secrets User'
 
 var monitoringMetricsPublisherRoleName string = 'Monitoring Metrics Publisher'
+
+var serviceBusRoleNames string[] = [
+  'Azure Service Bus Data Receiver'
+  'Azure Service Bus Data Sender'
+]
+
+var storageAccountRoleNames string[] = [
+  'Storage Blob Data Contributor'
+  isAdmin
+    ? 'Storage File Data Privileged Contributor' // is able to browse file shares in Azure Portal
+    : 'Storage File Data SMB Share Contributor'
+  'Storage Queue Data Contributor'
+  'Storage Table Data Contributor'
+]
 
 //=============================================================================
 // Existing Resources
@@ -39,6 +59,14 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 
 resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
   name: keyVaultName
+}
+
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existing = {
+  name: serviceBusNamespaceName
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-08-01' existing = {
+  name: storageAccountName
 }
 
 //=============================================================================
@@ -68,3 +96,31 @@ resource assignRolesOnKeyVaultToPrincipal 'Microsoft.Authorization/roleAssignmen
     principalType: principalType
   }
 }
+
+// Assign roles on Service Bus to the principal (if Service Bus is included)
+
+resource assignRolesOnServiceBusToPrincipal 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for role in serviceBusRoleNames: {
+    name: guid(principalId, serviceBusNamespace.id, role)
+    scope: serviceBusNamespace
+    properties: {
+      roleDefinitionId: roleDefinitions(role).id
+      principalId: principalId
+      principalType: principalType
+    }
+  }
+]
+
+// Assign roles on Storage Account to the principal
+
+resource assignRolesOnStorageAccountToPrincipal 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for role in storageAccountRoleNames: {
+    name: guid(principalId, storageAccount.id, role)
+    scope: storageAccount
+    properties: {
+      roleDefinitionId: roleDefinitions(role).id
+      principalId: principalId
+      principalType: principalType
+    }
+  }
+]
