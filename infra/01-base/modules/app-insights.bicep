@@ -1,0 +1,61 @@
+//=============================================================================
+// Application Insights
+//=============================================================================
+
+//=============================================================================
+// Imports
+//=============================================================================
+
+import { appInsightsSettingsType } from '../../99-shared/settings.bicep'
+import { tagsType } from '../../99-shared/types.bicep'
+
+//=============================================================================
+// Parameters
+//=============================================================================
+
+@description('Location to use for all resources')
+param location string
+
+@description('The tags to associate with the resource')
+param tags tagsType
+
+@description('The settings for the App Insights instance that will be created')
+param appInsightsSettings appInsightsSettingsType
+
+//=============================================================================
+// Resources
+//=============================================================================
+
+// Log Analytics Workspace
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
+  name: appInsightsSettings.logAnalyticsWorkspaceName
+  location: location
+  tags: tags
+  properties: {
+    retentionInDays: appInsightsSettings.retentionInDays
+    sku: {
+      name: 'PerGB2018'
+    }
+    features: {
+      disableLocalAuth: true // Disable Non-EntraID based Auth
+    }
+  }
+}
+
+// Application Insights
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsSettings.appInsightsName
+  location: location
+  tags: tags
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+    RetentionInDays: appInsightsSettings.retentionInDays
+    DisableLocalAuth: true // Disable Non-EntraID based Auth
+  }
+}
