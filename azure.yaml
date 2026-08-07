@@ -8,6 +8,10 @@ infra:
     - name: base
       path: ./infra/01-base
 services:
+  functionApp:
+    project: ./src/functionApp/FunctionApp
+    host: function
+    language: csharp
   logicApp:
     project: ./src/logicApp
     dist: Workflows
