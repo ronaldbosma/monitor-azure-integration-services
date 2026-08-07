@@ -54,7 +54,7 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-previe
   name: apiManagementServiceName
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
@@ -78,7 +78,7 @@ resource logicAppSubscription 'Microsoft.ApiManagement/service/subscriptions@202
   }
 }
 
-resource logicAppSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2025-05-01' = {
+resource logicAppSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   name: 'logic-app-subscription-key'
   parent: keyVault
   properties: {
