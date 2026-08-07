@@ -62,6 +62,7 @@ resource functionAppApiKeyNamedValue 'Microsoft.ApiManagement/service/namedValue
   parent: apiManagementService
   properties: {
     displayName: 'function-app-api-key'
+    secret: true
     keyVault: {
       secretIdentifier: functionAppApiKeySecret.properties.secretUri
     }
