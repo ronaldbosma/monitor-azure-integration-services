@@ -2,7 +2,7 @@
 
 name: monitor-azure-integration-services
 metadata:
-  template: monitor-azure-integration-services@0.0.1
+  template: monitor-azure-integration-services@0.1.0
 infra:
   layers:
     - name: base
