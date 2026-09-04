@@ -34,4 +34,12 @@ resource moviesApi 'Microsoft.ApiManagement/service/apis@2025-09-01-preview' = {
     ]
     subscriptionRequired: true
   }
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('movies-api.xml')
+    }
+  }
 }

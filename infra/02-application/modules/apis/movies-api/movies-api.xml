@@ -1,0 +1,45 @@
+<policies>
+    <inbound>
+        <base />
+
+        <!-- Configure backend details -->
+        <set-backend-service backend-id="table-storage" />
+        <authentication-managed-identity resource="https://storage.azure.com" />
+
+        <!-- The URI is rewritten with the OriginalUrl.Path so that /movies is included in the request to the backend -->
+        <rewrite-uri template="@(context.Request.OriginalUrl.Path)" copy-unmatched-params="false" />
+
+        <!-- Set the necessary Azure Storage API request headers -->
+        <set-header name="x-ms-version" exists-action="override">
+            <value>2026-10-06</value>
+        </set-header>
+        <set-header name="x-ms-date" exists-action="override">
+            <value>@(DateTime.UtcNow.ToString("R"))</value>
+        </set-header>
+        <set-header name="Accept" exists-action="override">
+            <value>application/json;odata=nometadata</value>
+        </set-header>
+
+        <!-- Validate received request -->
+        <validate-parameters specified-parameter-action="prevent" unspecified-parameter-action="ignore" />
+        <choose>
+            <when condition="@(context.Request.Method == "POST" || context.Request.Method == "PUT" || context.Request.Method == "PATCH")">
+                <validate-content unspecified-content-type-action="prevent" max-size="102400" size-exceeded-action="prevent">
+                    <content type="application/json" validate-as="json" action="prevent" />
+                </validate-content>
+            </when>
+        </choose>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>
