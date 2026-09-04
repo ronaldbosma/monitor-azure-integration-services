@@ -3,6 +3,8 @@
 		<base />
 
         <rewrite-uri template="/movies()" copy-unmatched-params="false" />
+
+        <!-- Add filter if title was specified -->
 		<choose>
 			<when condition="@(!string.IsNullOrWhiteSpace(context.Request.OriginalUrl.Query.GetValueOrDefault("title")))">
 				<set-query-parameter name="$filter" exists-action="override">
@@ -16,6 +18,11 @@
 				</set-query-parameter>
 			</when>
 		</choose>
+
+        <!-- Configure which fields to select -->
+        <set-query-parameter name="$select" exists-action="override">
+            <value>RowKey,Title,Year</value>
+        </set-query-parameter>
 	</inbound>
 
 	<backend>
@@ -25,22 +32,26 @@
 	<outbound>
 		<base />
 
-		<set-body>@{
-			var response = context.Response.Body.As<JObject>();
-			var movies = new List<object>();
+        <choose>
+            <when condition="@(context.Response.StatusCode == 200)">
+                <set-body>@{
+                    var response = context.Response.Body.As<JObject>();
+                    var movies = new List<object>();
 
-			foreach (JObject movie in response["value"] ?? new JArray())
-			{
-				movies.Add(new
-				{
-					id = (string)movie["RowKey"],
-					title = (string)movie["Title"],
-					year = (int)movie["Year"]
-				});
-			}
+                    foreach (JObject movie in response["value"] ?? new JArray())
+                    {
+                        movies.Add(new
+                        {
+                            id = (string)movie["RowKey"],
+                            title = (string)movie["Title"],
+                            year = (int)movie["Year"]
+                        });
+                    }
 
-			return JsonConvert.SerializeObject(movies);
-		}</set-body>
+                    return JsonConvert.SerializeObject(movies);
+                }</set-body>
+            </when>
+        </choose>
 	</outbound>
 
 	<on-error>
