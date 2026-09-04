@@ -6,6 +6,7 @@ Ocp-Apim-Trace: true
 
 ###
 
+
 # Get all movies with title "Star Wars: Episode IV - A New Hope"
 GET https://{{apimHostname}}/movies?title=Star Wars: Episode IV - A New Hope
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
@@ -14,7 +15,9 @@ Ocp-Apim-Trace: true
 
 ###
 
+
 # Create a new movie
+# @name createMovie
 POST https://{{apimHostname}}/movies
 Content-Type: application/json
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
@@ -26,3 +29,18 @@ Ocp-Apim-Trace: true
   "year": 1977
 }
 
+
+###
+
+
+# Get the ID of the created movie
+@movieId = {{createMovie.response.body.id}}
+
+
+###
+
+
+# Get Movie by ID
+GET https://{{apimHostname}}/movies/{{movieId}}
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true

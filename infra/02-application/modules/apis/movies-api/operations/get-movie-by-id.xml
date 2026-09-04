@@ -1,0 +1,38 @@
+<policies>
+    <inbound>
+        <base />
+
+        <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+
+        <choose>
+            <when condition="@(context.Response.StatusCode == 200)">
+                <set-body>@{
+                    var body = context.Response.Body.As<JObject>();
+
+                    var movie = new
+                    {
+                        id = (string)body["RowKey"],
+                        title = (string)body["Title"],
+                        description = (string)body["Description"],
+                        year = (int)body["Year"],
+                        rating = (double?)body["Rating"]
+                    };
+
+                    return JsonConvert.SerializeObject(movie);
+                }</set-body>
+            </when>
+        </choose>
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

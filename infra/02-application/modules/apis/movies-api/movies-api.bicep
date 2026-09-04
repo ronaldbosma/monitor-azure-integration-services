@@ -69,3 +69,16 @@ resource createMovieOperation 'Microsoft.ApiManagement/service/apis/operations@2
     }
   }
 }
+
+resource getMovieByIdOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'get-movie-by-id'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/get-movie-by-id.xml')
+    }
+  }
+}
