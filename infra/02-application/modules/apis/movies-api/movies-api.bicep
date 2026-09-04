@@ -82,3 +82,16 @@ resource getMovieByIdOperation 'Microsoft.ApiManagement/service/apis/operations@
     }
   }
 }
+
+resource deleteMovieOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'delete-movie'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/delete-movie.xml')
+    }
+  }
+}

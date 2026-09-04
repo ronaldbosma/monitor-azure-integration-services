@@ -1,0 +1,24 @@
+<policies>
+    <inbound>
+        <base />
+
+        <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
+
+        <!-- Force an unconditional delete if the client didn't provide an ETag -->
+        <set-header name="If-Match" exists-action="skip">
+            <value>*</value>
+        </set-header>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

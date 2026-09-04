@@ -44,3 +44,12 @@ Ocp-Apim-Trace: true
 GET https://{{apimHostname}}/movies/{{movieId}}
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
 Ocp-Apim-Trace: true
+
+
+###
+
+
+# Delete a movie
+DELETE https://{{apimHostname}}/movies/{{movieId}}
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
