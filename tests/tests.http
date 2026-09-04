@@ -1,3 +1,20 @@
+# Get all movies
+GET https://{{apimHostname}}/movies
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+# Get all movies with title "Star Wars: Episode IV - A New Hope"
+GET https://{{apimHostname}}/movies?title=Star Wars: Episode IV - A New Hope
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+# Create a new movie
 POST https://{{apimHostname}}/movies
 Content-Type: application/json
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
@@ -8,3 +25,4 @@ Ocp-Apim-Trace: true
   "description": "Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.",
   "year": 1977
 }
+

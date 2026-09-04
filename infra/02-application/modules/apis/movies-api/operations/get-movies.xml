@@ -1,0 +1,49 @@
+<policies>
+	<inbound>
+		<base />
+
+        <rewrite-uri template="/movies()" copy-unmatched-params="false" />
+		<choose>
+			<when condition="@(!string.IsNullOrWhiteSpace(context.Request.OriginalUrl.Query.GetValueOrDefault("title")))">
+				<set-query-parameter name="$filter" exists-action="override">
+					<value>@{
+                        // Get title and escape single quotes for OData query
+                        var title = context.Request.OriginalUrl.Query.GetValueOrDefault("title", "")
+                            .Replace("'", "''")
+                            .Replace("%27", "''");
+                        return $"(Title eq '{title}')";
+					}</value>
+				</set-query-parameter>
+			</when>
+		</choose>
+	</inbound>
+
+	<backend>
+		<base />
+	</backend>
+
+	<outbound>
+		<base />
+
+		<set-body>@{
+			var response = context.Response.Body.As<JObject>();
+			var movies = new List<object>();
+
+			foreach (JObject movie in response["value"] ?? new JArray())
+			{
+				movies.Add(new
+				{
+					id = (string)movie["RowKey"],
+					title = (string)movie["Title"],
+					year = (int)movie["Year"]
+				});
+			}
+
+			return JsonConvert.SerializeObject(movies);
+		}</set-body>
+	</outbound>
+
+	<on-error>
+		<base />
+	</on-error>
+</policies>
