@@ -197,6 +197,7 @@ components:
         rating:
           type: number
           format: double
+          nullable: true
           example: 8.5
       required:
         - id
