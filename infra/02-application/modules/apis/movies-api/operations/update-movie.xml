@@ -1,0 +1,50 @@
+<policies>
+    <inbound>
+        <base />
+
+        <set-method>MERGE</set-method>
+        <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
+
+        <!-- Force an unconditional update if the client didn't provide an ETag -->
+        <set-header name="If-Match" exists-action="skip">
+            <value>*</value>
+        </set-header>
+
+        <set-body>@{
+            var body = context.Request.Body.As<JObject>();
+
+            // Only include properties that were provided in the request so unspecified fields aren't overwritten
+            var movie = new JObject();
+            if (body["title"] != null)
+            {
+                movie["Title"] = body["title"];
+            }
+            if (body["description"] != null)
+            {
+                movie["Description"] = body["description"];
+            }
+            if (body["year"] != null)
+            {
+                movie["Year"] = body["year"];
+            }
+            if (body["rating"] != null)
+            {
+                movie["Rating"] = body["rating"];
+            }
+
+            return movie.ToString(Newtonsoft.Json.Formatting.None);
+        }</set-body>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

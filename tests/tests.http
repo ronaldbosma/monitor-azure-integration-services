@@ -49,6 +49,20 @@ Ocp-Apim-Trace: true
 ###
 
 
+# Update a movie
+PATCH https://{{apimHostname}}/movies/{{movieId}}
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+{
+  "rating": 8.5
+}
+
+
+###
+
+
 # Delete a movie
 DELETE https://{{apimHostname}}/movies/{{movieId}}
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
