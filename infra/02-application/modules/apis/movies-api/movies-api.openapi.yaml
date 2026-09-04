@@ -12,7 +12,7 @@ paths:
       parameters:
         - name: title
           in: query
-          description: Filter movies by (partial) title.
+          description: Filter movies by exact title.
           required: false
           schema:
             type: string
