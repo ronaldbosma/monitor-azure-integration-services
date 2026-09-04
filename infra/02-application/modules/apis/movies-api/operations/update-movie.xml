@@ -15,24 +15,20 @@
 
             // Only include properties that were provided in the request so unspecified fields aren't overwritten
             var movie = new JObject();
-            if (body["title"] != null)
-            {
-                movie["Title"] = body["title"];
-            }
-            if (body["description"] != null)
-            {
-                movie["Description"] = body["description"];
-            }
-            if (body["year"] != null)
-            {
-                movie["Year"] = body["year"];
-            }
-            if (body["rating"] != null)
-            {
-                movie["Rating"] = body["rating"];
-            }
+            addPropertyToMovieIfProvided("title", "Title");
+            addPropertyToMovieIfProvided("description", "Description");
+            addPropertyToMovieIfProvided("year", "Year");
+            addPropertyToMovieIfProvided("rating", "Rating");
 
             return movie.ToString(Newtonsoft.Json.Formatting.None);
+
+            void addPropertyToMovieIfProvided(string sourcePropertyName, string targetPropertyName)
+            {
+                if (body[sourcePropertyName] != null)
+                {
+                    movie[targetPropertyName] = body[sourcePropertyName];
+                }
+            }
         }</set-body>
     </inbound>
 
