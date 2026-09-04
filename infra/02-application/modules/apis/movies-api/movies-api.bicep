@@ -25,8 +25,10 @@ resource moviesApi 'Microsoft.ApiManagement/service/apis@2025-09-01-preview' = {
   name: 'movies-api'
   parent: apiManagementService
   properties: {
-    displayName: 'Movies API'
     path: 'movies'
+    format: 'openapi'
+    value: loadTextContent('movies-api.openapi.yaml')
+    type: 'http'
     protocols: [
       'https'
     ]
