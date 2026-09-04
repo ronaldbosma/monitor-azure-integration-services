@@ -38,23 +38,13 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
-module moviesApi 'modules/apis/movies-api/movies-api.bicep' = {
+module apis 'modules/apis/apis.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     apiManagementServiceName: apiManagementServiceName
   }
   dependsOn: [
     serviceBusEntities
-    storage
-  ]
-}
-
-module userRatingsApi 'modules/apis/user-ratings-api/user-ratings-api.bicep' = {
-  scope: resourceGroup(resourceGroupName)
-  params: {
-    apiManagementServiceName: apiManagementServiceName
-  }
-  dependsOn: [
     storage
   ]
 }
