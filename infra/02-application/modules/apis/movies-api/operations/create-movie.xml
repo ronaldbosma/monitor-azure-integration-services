@@ -2,6 +2,8 @@
     <inbound>
         <base />
 
+        <rewrite-uri template="/movies" copy-unmatched-params="false" />
+
         <set-body>@{
             var body = context.Request.Body.As<JObject>();
 
