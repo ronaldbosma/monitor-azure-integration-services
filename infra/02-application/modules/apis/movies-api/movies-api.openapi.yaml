@@ -4,7 +4,7 @@ info:
   description: API for managing movies.
   version: 1.0.0
 paths:
-  /movies:
+  /:
     get:
       operationId: get-movies
       summary: Get movies
@@ -60,7 +60,7 @@ paths:
               example:
                 statusCode: 409
                 message: A movie with the same title and year already exists.
-  /movies/{id}:
+  /{id}:
     get:
       operationId: get-movie-by-id
       summary: Get movie
