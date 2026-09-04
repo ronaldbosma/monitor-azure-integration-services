@@ -397,8 +397,13 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-# Ignore Draw.io backup files
+# Ignore Draw.io backup and temp files
 *.drawio.bkp
+*.drawio.dtmp
+*.drawio.png.bkp
+*.drawio.png.dtmp
+*.drawio.svg.bkp
+*.drawio.svg.dtmp
 
 # Ignore .azure folder (used by azd)
 .azure
