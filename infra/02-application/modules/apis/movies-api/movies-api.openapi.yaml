@@ -159,6 +159,25 @@ components:
         format: uuid
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
   schemas:
+    movieTitle:
+      type: string
+      pattern: '\S'
+      example: 'Star Wars: Episode IV - A New Hope'
+    movieDescription:
+      type: string
+      pattern: '\S'
+      example: Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.
+    movieYear:
+      type: integer
+      minimum: 1000
+      maximum: 9999
+      example: 1977
+    movieRating:
+      type: number
+      format: double
+      minimum: 0
+      maximum: 10
+      example: 8.5
     movieSummary:
       type: object
       description: Summary information about a movie.
@@ -168,11 +187,9 @@ components:
           format: uuid
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         title:
-          type: string
-          example: 'Star Wars: Episode IV - A New Hope'
+          $ref: '#/components/schemas/movieTitle'
         year:
-          type: integer
-          example: 1977
+          $ref: '#/components/schemas/movieYear'
       required:
         - id
         - title
@@ -186,19 +203,15 @@ components:
           format: uuid
           example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
         title:
-          type: string
-          example: 'Star Wars: Episode IV - A New Hope'
+          $ref: '#/components/schemas/movieTitle'
         description:
-          type: string
-          example: Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.
+          $ref: '#/components/schemas/movieDescription'
         year:
-          type: integer
-          example: 1977
+          $ref: '#/components/schemas/movieYear'
         rating:
-          type: number
-          format: double
           nullable: true
-          example: 8.5
+          allOf:
+            - $ref: '#/components/schemas/movieRating'
       required:
         - id
         - title
@@ -209,14 +222,11 @@ components:
       description: The properties required to create a movie.
       properties:
         title:
-          type: string
-          example: 'Star Wars: Episode IV - A New Hope'
+          $ref: '#/components/schemas/movieTitle'
         description:
-          type: string
-          example: Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.
+          $ref: '#/components/schemas/movieDescription'
         year:
-          type: integer
-          example: 1977
+          $ref: '#/components/schemas/movieYear'
       required:
         - title
         - description
@@ -226,18 +236,13 @@ components:
       description: The properties that can be updated on a movie. All properties are optional, only the provided properties are updated.
       properties:
         title:
-          type: string
-          example: 'Star Wars: Episode IV - A New Hope'
+          $ref: '#/components/schemas/movieTitle'
         description:
-          type: string
-          example: Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.
+          $ref: '#/components/schemas/movieDescription'
         year:
-          type: integer
-          example: 1977
+          $ref: '#/components/schemas/movieYear'
         rating:
-          type: number
-          format: double
-          example: 8.5
+          $ref: '#/components/schemas/movieRating'
     error:
       type: object
       description: An error response.
