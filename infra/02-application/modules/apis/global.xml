@@ -24,6 +24,59 @@
                     <metadata name="ResponseStatusCode" value='@(string.IsNullOrWhiteSpace(context.Response?.StatusCode.ToString()) ? "<empty>" : context.Response.StatusCode.ToString())' />
                     <metadata name="ResponseStatusReason" value='@(string.IsNullOrWhiteSpace(context.Response.StatusReason?.ToString()) ? "<empty>" : context.Response.StatusReason.ToString())' />
                 </trace>
+
+
+                <!-- Generic error handling based on https://ronaldbosma.github.io/blog/2025/12/01/generic-error-handling-in-api-management/ -->
+                <choose>
+                    <!--
+                        If the error status code is in the passthrough list
+                        - return the status code as-is
+                        - return a response body with the status code, and the message if available otherwise the status reason
+
+                        The used response structure follows API Management's default error response schema.
+                    -->
+                    <when condition="@{
+                        int[] passthroughErrorStatusCodes = { 404, 409, 412, 413, 429, 503 };
+                        return passthroughErrorStatusCodes.Contains(context.Response.StatusCode);
+                    }">
+                        <set-header name="Content-Type" exists-action="override">
+                            <value>application/json</value>
+                        </set-header>
+                        <set-body>@{
+                            try
+                            {
+                                var response = context.Response.Body?.As<JObject>();
+                                var message = response?.Value<string>("message")
+                                    ?? response?["odata.error"]?["message"]?["value"]?.Value<string>();
+
+                                var result = new JObject
+                                {
+                                    ["statusCode"] = context.Response.StatusCode,
+                                    ["message"] = !string.IsNullOrWhiteSpace(message) ? message : context.Response.StatusReason
+                                };
+                                return result.ToString();
+                            }
+                            catch
+                            {
+                                // Ignore parsing error when e.g. the response is not JSON, fallback to default message
+                                return new JObject
+                                {
+                                    ["statusCode"] = context.Response.StatusCode,
+                                    ["message"] = context.Response.StatusReason
+                                }.ToString();
+                            }
+                        }</set-body>
+                    </when>
+
+                    <!-- Otherwise, return a 500 Internal Server Error -->
+                    <otherwise>
+                        <set-status code="500" reason="Internal Server Error" />
+                        <set-header name="Content-Type" exists-action="override">
+                            <value>application/json</value>
+                        </set-header>
+                        <set-body>{ "statusCode": 500, "message": "Internal Server Error" }</set-body>
+                    </otherwise>
+                </choose>
             </when>
         </choose>
     </outbound>
