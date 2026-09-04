@@ -54,6 +54,7 @@ PATCH https://{{apimHostname}}/movies/{{movieId}}
 Content-Type: application/json
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
 Ocp-Apim-Trace: true
+# If-Match: W/"datetime'2026-09-04T16%3A07%3A09.8702521Z'"
 
 {
   "rating": 8.5
@@ -67,3 +68,5 @@ Ocp-Apim-Trace: true
 DELETE https://{{apimHostname}}/movies/{{movieId}}
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
 Ocp-Apim-Trace: true
+# If-Match: W/"datetime'2026-09-04T16%3A07%3A09.8702521Z'"
+
