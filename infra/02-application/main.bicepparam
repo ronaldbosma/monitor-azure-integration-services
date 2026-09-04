@@ -1,0 +1,6 @@
+using './main.bicep'
+
+param resourceGroupName = readEnvironmentVariable('AZURE_ENAZURE_RESOURCE_GROUPV_NAME')
+param apiManagementServiceName =  readEnvironmentVariable('AZURE_API_MANAGEMENT_NAME')
+param serviceBusNamespaceName = readEnvironmentVariable('AZURE_SERVICE_BUS_NAMESPACE_NAME')
+param storageAccountName = readEnvironmentVariable('AZURE_STORAGE_ACCOUNT_NAME')
