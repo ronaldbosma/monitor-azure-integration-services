@@ -1,0 +1,51 @@
+<policies>
+    <inbound>
+        <base />
+
+        <set-body>@{
+            var body = context.Request.Body.As<JObject>();
+
+            var movie = new
+            {
+                PartitionKey = "movies",
+                RowKey = Guid.NewGuid().ToString(),
+                Title = (string)body["title"],
+                Description = (string)body["description"],
+                Year = (int)body["year"]
+            };
+
+            return JsonConvert.SerializeObject(movie);
+        }</set-body>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+
+        <choose>
+            <when condition="@(context.Response.StatusCode == 201)">
+                <set-body>@{
+                    var body = context.Response.Body.As<JObject>();
+
+                    var movie = new
+                    {
+                        id = (string)body["RowKey"],
+                        title = (string)body["Title"],
+                        description = (string)body["Description"],
+                        year = (int)body["Year"],
+                        rating = (double?)body["Rating"]
+                    };
+
+                    return JsonConvert.SerializeObject(movie);
+                }</set-body>
+            </when>
+        </choose>
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

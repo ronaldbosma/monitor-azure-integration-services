@@ -1,0 +1,10 @@
+POST https://{{apimHostname}}/movies
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+{
+  "title": "Star Wars: Episode IV - A New Hope",
+  "description": "Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.",
+  "year": 1977
+}

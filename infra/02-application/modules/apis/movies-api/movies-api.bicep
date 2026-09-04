@@ -43,3 +43,16 @@ resource moviesApi 'Microsoft.ApiManagement/service/apis@2025-09-01-preview' = {
     }
   }
 }
+
+resource createMovieOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'create-movie'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/create-movie.xml')
+    }
+  }
+}
