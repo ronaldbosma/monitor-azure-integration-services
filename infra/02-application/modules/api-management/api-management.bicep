@@ -73,6 +73,10 @@ resource getMovieIdByTitleFragment 'Microsoft.ApiManagement/service/policyFragme
       format: 'rawxml'
       value: loadTextContent('policy-fragments/get-movie-id-by-title.xml')
   }
+
+  dependsOn: [
+    localhostBackend
+  ]
 }
 
 resource handleErrorResponseFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
