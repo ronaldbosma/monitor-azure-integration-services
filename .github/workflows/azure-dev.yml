@@ -86,6 +86,7 @@ jobs:
       - name: Bicep Lint
         run: |
           az bicep lint --file ./infra/01-base/main.bicepparam
+          az bicep lint --file ./infra/02-application/main.bicepparam
 
       - name: Validate Base Layer Template
         run: |
