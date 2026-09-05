@@ -211,6 +211,7 @@ output AZURE_TENANT_ID string = subscription().tenantId
 output AZURE_API_MANAGEMENT_NAME string = apiManagementSettings.serviceName
 output AZURE_APPLICATION_INSIGHTS_NAME string = appInsightsSettings.appInsightsName
 output AZURE_FUNCTION_APP_NAME string = functionAppSettings.functionAppName
+output AZURE_KEY_VAULT_NAME string = keyVaultName
 output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = appInsightsSettings.logAnalyticsWorkspaceName
 output AZURE_LOGIC_APP_NAME string = logicAppSettings.logicAppName
 output AZURE_RESOURCE_GROUP string = resourceGroupName

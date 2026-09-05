@@ -9,6 +9,9 @@
 @description('The name of the API Management service')
 param apiManagementServiceName string
 
+@description('The name of the Key Vault that will contain the secrets')
+param keyVaultName string
+
 //=============================================================================
 // Existing resources
 //=============================================================================
@@ -20,6 +23,15 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
 //=============================================================================
 // Resources
 //=============================================================================
+
+// Backends
+
+module localhostBackend 'backends/localhost-backend.bicep' = {
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    keyVaultName: keyVaultName
+  }
+}
 
 // Policy Fragments
 

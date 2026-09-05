@@ -14,6 +14,9 @@ param resourceGroupName string
 @description('The name of the API Management service')
 param apiManagementServiceName string
 
+@description('The name of the Key Vault that will contain the secrets')
+param keyVaultName string
+
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
 
@@ -42,6 +45,7 @@ module apiManagement 'modules/api-management/api-management.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     apiManagementServiceName: apiManagementServiceName
+    keyVaultName: keyVaultName
   }
   dependsOn: [
     serviceBusEntities
