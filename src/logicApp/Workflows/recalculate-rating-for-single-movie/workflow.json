@@ -24,10 +24,13 @@
             "Get_user_ratings_for_movie": {
                 "type": "Http",
                 "inputs": {
-                    "uri": "@{parameters('api-management-gateway-url')}/user-ratings?movie-id=@{body('Parse_message')?['id']}",
+                    "uri": "@{parameters('api-management-gateway-url')}/user-ratings",
                     "method": "GET",
                     "headers": {
                         "Ocp-Apim-Subscription-Key": "@{parameters('api-management-subscription-key')}"
+                    },
+                    "queries": {
+                        "movie-id": "@{body('Parse_message')?['id']}"
                     }
                 },
                 "runAfter": {
