@@ -87,6 +87,15 @@ jobs:
         run: |
           az bicep lint --file ./infra/01-base/main.bicepparam
           az bicep lint --file ./infra/02-application/main.bicepparam
+        env:
+          # Configure dummy values for environment values satisfy readEnvironmentVariable calls in the bicepparam files during linting.
+          AZURE_RESOURCE_GROUP: sample
+          AZURE_API_MANAGEMENT_NAME: sample
+          AZURE_FUNCTION_APP_NAME: sample
+          AZURE_KEY_VAULT_NAME: sample
+          AZURE_LOGIC_APP_NAME: sample
+          AZURE_SERVICE_BUS_NAMESPACE_NAME: sample
+          AZURE_STORAGE_ACCOUNT_NAME: sample
 
       - name: Validate Base Layer Template
         run: |
