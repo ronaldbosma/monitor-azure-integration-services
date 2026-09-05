@@ -129,6 +129,15 @@ paths:
               example:
                 statusCode: 409
                 message: Another movie with the same title and year already exists.
+        '412':
+          description: The movie was modified by another request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                statusCode: 412
+                message: The ETag does not match the current movie.
     delete:
       operationId: delete-movie
       summary: Delete movie
@@ -147,6 +156,15 @@ paths:
               example:
                 statusCode: 404
                 message: No movie was found with the specified id.
+        '412':
+          description: The movie was modified by another request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              example:
+                statusCode: 412
+                message: The ETag does not match the current movie.
 components:
   parameters:
     movieId:
