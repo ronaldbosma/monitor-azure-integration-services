@@ -1,5 +1,5 @@
 //=============================================================================
-// APIs
+// API Management Application Resources, like APIs and global policies
 //=============================================================================
 
 //=============================================================================
@@ -30,13 +30,13 @@ resource globalPolicies 'Microsoft.ApiManagement/service/policies@2025-09-01-pre
   }
 }
 
-module moviesApi 'movies-api/movies-api.bicep' = {
+module moviesApi 'apis/movies-api/movies-api.bicep' = {
   params: {
     apiManagementServiceName: apiManagementServiceName
   }
 }
 
-module userRatingsApi 'user-ratings-api/user-ratings-api.bicep' = {
+module userRatingsApi 'apis/user-ratings-api/user-ratings-api.bicep' = {
   params: {
     apiManagementServiceName: apiManagementServiceName
   }

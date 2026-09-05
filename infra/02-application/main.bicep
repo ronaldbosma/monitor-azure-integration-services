@@ -38,7 +38,7 @@ module storage 'modules/storage.bicep' = {
   }
 }
 
-module apis 'modules/apis/apis.bicep' = {
+module apiManagement 'modules/api-management/api-management.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     apiManagementServiceName: apiManagementServiceName
