@@ -1,5 +1,16 @@
 <policies>
     <inbound>
+        <!-- Validate received request -->
+        <validate-parameters specified-parameter-action="prevent" unspecified-parameter-action="ignore" />
+        <choose>
+            <when condition="@(context.Request.Method == "POST" || context.Request.Method == "PUT" || context.Request.Method == "PATCH")">
+                <validate-content unspecified-content-type-action="prevent" max-size="102400" size-exceeded-action="prevent">
+                    <content type="application/json" validate-as="json" action="prevent" />
+                </validate-content>
+            </when>
+        </choose>
+
+        <!-- Remove subscription key so it's not forwarded to the backend-->
         <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
     </inbound>
 

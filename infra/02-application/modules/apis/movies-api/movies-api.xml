@@ -16,16 +16,6 @@
         <set-header name="Accept" exists-action="override">
             <value>application/json;odata=nometadata</value>
         </set-header>
-
-        <!-- Validate received request -->
-        <validate-parameters specified-parameter-action="prevent" unspecified-parameter-action="ignore" />
-        <choose>
-            <when condition="@(context.Request.Method == "POST" || context.Request.Method == "PUT" || context.Request.Method == "PATCH")">
-                <validate-content unspecified-content-type-action="prevent" max-size="102400" size-exceeded-action="prevent">
-                    <content type="application/json" validate-as="json" action="prevent" />
-                </validate-content>
-            </when>
-        </choose>
     </inbound>
 
     <backend>
