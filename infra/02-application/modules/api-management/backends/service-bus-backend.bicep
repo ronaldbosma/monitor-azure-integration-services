@@ -30,6 +30,16 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
 // Resources
 //=============================================================================
 
+resource serviceBusFqdnNamedValue 'Microsoft.ApiManagement/service/namedValues@2025-09-01-preview' = {
+  name: 'service-bus-fqdn'
+  parent: apiManagementService
+  properties: {
+    displayName: 'service-bus-fqdn'
+    secret: false
+    value: helpers.getServiceBusFullyQualifiedNamespace(serviceBusNamespaceName)
+  }
+}
+
 resource serviceBusBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'service-bus'
