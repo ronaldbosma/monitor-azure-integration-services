@@ -1,0 +1,60 @@
+<fragment>
+
+    <!-- Retrieve movies with specified title -->
+    <send-request mode="new" response-variable-name="getMoviesByTitleResponse" ignore-error="false">
+        <set-url>@{
+            var body = context.Request.Body.As<JObject>(preserveContent: true);
+            return "{{localhost-base-url}}/movies?title=" + (string)body["title"];
+        }</set-url>
+        <set-method>GET</set-method>
+        <set-header name="Ocp-Apim-Subscription-Key" exists-action="override">
+            <value>{{localhost-apim-subscription-key}}</value>
+        </set-header>
+    </send-request>
+
+    <choose>
+        <!-- If movie retrieval succeeded (HTTP 200), extract the movie ID -->
+        <when condition="@(((IResponse)context.Variables["getMoviesByTitleResponse"])?.StatusCode == 200)">
+            <set-variable name="movieId" value="@{
+                var movies = ((IResponse)context.Variables["getMoviesByTitleResponse"]).Body.As<JArray>();
+
+                if (movies.Count == 0)
+                {
+                    return null;
+                }
+
+                if (movies.Count > 1)
+                {
+                    throw new Exception("More than one movie was found with the supplied title.");
+                }
+
+                return (string)movies[0]["id"];
+            }" />
+        </when>
+
+        <otherwise>
+            <!--
+                Log the error response details.
+                NOTE: The value of a metadata element must always have a value. An empty string is not allowed.
+                        To prevent the trace from failing and the request not being processed, "<empty>" is used for empty values.
+            -->
+            <trace source='@(context.Operation.Id)' severity="error">
+                <message>Error Response Body</message>
+                <metadata name="ResponseBody" value='@{
+                    var body = ((IResponse)context.Variables["getMoviesByTitleResponse"]).Body?.As<string>(preserveContent: true);
+                    return !string.IsNullOrWhiteSpace(body) ? body : "<empty>";
+                }' />
+                <metadata name="ResponseStatusCode" value='@(string.IsNullOrWhiteSpace(((IResponse)context.Variables["getMoviesByTitleResponse"])?.StatusCode.ToString()) ? "<empty>" : ((IResponse)context.Variables["getMoviesByTitleResponse"]).StatusCode.ToString())' />
+                <metadata name="ResponseStatusReason" value='@(string.IsNullOrWhiteSpace(((IResponse)context.Variables["getMoviesByTitleResponse"])?.StatusReason?.ToString()) ? "<empty>" : ((IResponse)context.Variables["getMoviesByTitleResponse"]).StatusReason.ToString())' />
+            </trace>
+
+            <return-response>
+                <set-status code="500" reason="Internal Server Error" />
+                <set-header name="Content-Type" exists-action="override">
+                    <value>application/json</value>
+                </set-header>
+                <set-body>{ "statusCode": 500, "message": "Internal Server Error" }</set-body>
+            </return-response>
+        </otherwise>
+    </choose>
+</fragment>

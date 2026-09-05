@@ -1,0 +1,64 @@
+<policies>
+    <inbound>
+        <base />
+
+        <!-- Return 409 Conflict if a title was provided and another movie with the title already exists -->
+        <choose>
+            <when condition='@(context.Request.Body.As<JObject>(preserveContent: true)["title"] != null)'>
+                <include-fragment fragment-id="get-movie-id-by-title" />
+                <choose>
+                    <when condition='@(context.Variables.GetValueOrDefault("movieId") != null && (string)context.Variables.GetValueOrDefault("movieId") != context.Request.MatchedParameters["id"])'>
+                        <return-response>
+                            <set-status code="409" reason="Conflict" />
+                            <set-header name="Content-Type" exists-action="override">
+                                <value>application/json</value>
+                            </set-header>
+                            <set-body>{ "statusCode": 409, "message": "A movie with the same title already exists." }</set-body>
+                        </return-response>
+                    </when>
+                </choose>
+            </when>
+        </choose>
+
+        <set-method>MERGE</set-method>
+        <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
+
+        <!-- Force an unconditional update if the client didn't provide an ETag -->
+        <set-header name="If-Match" exists-action="skip">
+            <value>*</value>
+        </set-header>
+
+        <set-body>@{
+            var body = context.Request.Body.As<JObject>();
+
+            // Only include properties that were provided in the request so unspecified fields aren't overwritten
+            var movie = new JObject();
+            addPropertyToMovieIfProvided("title", "Title");
+            addPropertyToMovieIfProvided("description", "Description");
+            addPropertyToMovieIfProvided("year", "Year");
+            addPropertyToMovieIfProvided("rating", "Rating");
+
+            return movie.ToString(Newtonsoft.Json.Formatting.None);
+
+            void addPropertyToMovieIfProvided(string sourcePropertyName, string targetPropertyName)
+            {
+                if (body[sourcePropertyName] != null)
+                {
+                    movie[targetPropertyName] = body[sourcePropertyName];
+                }
+            }
+        }</set-body>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

@@ -1,0 +1,99 @@
+# Get all movies
+GET https://{{apimHostname}}/movies
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+
+# Get all movies with title "Star Wars: Episode IV - A New Hope"
+GET https://{{apimHostname}}/movies?title=Star Wars: Episode IV - A New Hope
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+
+# Create a new movie
+# @name createMovie
+POST https://{{apimHostname}}/movies
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+{
+  "title": "Star Wars: Episode IV - A New Hope",
+  "description": "Set in a galaxy far, far away, farm boy Luke Skywalker joins a wise Jedi, a roguish smuggler and two droids to rescue Princess Leia and deliver the stolen plans that could destroy the Empire's planet-killing Death Star.",
+  "year": 1977
+}
+
+
+###
+
+
+# Get the ID of the created movie
+@movieId = {{createMovie.response.body.id}}
+
+# Set a static movie ID for testing purposes
+# @movieId = c3798dfb-2e8a-4960-b4cd-671033737567
+
+###
+
+
+# Get Movie by ID
+GET https://{{apimHostname}}/movies/{{movieId}}
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+
+# Get User Ratings for Movie
+GET https://{{apimHostname}}/user-ratings?movie-id={{movieId}}
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+
+# Add User Rating for Movie
+PUT https://{{apimHostname}}/user-ratings
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+{
+  "movieId": "{{movieId}}",
+  "userId": "{{$guid}}",
+  "rating": {{$randomInt 1 10}}
+}
+
+
+###
+
+
+# Update a movie
+PATCH https://{{apimHostname}}/movies/{{movieId}}
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+# If-Match: W/"datetime'2026-09-04T16%3A07%3A09.8702521Z'"
+
+{
+  "rating": 8.5
+}
+
+
+###
+
+
+# Delete a movie
+DELETE https://{{apimHostname}}/movies/{{movieId}}
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+# If-Match: W/"datetime'2026-09-04T16%3A07%3A09.8702521Z'"
+

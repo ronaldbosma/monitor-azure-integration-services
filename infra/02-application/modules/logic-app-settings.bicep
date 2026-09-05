@@ -1,12 +1,13 @@
 //=============================================================================
-// Sets up connectivity from Logic App to other resources
+// Logic App - App Settings
+// Among other things, sets up connectivity to other resources
 //=============================================================================
 
 //=============================================================================
 // Imports
 //=============================================================================
 
-import * as helpers from '../../../99-shared/helpers.bicep'
+import * as helpers from '../../99-shared/helpers.bicep'
 
 //=============================================================================
 // Parameters
@@ -24,9 +25,6 @@ param logicAppName string
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
 
-@description('Name of the storage account that will be used by the Logic App')
-param storageAccountName string
-
 //=============================================================================
 // Variables
 //=============================================================================
@@ -38,19 +36,13 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
 
   // Service Bus App Settings
   ServiceBus_fullyQualifiedNamespace: helpers.getServiceBusFullyQualifiedNamespace(serviceBusNamespaceName)
-
-  // Storage Account App Settings
-  AzureBlob_blobStorageEndpoint: helpers.getBlobStorageEndpoint(storageAccountName)
-  AzureFile_storageAccountUri: helpers.getFileStorageEndpoint(storageAccountName)
-  AzureQueues_queueServiceUri: helpers.getQueueStorageEndpoint(storageAccountName)
-  AzureTables_tableStorageEndpoint: helpers.getTableStorageEndpoint(storageAccountName)
 }
 
 //=============================================================================
 // Existing resources
 //=============================================================================
 
-resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-preview' existing = {
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
   name: apiManagementServiceName
 }
 
@@ -68,7 +60,7 @@ resource logicApp 'Microsoft.Web/sites@2025-03-01' existing = {
 
 // Logic App Subscription on all APIs in API Management Service
 
-resource logicAppApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
+resource logicAppApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'logic-app'
   properties: {
@@ -90,7 +82,7 @@ resource logicAppApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@20
 //  NOTE: this is done in a separate module that merges the app settings with the existing ones
 //        to prevent other (manually) created app settings from being removed.
 
-module setLogicAppSettings '../../../99-shared/merge-app-settings.bicep' = {
+module setLogicAppSettings '../../99-shared/merge-app-settings.bicep' = {
   params: {
     siteName: logicAppName
     currentAppSettings: list('${logicApp.id}/config/appsettings', logicApp.apiVersion).properties

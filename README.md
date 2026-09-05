@@ -5,6 +5,12 @@ An Azure Developer CLI (`azd`) template using Bicep that demonstrates various wa
 > [!IMPORTANT]  
 > This template is under construction
 
+## Overview
+
+See the following diagram for an overview of the integration application that is deployed by this template:
+
+![Integration Application Overview](./images/integration-application-overview.drawio.png)
+
 ## Getting Started
 
 ### Prerequisites

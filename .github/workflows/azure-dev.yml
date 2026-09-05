@@ -83,9 +83,22 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID || vars.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID || vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Bicep Lint
+      - name: Bicep Lint Base Layer Template
         run: |
-          az bicep lint --file ./infra/01-base/main.bicep
+          az bicep lint --file ./infra/01-base/main.bicepparam
+
+      - name: Bicep Lint Application Layer Template
+        run: |
+          az bicep lint --file ./infra/02-application/main.bicepparam
+        env:
+          # Configure dummy values for environment values satisfy readEnvironmentVariable calls in the bicepparam files during linting.
+          AZURE_RESOURCE_GROUP: sample
+          AZURE_API_MANAGEMENT_NAME: sample
+          AZURE_FUNCTION_APP_NAME: sample
+          AZURE_KEY_VAULT_NAME: sample
+          AZURE_LOGIC_APP_NAME: sample
+          AZURE_SERVICE_BUS_NAMESPACE_NAME: sample
+          AZURE_STORAGE_ACCOUNT_NAME: sample
 
       - name: Validate Base Layer Template
         run: |
@@ -94,6 +107,19 @@ jobs:
             --location $env:AZURE_LOCATION `
             --parameters environmentName=$env:AZURE_ENV_NAME `
                          location=$env:AZURE_LOCATION
+
+      - name: Validate Application Layer Template
+        run: |
+          az deployment sub validate `
+            --template-file './infra/02-application/main.bicep' `
+            --location $env:AZURE_LOCATION `
+            --parameters resourceGroupName='sample' `
+                         apiManagementServiceName='sample' `
+                         functionAppName='sample' `
+                         keyVaultName='sample' `
+                         logicAppName='sample' `
+                         serviceBusNamespaceName='sample' `
+                         storageAccountName='sample'
 
       - name: Create artifacts folder
         run: |

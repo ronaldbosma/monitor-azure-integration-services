@@ -1,0 +1,110 @@
+//=============================================================================
+// Movies API in API Management
+//=============================================================================
+
+//=============================================================================
+// Parameters
+//=============================================================================
+
+@description('The name of the API Management service')
+param apiManagementServiceName string
+
+//=============================================================================
+// Existing resources
+//=============================================================================
+
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
+  name: apiManagementServiceName
+}
+
+//=============================================================================
+// Resources
+//=============================================================================
+
+resource moviesApi 'Microsoft.ApiManagement/service/apis@2025-09-01-preview' = {
+  name: 'movies-api'
+  parent: apiManagementService
+  properties: {
+    path: 'movies'
+    format: 'openapi'
+    value: loadTextContent('movies-api.openapi.yaml')
+    type: 'http'
+    protocols: [
+      'https'
+    ]
+    subscriptionRequired: true
+  }
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('movies-api.xml')
+    }
+  }
+}
+
+resource getMoviesOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'get-movies'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/get-movies.xml')
+    }
+  }
+}
+
+resource createMovieOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'create-movie'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/create-movie.xml')
+    }
+  }
+}
+
+resource getMovieByIdOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'get-movie-by-id'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/get-movie-by-id.xml')
+    }
+  }
+}
+
+resource updateMovieOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'update-movie'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/update-movie.xml')
+    }
+  }
+}
+
+resource deleteMovieOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'delete-movie'
+  parent: moviesApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/delete-movie.xml')
+    }
+  }
+}

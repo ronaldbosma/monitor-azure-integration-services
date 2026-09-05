@@ -1,0 +1,23 @@
+<policies>
+    <inbound>
+        <include-fragment fragment-id="validate-request" />
+
+        <!-- Remove subscription key so it's not forwarded to the backend-->
+        <set-header name="Ocp-Apim-Subscription-Key" exists-action="delete" />
+    </inbound>
+
+    <backend>
+        <forward-request />
+    </backend>
+
+    <outbound>
+        <choose>
+            <when condition="@(context.Response.StatusCode >= 400)">
+                <include-fragment fragment-id="log-error" />
+                <include-fragment fragment-id="handle-error-response" />
+            </when>
+        </choose>
+    </outbound>
+
+    <on-error />
+</policies>

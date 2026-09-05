@@ -1,0 +1,67 @@
+<policies>
+    <inbound>
+        <base />
+
+        <!-- Return 409 Conflict if another movie with the same title already exists -->
+        <include-fragment fragment-id="get-movie-id-by-title" />
+        <choose>
+            <when condition="@(context.Variables.GetValueOrDefault("movieId") != null)">
+                <return-response>
+                    <set-status code="409" reason="Conflict" />
+                    <set-header name="Content-Type" exists-action="override">
+                        <value>application/json</value>
+                    </set-header>
+                    <set-body>{ "statusCode": 409, "message": "A movie with the same title already exists." }</set-body>
+                </return-response>
+            </when>
+        </choose>
+
+        <rewrite-uri template="/movies" copy-unmatched-params="false" />
+
+        <set-body>@{
+            var body = context.Request.Body.As<JObject>();
+
+            var movie = new
+            {
+                PartitionKey = "movies",
+                RowKey = Guid.NewGuid().ToString(),
+                Title = (string)body["title"],
+                Description = (string)body["description"],
+                Year = (int)body["year"]
+            };
+
+            return JsonConvert.SerializeObject(movie);
+        }</set-body>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+
+        <choose>
+            <when condition="@(context.Response.StatusCode == 201)">
+                <set-body>@{
+                    var body = context.Response.Body.As<JObject>();
+
+                    var movie = new
+                    {
+                        id = (string)body["RowKey"],
+                        title = (string)body["Title"],
+                        description = (string)body["Description"],
+                        year = (int)body["Year"],
+                        rating = (double?)body["Rating"]
+                    };
+
+                    return JsonConvert.SerializeObject(movie);
+                }</set-body>
+            </when>
+        </choose>
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>
