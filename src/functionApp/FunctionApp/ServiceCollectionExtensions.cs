@@ -49,17 +49,6 @@ internal static class ServiceCollectionExtensions
             opts.SerializerOptions.PropertyNameCaseInsensitive = true;
         });
 
-        services.AddOptionsWithValidateOnStart<ApiManagementOptions>()
-                .BindConfiguration(ApiManagementOptions.SectionKey)
-                .ValidateDataAnnotations();
-
-        services.AddHttpClient("apim", (sp, client) =>
-                {
-                    var options = sp.GetRequiredService<IOptions<ApiManagementOptions>>().Value;
-                    client.BaseAddress = new Uri(options.GatewayUrl);
-                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", options.SubscriptionKey);
-                });
-
         var tableServiceUri = configuration["StorageAccountConnection:tableServiceUri"]
             ?? throw new InvalidOperationException("Configuration setting 'StorageAccountConnection:tableServiceUri' is missing.");
         services.AddSingleton(new TableServiceClient(new Uri(tableServiceUri), new DefaultAzureCredential()));
