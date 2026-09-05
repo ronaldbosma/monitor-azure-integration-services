@@ -13,7 +13,7 @@
     <outbound>
         <choose>
             <when condition="@(context.Response.StatusCode >= 400)">
-                <include-fragment fragment-id="log-error" />
+                <include-fragment fragment-id="log-error-response" />
                 <include-fragment fragment-id="handle-error-response" />
             </when>
         </choose>

@@ -88,12 +88,12 @@ resource handleErrorResponseFragment 'Microsoft.ApiManagement/service/policyFrag
   }
 }
 
-resource logErrorFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
+resource logErrorResponseFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
   parent: apiManagementService
-  name: 'log-error'
+  name: 'log-error-response'
   properties: {
       format: 'rawxml'
-      value: loadTextContent('policy-fragments/log-error.xml')
+      value: loadTextContent('policy-fragments/log-error-response.xml')
   }
 }
 
@@ -118,7 +118,7 @@ resource globalPolicies 'Microsoft.ApiManagement/service/policies@2025-09-01-pre
 
   dependsOn: [
     handleErrorResponseFragment
-    logErrorFragment
+    logErrorResponseFragment
     validateRequestFragment
   ]
 }
