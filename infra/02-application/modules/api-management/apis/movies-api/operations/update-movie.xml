@@ -2,6 +2,24 @@
     <inbound>
         <base />
 
+        <!-- Return 409 Conflict if a title was provided and another movie with the title already exists -->
+        <choose>
+            <when condition='@(context.Request.Body.As<JObject>(preserveContent: true)["title"] != null)'>
+                <include-fragment fragment-id="get-movie-id-by-title" />
+                <choose>
+                    <when condition='@(context.Variables.GetValueOrDefault("movieId") != null && (string)context.Variables.GetValueOrDefault("movieId") != context.Request.MatchedParameters["id"])'>
+                        <return-response>
+                            <set-status code="409" reason="Conflict" />
+                            <set-header name="Content-Type" exists-action="override">
+                                <value>application/json</value>
+                            </set-header>
+                            <set-body>{ "statusCode": 409, "message": "A movie with the same title already exists." }</set-body>
+                        </return-response>
+                    </when>
+                </choose>
+            </when>
+        </choose>
+
         <set-method>MERGE</set-method>
         <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
 
