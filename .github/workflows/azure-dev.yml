@@ -83,9 +83,12 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID || vars.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID || vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Bicep Lint
+      - name: Bicep Lint Base Layer Template
         run: |
           az bicep lint --file ./infra/01-base/main.bicepparam
+
+      - name: Bicep Lint Application Layer Template
+        run: |
           az bicep lint --file ./infra/02-application/main.bicepparam
         env:
           # Configure dummy values for environment values satisfy readEnvironmentVariable calls in the bicepparam files during linting.
