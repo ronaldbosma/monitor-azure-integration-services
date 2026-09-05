@@ -42,6 +42,9 @@
                     "contentTransfer": {
                         "transferMode": "Chunked"
                     }
+                },
+                "trackedProperties": {
+                    "MovieId": "@action().inputs.queries['movie-id']"
                 }
             },
             "Parse_user_ratings": {
