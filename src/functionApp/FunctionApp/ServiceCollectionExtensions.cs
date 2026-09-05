@@ -1,8 +1,10 @@
 using Azure.Core;
+using Azure.Data.Tables;
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.Exporter;
 
 using Microsoft.Azure.Functions.Worker.OpenTelemetry;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -35,7 +37,7 @@ internal static class ServiceCollectionExtensions
         return services;
     }
 
-    public static IServiceCollection RegisterDependencies(this IServiceCollection services)
+    public static IServiceCollection RegisterDependencies(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddOptionsWithValidateOnStart<ApiManagementOptions>()
                 .BindConfiguration(ApiManagementOptions.SectionKey)
@@ -47,6 +49,10 @@ internal static class ServiceCollectionExtensions
                     client.BaseAddress = new Uri(options.GatewayUrl);
                     client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", options.SubscriptionKey);
                 });
+
+        var tableServiceUri = configuration["StorageAccountConnection:tableServiceUri"]
+            ?? throw new InvalidOperationException("Configuration setting 'StorageAccountConnection:tableServiceUri' is missing.");
+        services.AddSingleton(new TableServiceClient(new Uri(tableServiceUri), new DefaultAzureCredential()));
 
         return services;
     }
