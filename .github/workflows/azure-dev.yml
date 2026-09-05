@@ -113,13 +113,13 @@ jobs:
           az deployment sub validate `
             --template-file './infra/02-application/main.bicep' `
             --location $env:AZURE_LOCATION `
-            --parameters resourceGroupName=sample `
-                         apiManagementServiceName=sample `
-                         functionAppName=sample `
-                         keyVaultName=sample `
-                         logicAppName=sample `
-                         serviceBusNamespaceName=sample `
-                         storageAccountName=sample
+            --parameters resourceGroupName='sample' `
+                         apiManagementServiceName='sample' `
+                         functionAppName='sample' `
+                         keyVaultName='sample' `
+                         logicAppName='sample' `
+                         serviceBusNamespaceName='sample' `
+                         storageAccountName='sample'
 
       - name: Create artifacts folder
         run: |
