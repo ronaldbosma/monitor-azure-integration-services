@@ -38,6 +38,9 @@ paths:
       responses:
         '201':
           description: The movie was created.
+          headers:
+            ETag:
+              $ref: '#/components/headers/etag'
           content:
             application/json:
               schema:
@@ -70,6 +73,9 @@ paths:
       responses:
         '200':
           description: The requested movie.
+          headers:
+            ETag:
+              $ref: '#/components/headers/etag'
           content:
             application/json:
               schema:
@@ -89,6 +95,7 @@ paths:
       description: Updates the title, description, year and/or rating of the movie with the specified id. If title and year are changed, the combination must remain unique.
       parameters:
         - $ref: '#/components/parameters/movieId'
+        - $ref: '#/components/parameters/ifMatch'
       requestBody:
         required: true
         content:
@@ -98,6 +105,9 @@ paths:
       responses:
         '200':
           description: The movie was updated.
+          headers:
+            ETag:
+              $ref: '#/components/headers/etag'
           content:
             application/json:
               schema:
@@ -144,6 +154,7 @@ paths:
       description: Deletes the movie with the specified id.
       parameters:
         - $ref: '#/components/parameters/movieId'
+        - $ref: '#/components/parameters/ifMatch'
       responses:
         '204':
           description: The movie was deleted.
@@ -166,6 +177,11 @@ paths:
                 statusCode: 412
                 message: The ETag does not match the current movie.
 components:
+  headers:
+    etag:
+      description: The ETag of the movie.
+      schema:
+        type: string
   parameters:
     movieId:
       name: id
@@ -176,6 +192,14 @@ components:
         type: string
         format: uuid
         example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+    ifMatch:
+      name: If-Match
+      in: header
+      description: The ETag of the movie, used for optimistic concurrency. The operation is only performed if the ETag matches the value maintained by the server, indicating the movie hasn't been modified since it was retrieved by the client. Omitting the header will force an unconditional operation.
+      required: false
+      schema:
+        type: string
+        example: W/"datetime'2026-09-04T16%3A07%3A09.8702521Z'"
   schemas:
     movieTitle:
       type: string
