@@ -16,7 +16,7 @@ param keyVaultName string
 // Existing resources
 //=============================================================================
 
-resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-preview' existing = {
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
   name: apiManagementServiceName
 }
 
@@ -28,9 +28,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
 // Resources
 //=============================================================================
 
-// Localhost Backend
-
-resource localhostApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
+resource localhostApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'localhost'
   properties: {
@@ -48,7 +46,7 @@ resource localhostApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2
   }
 }
 
-resource localhostApimSubscriptionKeyNamedValue 'Microsoft.ApiManagement/service/namedValues@2025-03-01-preview' = {
+resource localhostApimSubscriptionKeyNamedValue 'Microsoft.ApiManagement/service/namedValues@2025-09-01-preview' = {
   name: 'localhost-apim-subscription-key'
   parent: apiManagementService
   properties: {
@@ -60,7 +58,17 @@ resource localhostApimSubscriptionKeyNamedValue 'Microsoft.ApiManagement/service
   }
 }
 
-resource localhostBackend 'Microsoft.ApiManagement/service/backends@2025-03-01-preview' = {
+resource localhostBaseUrlNamedValue 'Microsoft.ApiManagement/service/namedValues@2025-09-01-preview' = {
+  name: 'localhost-base-url'
+  parent: apiManagementService
+  properties: {
+    displayName: 'localhost-base-url'
+    secret: false
+    value: apiManagementService.properties.gatewayUrl
+  }
+}
+
+resource localhostBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'localhost'
   properties: {
