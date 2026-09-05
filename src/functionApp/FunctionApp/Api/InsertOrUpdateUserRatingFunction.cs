@@ -94,7 +94,7 @@ public class InsertOrUpdateUserRatingFunction
 
             tableClient.UpsertEntity(entity, TableUpdateMode.Replace);
 
-            return new OkObjectResult(new { message = "Rating inserted/updated successfully" });
+            return new OkResult();
         }
         catch (Exception ex)
         {
