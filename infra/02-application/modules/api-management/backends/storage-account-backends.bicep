@@ -22,7 +22,7 @@ param storageAccountName string
 // Existing resources
 //=============================================================================
 
-resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-preview' existing = {
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
   name: apiManagementServiceName
 }
 
@@ -30,7 +30,7 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-previe
 // Resources
 //=============================================================================
 
-resource blobStorageBackend 'Microsoft.ApiManagement/service/backends@2025-03-01-preview' = {
+resource blobStorageBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'blob-storage'
   properties: {
@@ -44,7 +44,7 @@ resource blobStorageBackend 'Microsoft.ApiManagement/service/backends@2025-03-01
   }
 }
 
-resource queueStorageBackend 'Microsoft.ApiManagement/service/backends@2025-03-01-preview' = {
+resource queueStorageBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'queue-storage'
   properties: {
@@ -58,7 +58,7 @@ resource queueStorageBackend 'Microsoft.ApiManagement/service/backends@2025-03-0
   }
 }
 
-resource tableStorageBackend 'Microsoft.ApiManagement/service/backends@2025-03-01-preview' = {
+resource tableStorageBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'table-storage'
   properties: {

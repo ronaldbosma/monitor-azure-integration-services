@@ -22,7 +22,7 @@ param serviceBusNamespaceName string
 // Existing resources
 //=============================================================================
 
-resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-preview' existing = {
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
   name: apiManagementServiceName
 }
 
@@ -30,7 +30,7 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-previe
 // Resources
 //=============================================================================
 
-resource serviceBusBackend 'Microsoft.ApiManagement/service/backends@2025-03-01-preview' = {
+resource serviceBusBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'service-bus'
   properties: {
