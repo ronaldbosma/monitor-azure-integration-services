@@ -65,6 +65,9 @@
                                 "operationId": "sendMessage",
                                 "serviceProviderId": "/serviceProviders/serviceBus"
                             }
+                        },
+                        "trackedProperties": {
+                            "MovieId": "@action().inputs.parameters.message.contentData.id"
                         }
                     }
                 },

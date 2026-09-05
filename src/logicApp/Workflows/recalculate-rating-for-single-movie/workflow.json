@@ -16,7 +16,10 @@
                         }
                     }
                 },
-                "runAfter": {}
+                "runAfter": {},
+                "trackedProperties": {
+                    "MovieId": "@action().outputs.body.id"
+                }
             },
             "Get_user_ratings_for_movie": {
                 "type": "Http",
@@ -87,6 +90,10 @@
                                 "inputs": {
                                     "name": "TotalRating",
                                     "value": "@items('For_each_user_rating')['rating']"
+                                },
+                                "trackedProperties": {
+                                    "UserRating": "@action().inputs.value",
+                                    "TotalRating": "@action().outputs.body.value"
                                 }
                             }
                         }
@@ -101,6 +108,9 @@
                             "For_each_user_rating": [
                                 "SUCCEEDED"
                             ]
+                        },
+                        "trackedProperties": {
+                            "MovieRating": "@action().outputs.body.value"
                         }
                     },
                     "Save_movie_rating": {
