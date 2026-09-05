@@ -52,14 +52,14 @@ paths:
                 statusCode: 400
                 message: Title, description and year are required.
         '409':
-          description: A movie with the same title and year already exists.
+          description: A movie with the same title already exists.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
               example:
                 statusCode: 409
-                message: A movie with the same title and year already exists.
+                message: A movie with the same title already exists.
   /{id}:
     get:
       operationId: get-movie-by-id
@@ -121,14 +121,14 @@ paths:
                 statusCode: 404
                 message: No movie was found with the specified id.
         '409':
-          description: Another movie with the same title and year already exists.
+          description: Another movie with the same title already exists.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
               example:
                 statusCode: 409
-                message: Another movie with the same title and year already exists.
+                message: Another movie with the same title already exists.
         '412':
           description: The movie was modified by another request.
           content:
