@@ -1,8 +1,11 @@
+using System.Text.Json;
+
 using Azure.Core;
 using Azure.Data.Tables;
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.Exporter;
 
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Azure.Functions.Worker.OpenTelemetry;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +42,13 @@ internal static class ServiceCollectionExtensions
 
     public static IServiceCollection RegisterDependencies(this IServiceCollection services, ConfigurationManager configuration)
     {
+        // Configure JSON serialization for HTTP helpers (request/response) to use camelCase
+        services.Configure<JsonOptions>(opts =>
+        {
+            opts.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            opts.SerializerOptions.PropertyNameCaseInsensitive = true;
+        });
+
         services.AddOptionsWithValidateOnStart<ApiManagementOptions>()
                 .BindConfiguration(ApiManagementOptions.SectionKey)
                 .ValidateDataAnnotations();
