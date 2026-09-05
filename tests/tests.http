@@ -49,6 +49,31 @@ Ocp-Apim-Trace: true
 ###
 
 
+# Get User Ratings for Movie
+GET https://{{apimHostname}}/user-ratings?movie-id={{movieId}}
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+
+# Add User Rating for Movie
+PUT https://{{apimHostname}}/user-ratings
+Content-Type: application/json
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+{
+  "movieId": "{{movieId}}",
+  "userId": "{{$guid}}",
+  "rating": {{$randomInt 1 10}}
+}
+
+
+###
+
+
 # Update a movie
 PATCH https://{{apimHostname}}/movies/{{movieId}}
 Content-Type: application/json

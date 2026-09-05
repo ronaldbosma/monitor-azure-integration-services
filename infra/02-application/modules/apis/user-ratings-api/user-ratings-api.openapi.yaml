@@ -1,0 +1,99 @@
+openapi: 3.0.1
+info:
+  title: User Ratings API
+  description: API for retrieving user ratings for a movie.
+  version: 1.0.0
+paths:
+  /:
+    get:
+      operationId: get-user-ratings
+      summary: Get user ratings
+      description: Gets all user ratings for the specified movie.
+      parameters:
+        - name: movie-id
+          in: query
+          description: The id of the movie whose ratings are requested.
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+      responses:
+        '200':
+          description: A list of user ratings for the movie.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/userRating'
+        '400':
+          description: The movie-id query parameter is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: The user ratings could not be retrieved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+    put:
+      operationId: insert-or-update-user-rating
+      summary: Insert or update a user rating
+      description: Inserts or updates a user's rating for a movie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userRating'
+      responses:
+        '200':
+          description: The user rating was inserted or updated.
+        '400':
+          description: The request body is missing or invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+        '500':
+          description: The user rating could not be inserted or updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+components:
+  schemas:
+    userRating:
+      type: object
+      properties:
+        movieId:
+          type: string
+          format: uuid
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        userId:
+          type: string
+          format: uuid
+          example: fde84348-9e1b-4ec6-8e55-bfc63f8cd1fc
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 10
+          example: 8
+      required:
+        - movieId
+        - userId
+        - rating
+    error:
+      type: object
+      description: An error response.
+      properties:
+        statusCode:
+          type: integer
+        message:
+          type: string
+      required:
+        - statusCode
+        - message
