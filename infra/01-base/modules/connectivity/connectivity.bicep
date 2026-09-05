@@ -28,16 +28,6 @@ param storageAccountName string
 // Resources
 //=============================================================================
 
-module apiManagementConnectivity 'api-management-connectivity.bicep' = {
-  params: {
-    apiManagementServiceName: apiManagementServiceName
-    functionAppName: functionAppName
-    keyVaultName: keyVaultName
-    serviceBusNamespaceName: serviceBusNamespaceName
-    storageAccountName: storageAccountName
-  }
-}
-
 module functionAppConnectivity 'function-app-connectivity.bicep' = {
   params: {
     apiManagementServiceName: apiManagementServiceName
