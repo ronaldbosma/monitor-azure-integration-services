@@ -35,6 +35,15 @@ module localhostBackend 'backends/localhost-backend.bicep' = {
 
 // Policy Fragments
 
+resource getMovieIdByTitleFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
+  parent: apiManagementService
+  name: 'get-movie-id-by-title'
+  properties: {
+      format: 'rawxml'
+      value: loadTextContent('policy-fragments/get-movie-id-by-title.xml')
+  }
+}
+
 resource handleErrorResponseFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'handle-error-response'
@@ -88,6 +97,7 @@ module moviesApi 'apis/movies-api/movies-api.bicep' = {
 
   dependsOn: [
     globalPolicies
+    getMovieIdByTitleFragment
   ]
 }
 
