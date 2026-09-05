@@ -1,25 +1,20 @@
 //=============================================================================
-// Sets up connectivity from Function App to other resources
+// Function App - App Settings
+// Among other things, sets up connectivity to other resources
 //=============================================================================
 
 //=============================================================================
 // Imports
 //=============================================================================
 
-import * as helpers from '../../../99-shared/helpers.bicep'
+import * as helpers from '../../99-shared/helpers.bicep'
 
 //=============================================================================
 // Parameters
 //=============================================================================
 
-@description('The name of the API Management Service')
-param apiManagementServiceName string
-
 @description('The name of the Function App')
 param functionAppName string
-
-@description('The name of the Key Vault that will contain the secrets')
-param keyVaultName string
 
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
@@ -32,10 +27,6 @@ param storageAccountName string
 //=============================================================================
 
 var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.properties = {
-  // API Management App Settings
-  ApiManagement__GatewayUrl: helpers.getApiManagementGatewayUrl(apiManagementServiceName)
-  ApiManagement__SubscriptionKey: helpers.getKeyVaultSecretReference(keyVaultName, 'function-app-apim-subscription-key')
-
   // Service Bus App Settings
   ServiceBusConnection__fullyQualifiedNamespace: helpers.getServiceBusFullyQualifiedNamespace(serviceBusNamespaceName)
 
@@ -50,14 +41,6 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
 // Existing resources
 //=============================================================================
 
-resource apiManagementService 'Microsoft.ApiManagement/service@2025-03-01-preview' existing = {
-  name: apiManagementServiceName
-}
-
-resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
-  name: keyVaultName
-}
-
 resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
   name: functionAppName
 }
@@ -66,37 +49,14 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
 // Resources
 //=============================================================================
 
-// Function App Subscription on all APIs in API Management Service
-
-resource functionAppApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-03-01-preview' = {
-  parent: apiManagementService
-  name: 'function-app'
-  properties: {
-    displayName: 'Function App Subscription'
-    scope: '/apis'
-    state: 'active'
-  }
-}
-
-resource functionAppApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
-  name: 'function-app-apim-subscription-key'
-  parent: keyVault
-  properties: {
-    value: functionAppApimSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
-  }
-}
-
 // Set standard App Settings
 //  NOTE: this is done in a separate module that merges the app settings with the existing ones
 //        to prevent other (manually) created app settings from being removed.
 
-module setFunctionAppSettings '../../../99-shared/merge-app-settings.bicep' = {
+module setFunctionAppSettings '../../99-shared/merge-app-settings.bicep' = {
   params: {
     siteName: functionAppName
     currentAppSettings: list('${functionApp.id}/config/appsettings', functionApp.apiVersion).properties
     newAppSettings: appSettings
   }
-  dependsOn: [
-    functionAppApimSubscriptionKeySecret
-  ]
 }

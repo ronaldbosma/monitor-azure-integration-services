@@ -20,6 +20,9 @@ param functionAppName string
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
 
+@description('The name of the Logic App')
+param logicAppName string
+
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
 
@@ -56,5 +59,30 @@ module apiManagement 'modules/api-management/api-management.bicep' = {
   dependsOn: [
     serviceBusEntities
     storage
+  ]
+}
+
+module functionAppSettings 'modules/function-app-settings.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    functionAppName: functionAppName
+    serviceBusNamespaceName: serviceBusNamespaceName
+    storageAccountName: storageAccountName
+  }
+  dependsOn: [
+    apiManagement
+  ]
+}
+
+module logicAppSettings 'modules/logic-app-settings.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    keyVaultName: keyVaultName
+    logicAppName: logicAppName
+    serviceBusNamespaceName: serviceBusNamespaceName
+  }
+  dependsOn: [
+    apiManagement
   ]
 }

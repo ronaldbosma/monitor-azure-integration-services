@@ -166,26 +166,6 @@ module logicApp 'modules/logic-app.bicep' = {
   ]
 }
 
-module connectivity 'modules/connectivity/connectivity.bicep' = {
-  scope: resourceGroup
-  params: {
-    apiManagementServiceName: apiManagementSettings.serviceName
-    functionAppName: functionAppSettings.functionAppName
-    keyVaultName: keyVaultName
-    logicAppName: logicAppSettings.logicAppName
-    serviceBusNamespaceName: serviceBusSettings.namespaceName
-    storageAccountName: storageAccountName
-  }
-  dependsOn: [
-    apiManagement
-    functionApp
-    keyVault
-    logicApp
-    serviceBus
-    storageAccount
-  ]
-}
-
 module assignRolesToDeployer '../99-shared/assign-roles-to-principal.bicep' = {
   scope: resourceGroup
   params: {
