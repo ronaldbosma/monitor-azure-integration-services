@@ -69,9 +69,6 @@ module functionAppSettings 'modules/function-app-settings.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
   }
-  dependsOn: [
-    apiManagement
-  ]
 }
 
 module logicAppSettings 'modules/logic-app-settings.bicep' = {
@@ -82,7 +79,4 @@ module logicAppSettings 'modules/logic-app-settings.bicep' = {
     logicAppName: logicAppName
     serviceBusNamespaceName: serviceBusNamespaceName
   }
-  dependsOn: [
-    apiManagement
-  ]
 }
