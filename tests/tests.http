@@ -36,6 +36,8 @@ Ocp-Apim-Trace: true
 # Get the ID of the created movie
 @movieId = {{createMovie.response.body.id}}
 
+# Set a static movie ID for testing purposes
+# @movieId = c3798dfb-2e8a-4960-b4cd-671033737567
 
 ###
 
