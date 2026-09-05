@@ -1,0 +1,188 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "actions": {
+            "Parse_message": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@triggerBody()?['contentData']",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {}
+            },
+            "Get_user_ratings_for_movie": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('api-management-gateway-url')}/user-ratings?movie-id=@{body('Parse_message')?['id']}",
+                    "method": "GET",
+                    "headers": {
+                        "Ocp-Apim-Subscription-Key": "@{parameters('api-management-subscription-key')}"
+                    }
+                },
+                "runAfter": {
+                    "Parse_message": [
+                        "SUCCEEDED"
+                    ]
+                },
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                }
+            },
+            "Parse_user_ratings": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@body('Get_user_ratings_for_movie')",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "rating": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "rating"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Get_user_ratings_for_movie": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Movie_has_user_ratings": {
+                "type": "If",
+                "expression": {
+                    "and": [
+                        {
+                            "not": {
+                                "equals": [
+                                    "@length(body('Parse_user_ratings'))",
+                                    0
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "actions": {
+                    "For_each_user_rating": {
+                        "type": "foreach",
+                        "foreach": "@outputs('Parse_user_ratings')['body']",
+                        "actions": {
+                            "Increment_TotalRating_with_user_rating": {
+                                "type": "IncrementVariable",
+                                "inputs": {
+                                    "name": "TotalRating",
+                                    "value": "@items('For_each_user_rating')['rating']"
+                                }
+                            }
+                        }
+                    },
+                    "Calculate_movie_rating": {
+                        "type": "SetVariable",
+                        "inputs": {
+                            "name": "MovieRating",
+                            "value": "@float(formatNumber(\n  div(\n    variables('TotalRating'),\n    length(body('Parse_user_ratings'))\n  ),\n  'F1'\n))"
+                        },
+                        "runAfter": {
+                            "For_each_user_rating": [
+                                "SUCCEEDED"
+                            ]
+                        }
+                    },
+                    "Save_movie_rating": {
+                        "type": "Http",
+                        "inputs": {
+                            "uri": "@{parameters('api-management-gateway-url')}/movies/@{body('Parse_message')?['id']}",
+                            "method": "PATCH",
+                            "headers": {
+                                "Ocp-Apim-Subscription-Key": "@{parameters('api-management-subscription-key')}"
+                            },
+                            "body": {
+                                "rating": "@variables('MovieRating')"
+                            }
+                        },
+                        "runAfter": {
+                            "Calculate_movie_rating": [
+                                "SUCCEEDED"
+                            ]
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    }
+                },
+                "else": {
+                    "actions": {
+                        "Cancel": {
+                            "type": "Terminate",
+                            "inputs": {
+                                "runStatus": "Cancelled"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Initialize_variables": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Initialize_variables": {
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "MovieRating",
+                            "type": "float"
+                        },
+                        {
+                            "name": "TotalRating",
+                            "type": "float",
+                            "value": 0
+                        }
+                    ]
+                },
+                "runAfter": {
+                    "Parse_user_ratings": [
+                        "SUCCEEDED"
+                    ]
+                }
+            }
+        },
+        "outputs": {},
+        "triggers": {
+            "When_messages_are_available_in_a_queue": {
+                "type": "ServiceProvider",
+                "inputs": {
+                    "parameters": {
+                        "queueName": "recalculate-movie-rating",
+                        "isSessionsEnabled": false
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "serviceBus",
+                        "operationId": "receiveQueueMessages",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
+                },
+                "splitOn": "@triggerOutputs()?['body']"
+            }
+        }
+    },
+    "kind": "Stateful"
+}

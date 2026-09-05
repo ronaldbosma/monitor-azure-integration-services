@@ -1,0 +1,90 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "actions": {
+            "Get_all_movies": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('api-management-gateway-url')}/movies",
+                    "method": "GET",
+                    "headers": {
+                        "Ocp-Apim-Subscription-Key": "@{parameters('api-management-subscription-key')}"
+                    }
+                },
+                "runAfter": {},
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                }
+            },
+            "Parse_movies": {
+                "type": "ParseJson",
+                "inputs": {
+                    "content": "@body('Get_all_movies')",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Get_all_movies": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "For_each_movie": {
+                "type": "foreach",
+                "foreach": "@outputs('Parse_movies')['body']",
+                "actions": {
+                    "Send_message_to_recalculate_rating_for_movie": {
+                        "type": "ServiceProvider",
+                        "inputs": {
+                            "parameters": {
+                                "entityName": "recalculate-movie-rating",
+                                "message": {
+                                    "contentData": {
+                                        "id": "@items('For_each_movie')['id']"
+                                    },
+                                    "contentType": "application/json"
+                                }
+                            },
+                            "serviceProviderConfiguration": {
+                                "connectionName": "serviceBus",
+                                "operationId": "sendMessage",
+                                "serviceProviderId": "/serviceProviders/serviceBus"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Parse_movies": [
+                        "SUCCEEDED"
+                    ]
+                }
+            }
+        },
+        "outputs": {},
+        "triggers": {
+            "Recurrence": {
+                "type": "Recurrence",
+                "recurrence": {
+                    "interval": 5,
+                    "frequency": "Minute"
+                }
+            }
+        }
+    },
+    "kind": "Stateful"
+}
