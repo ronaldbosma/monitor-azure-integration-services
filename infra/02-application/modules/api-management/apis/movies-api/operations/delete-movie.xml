@@ -16,6 +16,27 @@
 
     <outbound>
         <base />
+
+        <!-- Publish event to Service Bus topic when a movie is deleted -->
+        <choose>
+            <when condition="@(context.Response.StatusCode == 204)">
+                <send-service-bus-message
+                    topic-name="deleted-movies"
+                    namespace="{{service-bus-fqdn}}"
+                    message-id="@(context.RequestId.ToString())"
+                    time-to-live="00:10:00" ignore-error="true">
+
+                    <payload>@{
+                        var movieDeletedEvent = new
+                        {
+                            id = context.Request.MatchedParameters["id"]
+                        };
+
+                        return JsonConvert.SerializeObject(movieDeletedEvent);
+                    }</payload>
+                </send-service-bus-message>
+            </when>
+        </choose>
     </outbound>
 
     <on-error>
