@@ -13,7 +13,7 @@
                             <set-header name="Content-Type" exists-action="override">
                                 <value>application/json</value>
                             </set-header>
-                            <set-body>{ "statusCode": 409, "message": "A movie with the same title already exists." }</set-body>
+                            <set-body>{ "statusCode": 409, "message": "Another movie with the same title already exists." }</set-body>
                         </return-response>
                     </when>
                 </choose>
