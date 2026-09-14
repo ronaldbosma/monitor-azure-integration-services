@@ -139,6 +139,21 @@ public class MoviesApiTests
     }
 
     [TestMethod]
+    public async Task UpdateMovieAsync_UnknownMovie_404NotFoundReturned()
+    {
+        // Arrange
+        var unknownMovieId = Guid.NewGuid();
+
+        var updateRequest = new MovieUpdateRequest();
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(unknownMovieId, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
+    }
+
+    [TestMethod]
     public async Task UpdateMovieAsync_AnotherMovieWithSameTitleExists_409ConflictReturned()
     {
         // Arrange
