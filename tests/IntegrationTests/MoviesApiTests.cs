@@ -24,6 +24,69 @@ public class MoviesApiTests
     }
 
     [TestMethod]
+    public async Task GetMoviesAsync_NoFilterSpecified_MoviesReturned()
+    {
+        // Arrange
+        var movies = new MovieBuilder().BuildMany();
+        await DataHelper.CreateMoviesAsync(movies);
+
+        // Act
+        var result = await _sut.GetMoviesAsync();
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+
+        var actualMovies = await result.ReadContentAsAsync<List<MovieSummary>>();
+        Assert.IsGreaterThanOrEqualTo(movies.Count, actualMovies.Count);
+        
+        foreach (var expectedMovieSummary in movies.Select(MovieSummary.FromMovie))
+        {
+            var actualMovieSummary = actualMovies.SingleOrDefault(m => m.Id == expectedMovieSummary.Id);
+            Assert.IsNotNull(actualMovieSummary);
+            Assert.AreEquivalent(expectedMovieSummary, actualMovieSummary);
+        }
+    }
+
+    [TestMethod]
+    public async Task GetMoviesAsync_ExistingTitleSpecified_200OkReturnedWithOneMovieWithTheSpecifiedTitle()
+    {
+        // Arrange
+        var movies = new MovieBuilder().BuildMany();
+        await DataHelper.CreateMoviesAsync(movies);
+
+        var expectedMovieSummary = MovieSummary.FromMovie(movies[1]);
+
+        // Act
+        var result = await _sut.GetMoviesAsync(expectedMovieSummary.Title);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+
+        var actualMovies = await result.ReadContentAsAsync<List<MovieSummary>>();
+        Assert.AreEqual(1, actualMovies.Count);
+        Assert.AreEquivalent(expectedMovieSummary, actualMovies[0]);
+    }
+
+    [TestMethod]
+    public async Task GetMoviesAsync_UnknownTitleSpecified_200OkReturnedWithoutMovies()
+    {
+        // Arrange
+        var movies = new MovieBuilder().BuildMany();
+        await DataHelper.CreateMoviesAsync(movies);
+
+        var unknownTitle = $"Unknown Title {Guid.NewGuid()}";
+
+        // Act
+        var result = await _sut.GetMoviesAsync(unknownTitle);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+
+        var actualMovies = await result.ReadContentAsAsync<List<MovieSummary>>();
+        Assert.AreEqual(0, actualMovies.Count);
+    }
+
+    [TestMethod]
     public async Task CreateMovieAsync_ValidRequest_201CreatedWithMovieReturned()
     {
         // Arrange
