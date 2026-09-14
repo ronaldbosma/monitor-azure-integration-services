@@ -242,4 +242,6 @@ public class MoviesApiTests
         // Assert
         Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
     }
+
+    // TODO: add integration test that verifies user ratings are removed
 }
