@@ -106,6 +106,15 @@ resource validateRequestFragment 'Microsoft.ApiManagement/service/policyFragment
   }
 }
 
+resource verifyMovieWithSameTitleDoesNotExistFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
+  parent: apiManagementService
+  name: 'verify-movie-with-same-title-does-not-exist'
+  properties: {
+      format: 'rawxml'
+      value: loadTextContent('policy-fragments/verify-movie-with-same-title-does-not-exist.xml')
+  }
+}
+
 // Global policies
 
 resource globalPolicies 'Microsoft.ApiManagement/service/policies@2025-09-01-preview' = {
@@ -135,6 +144,7 @@ module moviesApi 'apis/movies-api/movies-api.bicep' = {
     getMovieIdByTitleFragment
     serviceBusBackend
     storageAccountBackends
+    verifyMovieWithSameTitleDoesNotExistFragment
   ]
 }
 

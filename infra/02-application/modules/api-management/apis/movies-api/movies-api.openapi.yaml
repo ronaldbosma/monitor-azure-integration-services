@@ -55,14 +55,14 @@ paths:
                 statusCode: 400
                 message: Title, description and year are required.
         '409':
-          description: A movie with the same title already exists.
+          description: Another movie with the same title already exists.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/error'
               example:
                 statusCode: 409
-                message: A movie with the same title already exists.
+                message: Another movie with the same title already exists.
   /{id}:
     get:
       operationId: get-movie-by-id

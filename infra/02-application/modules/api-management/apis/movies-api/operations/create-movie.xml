@@ -2,24 +2,9 @@
     <inbound>
         <base />
 
-        <set-variable name="currentMovieId" value="@{
-            var body = context.Request.Body.As<JObject>(preserveContent: true);
-            return (string)body["id"];
-        }" />
-
-        <!-- Return 409 Conflict if another movie with the same title already exists -->
-        <include-fragment fragment-id="get-movie-id-by-title" />
-        <choose>
-            <when condition="@(context.Variables.GetValueOrDefault("movieId") != null && context.Variables.GetValueOrDefault<string>("movieId") != context.Variables.GetValueOrDefault<string>("currentMovieId"))">
-                <return-response>
-                    <set-status code="409" reason="Conflict" />
-                    <set-header name="Content-Type" exists-action="override">
-                        <value>application/json</value>
-                    </set-header>
-                    <set-body>{ "statusCode": 409, "message": "Another movie with the same title already exists." }</set-body>
-                </return-response>
-            </when>
-        </choose>
+        <!-- Verify that another movie with the same title does not exist. Return 409 Conflict if it does. -->
+        <set-variable name="currentMovieId" value="@((string)context.Request.Body.As<JObject>(preserveContent: true)["id"])" />
+        <include-fragment fragment-id="verify-movie-with-same-title-does-not-exist" />
 
         <rewrite-uri template="/movies" copy-unmatched-params="false" />
 
