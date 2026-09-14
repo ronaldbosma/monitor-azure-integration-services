@@ -25,7 +25,7 @@ internal class MoviesApiClient : IDisposable
     /// Creates a new instance of the MoviesApiClient, loading configuration and retrieving the subscription key from Azure Key Vault.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation. The task result contains the created MoviesApiClient instance.</returns>
-    public static async Task<MoviesApiClient> CreateAsync()
+    public static async Task<MoviesApiClient> CreateClientAsync()
     {
         var config = TestConfiguration.Load();
 

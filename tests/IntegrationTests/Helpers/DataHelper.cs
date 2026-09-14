@@ -19,7 +19,7 @@ internal static class DataHelper
 
     public static async Task CreateMovieAsync(Movie movie)
     {
-        using var client = await MoviesApiClient.CreateAsync();
+        using var client = await MoviesApiClient.CreateClientAsync();
 
         // First, create the movie
         Console.WriteLine($"Creating movie: {movie.Title} ({movie.Year})");
@@ -44,7 +44,7 @@ internal static class DataHelper
 
     public static async Task<Movie> GetMovieAsync(Guid movieId)
     {
-        using var client = await MoviesApiClient.CreateAsync();
+        using var client = await MoviesApiClient.CreateClientAsync();
         var response = await client.GetMovieByIdAsync(movieId);
         response.EnsureSuccessStatusCode();
         return await response.ReadContentAsAsync<Movie>();

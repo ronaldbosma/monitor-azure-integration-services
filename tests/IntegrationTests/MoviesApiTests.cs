@@ -14,7 +14,7 @@ public class MoviesApiTests
     [TestInitialize]
     public async Task TestInitialize()
     {
-        _sut = await MoviesApiClient.CreateAsync();
+        _sut = await MoviesApiClient.CreateClientAsync();
     }
 
     [TestCleanup]
