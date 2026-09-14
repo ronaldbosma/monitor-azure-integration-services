@@ -103,15 +103,11 @@ paths:
             schema:
               $ref: '#/components/schemas/movieUpdateRequest'
       responses:
-        '200':
+        '204':
           description: The movie was updated.
           headers:
             ETag:
               $ref: '#/components/headers/etag'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/movie'
         '400':
           description: The request body is invalid.
           content:
