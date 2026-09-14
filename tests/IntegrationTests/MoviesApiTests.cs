@@ -82,4 +82,34 @@ public class MoviesApiTests
         var actualErrorResponse = await result.ReadContentAsAsync<ErrorResponse>();
         Assert.AreEquivalent(expectedErrorResponse, actualErrorResponse);
     }
+
+    [TestMethod]
+    public async Task GetMovieByIdAsync_ExistingMovie_200OkWithMovieReturned()
+    {
+        // Arrange
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
+
+        // Act
+        var result = await _sut.GetMovieByIdAsync(movie.Id);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+
+        var actualMovie = await result.ReadContentAsAsync<Movie>();
+        Assert.AreEquivalent(movie, actualMovie);
+    }
+
+    [TestMethod]
+    public async Task GetMovieByIdAsync_UnknownMovie_404NotFoundReturned()
+    {
+        // Arrange
+        var unknownMovieId = Guid.NewGuid();
+
+        // Act
+        var result = await _sut.GetMovieByIdAsync(unknownMovieId);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
+    }
 }
