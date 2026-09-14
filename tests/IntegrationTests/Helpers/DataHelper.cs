@@ -49,4 +49,21 @@ internal static class DataHelper
         response.EnsureSuccessStatusCode();
         return await response.ReadContentAsAsync<Movie>();
     }
+
+    public static async Task<bool> DoesMovieExist(Guid movieId)
+    {
+        using var client = await MoviesApiClient.CreateClientAsync();
+        var response = await client.GetMovieByIdAsync(movieId);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            return true;
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return false;
+        }
+
+        throw new InvalidOperationException($"Unexpected status code {response.StatusCode} when checking if movie exists.");
+    }
 }

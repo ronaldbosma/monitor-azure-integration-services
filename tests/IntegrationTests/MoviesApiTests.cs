@@ -212,4 +212,34 @@ public class MoviesApiTests
         var updatedMovie = await DataHelper.GetMovieAsync(existingMovie.Id);
         Assert.AreEquivalent<object>(expectedMovie, updatedMovie);
     }
+
+    [TestMethod]
+    public async Task DeleteMovieAsync_ExistingMovie_204NoContentReturnedAndMovieDeleted()
+    {
+        // Arrange
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
+
+        // Act
+        var result = await _sut.DeleteMovieAsync(movie.Id);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
+
+        bool movieExists = await DataHelper.DoesMovieExist(movie.Id);
+        Assert.IsFalse(movieExists);
+    }
+
+    [TestMethod]
+    public async Task DeleteMovieAsync_UnknownMovie_404NotFoundReturned()
+    {
+        // Arrange
+        var unknownMovieId = Guid.NewGuid();
+
+        // Act
+        var result = await _sut.DeleteMovieAsync(unknownMovieId);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
+    }
 }
