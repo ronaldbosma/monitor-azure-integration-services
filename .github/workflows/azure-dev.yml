@@ -91,7 +91,7 @@ jobs:
         run: |
           az bicep lint --file ./infra/02-application/main.bicepparam
         env:
-          # Configure dummy values for environment values satisfy readEnvironmentVariable calls in the bicepparam files during linting.
+          # Configure dummy values for environment values to satisfy readEnvironmentVariable calls in the bicepparam files during linting.
           AZURE_RESOURCE_GROUP: sample
           AZURE_API_MANAGEMENT_NAME: sample
           AZURE_FUNCTION_APP_NAME: sample
