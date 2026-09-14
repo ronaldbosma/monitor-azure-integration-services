@@ -4,8 +4,8 @@ namespace IntegrationTests.Helpers;
 
 internal class MovieBuilder
 {
-    private int _year = 2023;
-    private double? _rating = 8.5;
+    private int? _year;
+    private double? _rating;
 
     public MovieBuilder WithYear(int year)
     {
@@ -32,7 +32,7 @@ internal class MovieBuilder
             Id = Guid.NewGuid(),
             Title = $"Test Movie {Guid.NewGuid()}",
             Description = "This is a test movie.",
-            Year = _year,
+            Year = _year ?? Random.Shared.Next(1900, DateTime.UtcNow.Year + 1),
             Rating = _rating
         };
     }
