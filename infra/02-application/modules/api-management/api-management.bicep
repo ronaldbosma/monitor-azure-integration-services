@@ -148,3 +148,12 @@ module userRatingsApi 'apis/user-ratings-api/user-ratings-api.bicep' = {
     functionAppBackend
   ]
 }
+
+// Subscriptions
+
+module integrationTestsSubscription 'subscriptions/integration-tests-subscription.bicep' = {
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    keyVaultName: keyVaultName
+  }
+}
