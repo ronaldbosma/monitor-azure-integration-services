@@ -41,4 +41,12 @@ internal static class DataHelper
             updateResponse.EnsureSuccessStatusCode();
         }
     }
+
+    public static async Task<Movie> GetMovieAsync(Guid movieId)
+    {
+        using var client = await MoviesApiClient.CreateAsync();
+        var response = await client.GetMovieByIdAsync(movieId);
+        response.EnsureSuccessStatusCode();
+        return await response.ReadContentAsAsync<Movie>();
+    }
 }

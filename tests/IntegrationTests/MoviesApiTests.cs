@@ -112,4 +112,104 @@ public class MoviesApiTests
         // Assert
         Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
     }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_ExistingMovie_204NoContentReturnedAndMovieUpdated()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().WithYear(2023).WithoutRating().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Title = $"Updated Title {Guid.NewGuid()}",
+            Description = "Updated Description",
+            Year = 2024,
+            Rating = 9.0
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
+
+        var updatedMovie = await DataHelper.GetMovieAsync(existingMovie.Id);
+        Assert.AreEquivalent<object>(updateRequest, updatedMovie);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_AnotherMovieWithSameTitleExists_409ConflictReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var anotherMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(anotherMovie);
+
+        // Attempt to update the existing movie's title to the same title as another movie
+        var updateRequest = new MovieUpdateRequest
+        {
+            Title = anotherMovie.Title
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.Conflict, result.StatusCode);
+
+        var expectedErrorResponse = new ErrorResponse
+        {
+            StatusCode = (int)HttpStatusCode.Conflict,
+            Message = $"Another movie with the same title already exists."
+        };
+        var actualErrorResponse = await result.ReadContentAsAsync<ErrorResponse>();
+        Assert.AreEquivalent(expectedErrorResponse, actualErrorResponse);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_TitleSpecifiedButNotChanged_MovieUpdatedSuccessfully()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Title = existingMovie.Title
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_OnlyUpdateRating_204NoContentReturnedAndRatingOfMovieUpdated()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().WithRating(8.5).Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Rating = 9.0
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
+
+        var expectedMovie = existingMovie;
+        expectedMovie.Rating = updateRequest.Rating;
+
+        var updatedMovie = await DataHelper.GetMovieAsync(existingMovie.Id);
+        Assert.AreEquivalent<object>(expectedMovie, updatedMovie);
+    }
 }
