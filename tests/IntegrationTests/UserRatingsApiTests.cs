@@ -64,7 +64,7 @@ public class UserRatingsApiTests
     }
 
     [TestMethod]
-    public async Task InsertOrUpdateUserRatingAsync_ValidRequest_204NoContentReturnedAndRatingReturnedOnGet()
+    public async Task InsertOrUpdateUserRatingAsync_ValidRequest_200OkReturnedAndRatingReturnedOnGet()
     {
         // Arrange
         var movie = new MovieBuilder().Build();
@@ -83,7 +83,7 @@ public class UserRatingsApiTests
     }
 
     [TestMethod]
-    public async Task InsertOrUpdateUserRatingAsync_UpdateExistingRating_204NoContentReturnedAndRatingUpdated()
+    public async Task InsertOrUpdateUserRatingAsync_UpdateExistingRating_200OkReturnedAndRatingUpdated()
     {
         // Arrange
         var movie = new MovieBuilder().Build();
