@@ -173,8 +173,8 @@ jobs:
       contents: read # Required to checkout code if needed
 
     outputs:
-      AZURE_API_MANAGEMENT_NAME: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_NAME }}
       AZURE_API_MANAGEMENT_GATEWAY_URL: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_GATEWAY_URL }}
+      AZURE_API_MANAGEMENT_NAME: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_NAME }}
       AZURE_FUNCTION_APP_NAME: ${{ steps.get-outputs.outputs.AZURE_FUNCTION_APP_NAME }}
       AZURE_KEY_VAULT_NAME: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_NAME }}
       AZURE_KEY_VAULT_URI: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_URI }}
