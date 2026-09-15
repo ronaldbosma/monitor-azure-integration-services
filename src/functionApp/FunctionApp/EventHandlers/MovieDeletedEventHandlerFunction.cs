@@ -44,6 +44,7 @@ public class MovieDeletedEventHandlerFunction
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting user ratings for movie {MovieId}", deletedMovie.Id);
+            throw;
         }
     }
 }
