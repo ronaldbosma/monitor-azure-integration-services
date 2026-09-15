@@ -19,13 +19,6 @@ internal static class DataHelper
         }
     }
 
-    public static async Task<Movie> CreateMovieAsync()
-    {
-        var movie = new MovieBuilder().Build();
-        await CreateMovieAsync(movie);
-        return movie;
-    }
-
     public static async Task CreateMovieAsync(Movie movie)
     {
         using var client = await MoviesApiClient.CreateClientAsync();

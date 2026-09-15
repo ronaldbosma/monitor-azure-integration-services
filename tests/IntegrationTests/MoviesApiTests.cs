@@ -325,7 +325,8 @@ public class MoviesApiTests
     public async Task DeleteMovieAsync_MovieWithUserRatings_UserRatingsForMovieDeleted()
     {
         // Arrange
-        var movie = await DataHelper.CreateMovieAsync();
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
 
         var userRatings = new UserRatingBuilder().WithMovieId(movie.Id).BuildMany();
         await DataHelper.CreateUserRatingsAsync(userRatings);

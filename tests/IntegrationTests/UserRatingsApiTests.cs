@@ -27,7 +27,8 @@ public class UserRatingsApiTests
     public async Task GetUserRatingsAsync_UserRatingsExistForMovie_200OkReturnedWithRatings()
     {
         // Arrange
-        var movie = await DataHelper.CreateMovieAsync();
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
 
         var userRatings = new UserRatingBuilder().WithMovieId(movie.Id).BuildMany();
         await DataHelper.CreateUserRatingsAsync(userRatings);
@@ -47,7 +48,8 @@ public class UserRatingsApiTests
     public async Task GetUserRatingsAsync_NoRatingsExistForMovie_200OkReturnedWithoutRatings()
     {
         // Arrange
-        var movie = await DataHelper.CreateMovieAsync();
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
 
         // Act
         var result = await _sut.GetUserRatingsAsync(movie.Id);
@@ -63,7 +65,9 @@ public class UserRatingsApiTests
     public async Task InsertOrUpdateUserRatingAsync_ValidRequest_204NoContentReturnedAndRatingReturnedOnGet()
     {
         // Arrange
-        var movie = await DataHelper.CreateMovieAsync();
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
+
         var userRating = new UserRatingBuilder().WithMovieId(movie.Id).Build();
 
         // Act
@@ -80,7 +84,8 @@ public class UserRatingsApiTests
     public async Task InsertOrUpdateUserRatingAsync_UpdateExistingRating_204NoContentReturnedAndRatingUpdated()
     {
         // Arrange
-        var movie = await DataHelper.CreateMovieAsync();
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
 
         var existingUserRating = new UserRatingBuilder().WithMovieId(movie.Id).WithRating(2).Build();
         await DataHelper.CreateUserRatingAsync(existingUserRating);
