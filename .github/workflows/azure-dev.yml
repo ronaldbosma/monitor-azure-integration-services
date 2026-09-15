@@ -175,6 +175,8 @@ jobs:
     outputs:
       AZURE_API_MANAGEMENT_GATEWAY_URL: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_GATEWAY_URL }}
       AZURE_KEY_VAULT_URI: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_URI }}
+      AZURE_RESOURCE_GROUP: ${{ steps.get-outputs.outputs.AZURE_RESOURCE_GROUP }}
+      AZURE_LOGIC_APP_NAME: ${{ steps.get-outputs.outputs.AZURE_LOGIC_APP_NAME }}
 
     steps:
       - name: Checkout code
@@ -224,7 +226,13 @@ jobs:
       - name: Get Output Variables
         id: get-outputs
         run: |
-          .\.github\workflows\scripts\export-azd-env-variables.ps1 -VariableNames @("AZURE_API_MANAGEMENT_GATEWAY_URL", "AZURE_KEY_VAULT_URI")
+          $variableNames = @(
+            "AZURE_API_MANAGEMENT_GATEWAY_URL",
+            "AZURE_KEY_VAULT_URI",
+            "AZURE_RESOURCE_GROUP",
+            "AZURE_LOGIC_APP_NAME"
+          )
+          .\.github\workflows\scripts\export-azd-env-variables.ps1 -VariableNames $variableNames
 
   # ------------------------------------------------------------
   # Verify Deployment
@@ -266,6 +274,8 @@ jobs:
           # Pass the necessary deployed resource properties as environment variables so the integration tests can access them.
           AZURE_API_MANAGEMENT_GATEWAY_URL: ${{ needs.deploy.outputs.AZURE_API_MANAGEMENT_GATEWAY_URL }}
           AZURE_KEY_VAULT_URI: ${{ needs.deploy.outputs.AZURE_KEY_VAULT_URI }}
+          AZURE_RESOURCE_GROUP: ${{ needs.deploy.outputs.AZURE_RESOURCE_GROUP }}
+          AZURE_LOGIC_APP_NAME: ${{ needs.deploy.outputs.AZURE_LOGIC_APP_NAME }}
 
       - name: Upload Test Results
         if: always()
