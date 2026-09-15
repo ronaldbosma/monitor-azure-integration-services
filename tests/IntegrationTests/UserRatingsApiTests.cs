@@ -107,4 +107,20 @@ public class UserRatingsApiTests
         Assert.AreEquivalent(updatedUserRating, actualRating);
         Assert.AreNotEquivalent(existingUserRating, actualRating);
     }
+
+    [TestMethod]
+    public async Task InsertOrUpdateUserRatingAsync_RatingTooHigh_400BadRequestReturned()
+    {
+        // Arrange
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
+
+        var userRating = new UserRatingBuilder().WithMovieId(movie.Id).WithRating(11).Build();
+
+        // Act
+        var result = await _sut.InsertOrUpdateUserRatingAsync(userRating);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
 }
