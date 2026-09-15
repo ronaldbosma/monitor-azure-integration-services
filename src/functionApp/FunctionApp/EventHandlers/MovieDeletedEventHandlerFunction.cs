@@ -27,10 +27,7 @@ public class MovieDeletedEventHandlerFunction
 
         try
         {
-            await tableClient.CreateIfNotExistsAsync();
-
             string filter = $"PartitionKey eq '{deletedMovie.Id}'";
-
             int deleted = 0;
             await foreach (var entity in tableClient.QueryAsync<UserRatingEntity>(filter: filter))
             {

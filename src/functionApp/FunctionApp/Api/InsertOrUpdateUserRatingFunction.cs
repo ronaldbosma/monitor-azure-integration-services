@@ -83,7 +83,6 @@ public class InsertOrUpdateUserRatingFunction
         try
         {
             var tableClient = _tableServiceClient.GetTableClient("userratings");
-            await tableClient.CreateIfNotExistsAsync();
 
             var entity = new UserRatingEntity
             {
