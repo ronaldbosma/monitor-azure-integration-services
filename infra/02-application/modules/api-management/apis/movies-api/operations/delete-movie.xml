@@ -24,7 +24,8 @@
                     topic-name="deleted-movies"
                     namespace="{{service-bus-fqdn}}"
                     message-id="@(context.RequestId.ToString())"
-                    time-to-live="00:10:00" ignore-error="true">
+                    time-to-live="00:10:00"
+                    ignore-error="true">
 
                     <payload>@{
                         var movieDeletedEvent = new
