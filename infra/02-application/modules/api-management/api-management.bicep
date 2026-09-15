@@ -100,6 +100,9 @@ resource verifyMovieWithSameTitleDoesNotExistFragment 'Microsoft.ApiManagement/s
       format: 'rawxml'
       value: loadTextContent('policy-fragments/verify-movie-with-same-title-does-not-exist.xml')
   }
+  dependsOn: [
+    localhostBackend
+  ]
 }
 
 // Global policies
