@@ -102,6 +102,11 @@
                                     "TotalRating": "@action().outputs.body.value"
                                 }
                             }
+                        },
+                        "runtimeConfiguration": {
+                            "concurrency": {
+                                "repetitions": 1
+                            }
                         }
                     },
                     "Calculate_movie_rating": {
