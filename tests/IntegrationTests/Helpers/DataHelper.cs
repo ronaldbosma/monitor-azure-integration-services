@@ -1,5 +1,7 @@
 using IntegrationTests.Clients.MoviesApi;
 using IntegrationTests.Clients.MoviesApi.Models;
+using IntegrationTests.Clients.UserRatingsApi;
+using IntegrationTests.Clients.UserRatingsApi.Models;
 
 namespace IntegrationTests.Helpers;
 
@@ -65,5 +67,23 @@ internal static class DataHelper
         }
 
         throw new InvalidOperationException($"Unexpected status code {response.StatusCode} when checking if movie exists.");
+    }
+
+    public static async Task CreateUserRatingsAsync(IEnumerable<UserRating> userRatings)
+    {
+        foreach (var userRating in userRatings)
+        {
+            await CreateUserRatingAsync(userRating);
+        }
+    }
+
+    public static async Task CreateUserRatingAsync(UserRating userRating)
+    {
+        using var client = await UserRatingsApiClient.CreateClientAsync();
+
+        Console.WriteLine($"Creating user rating for movie: {userRating.MovieId}, user: {userRating.UserId}, rating: {userRating.Rating}");
+
+        var response = await client.InsertOrUpdateUserRatingAsync(userRating);
+        response.EnsureSuccessStatusCode();
     }
 }
