@@ -109,13 +109,35 @@ public class UserRatingsApiTests
     }
 
     [TestMethod]
-    public async Task InsertOrUpdateUserRatingAsync_RatingTooHigh_400BadRequestReturned()
+    public async Task InsertOrUpdateUserRatingAsync_RatingIsTooLow_400BadRequestReturned()
     {
         // Arrange
         var movie = new MovieBuilder().Build();
         await DataHelper.CreateMovieAsync(movie);
 
-        var userRating = new UserRatingBuilder().WithMovieId(movie.Id).WithRating(11).Build();
+        var userRating = new UserRatingBuilder()
+            .WithMovieId(movie.Id)
+            .WithRating(0) // too low, should be between 1 and 10
+            .Build();
+
+        // Act
+        var result = await _sut.InsertOrUpdateUserRatingAsync(userRating);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task InsertOrUpdateUserRatingAsync_RatingIsTooHigh_400BadRequestReturned()
+    {
+        // Arrange
+        var movie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(movie);
+
+        var userRating = new UserRatingBuilder()
+            .WithMovieId(movie.Id)
+            .WithRating(11) // too high, should be between 1 and 10
+            .Build();
 
         // Act
         var result = await _sut.InsertOrUpdateUserRatingAsync(userRating);
