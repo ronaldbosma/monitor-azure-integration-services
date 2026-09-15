@@ -83,6 +83,7 @@ The repository consists of the following files and directories:
 ├── images                     [ Images used in the README and demo guide ]
 ├── infra                      [ Infrastructure As Code files ]
 │   ├── 01-base                [ Base layer that deploys the various Azure Services ]
+│   ├── 02-application         [ Application layer that deploys application infrastructure resources, like APIs in API Management  ]
 │   └── 99-shared              [ Reusable modules, user-defined functions and user-defined types ]
 ├── src
 │   ├── functionApp            [ Azure Functions solution ]
