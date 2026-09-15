@@ -6,6 +6,9 @@ using IntegrationTests.Helpers;
 
 namespace IntegrationTests;
 
+/// <summary>
+/// Integration tests for the User Ratings API in API Management.
+/// </summary>
 [TestClass]
 public class UserRatingsApiTests
 {

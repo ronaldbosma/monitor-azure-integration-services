@@ -6,6 +6,9 @@ using IntegrationTests.Helpers;
 
 namespace IntegrationTests;
 
+/// <summary>
+/// Integration tests for the Movies API in API Management.
+/// </summary>
 [TestClass]
 public class MoviesApiTests
 {

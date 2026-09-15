@@ -1,11 +1,13 @@
 using Azure;
 
 using IntegrationTests.Clients;
-using IntegrationTests.Clients.UserRatingsApi.Models;
 using IntegrationTests.Helpers;
 
 namespace IntegrationTests;
 
+/// <summary>
+/// Integration tests for the "Recalculate Rating for All Movies" workflow in the Logic App.
+/// </summary>
 [TestClass]
 public class RecalculateRatingForAllMoviesWorkflowTests
 {
