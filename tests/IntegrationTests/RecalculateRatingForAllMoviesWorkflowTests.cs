@@ -24,7 +24,7 @@ public class RecalculateRatingForAllMoviesWorkflowTests
             new UserRatingBuilder().WithMovieId(movieWithoutRatingAndOneNewUserRating.Id).WithRating(8).BuildMany(1)
         );
 
-        // Checks that new rating is calculated correctly and overwrites the old rating
+        // Checks that new rating is calculated correctly based on multiple user ratings and overwrites the old rating
         var movieWithRatingAndMultipleNewRatings = new MovieBuilder().WithRating(10).Build();
         await DataHelper.CreateMovieWithUserRatingsAsync(
             movieWithRatingAndMultipleNewRatings,
