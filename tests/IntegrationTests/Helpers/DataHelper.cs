@@ -19,6 +19,13 @@ internal static class DataHelper
         }
     }
 
+    public static async Task<Movie> CreateMovieAsync()
+    {
+        var movie = new MovieBuilder().Build();
+        await CreateMovieAsync(movie);
+        return movie;
+    }
+
     public static async Task CreateMovieAsync(Movie movie)
     {
         using var client = await MoviesApiClient.CreateClientAsync();
@@ -85,5 +92,18 @@ internal static class DataHelper
 
         var response = await client.InsertOrUpdateUserRatingAsync(userRating);
         response.EnsureSuccessStatusCode();
+    }
+
+    public static async Task<UserRating> GetUserRatingAsync(Guid movieId, Guid userId)
+    {
+        using var client = await UserRatingsApiClient.CreateClientAsync();
+
+        var response = await client.GetUserRatingsAsync(movieId);
+        response.EnsureSuccessStatusCode();
+
+        var ratings = await response.ReadContentAsAsync<List<UserRating>>();
+
+        return ratings.SingleOrDefault(r => r.UserId == userId)
+            ?? throw new InvalidOperationException($"User rating not found for movieId: {movieId}, userId: {userId}");
     }
 }
