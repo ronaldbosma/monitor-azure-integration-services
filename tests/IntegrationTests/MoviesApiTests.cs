@@ -321,5 +321,35 @@ public class MoviesApiTests
         Assert.AreEqual(HttpStatusCode.NotFound, result.StatusCode);
     }
 
-    // TODO: add integration test that verifies user ratings are removed
+    [TestMethod]
+    public async Task DeleteMovieAsync_MovieWithUserRatings_UserRatingsForMovieDeleted()
+    {
+        // Arrange
+        var movie = await DataHelper.CreateMovieAsync();
+
+        var userRatings = new UserRatingBuilder().WithMovieId(movie.Id).BuildMany();
+        await DataHelper.CreateUserRatingsAsync(userRatings);
+
+        // Act
+        var result = await _sut.DeleteMovieAsync(movie.Id);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
+
+        // Verify that user ratings for the deleted movie are also deleted
+        // Because this is an asynchronous operation, we will check for the existence of user ratings multiple times with a delay in between to allow for eventual consistency.
+        bool userRatingsExist = true;
+        for (int i = 0; i < 10; i++)
+        {
+            userRatingsExist = await DataHelper.DoUserRatingsExistForMovieAsync(movie.Id);
+            if (!userRatingsExist)
+            {
+                break;
+            }
+
+            Thread.Sleep(i * 200);
+        }
+
+        Assert.IsFalse(userRatingsExist, "User ratings for the deleted movie should be deleted.");
+    }
 }

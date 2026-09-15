@@ -106,4 +106,16 @@ internal static class DataHelper
         return ratings.SingleOrDefault(r => r.UserId == userId)
             ?? throw new InvalidOperationException($"User rating not found for movieId: {movieId}, userId: {userId}");
     }
+
+    public static async Task<bool> DoUserRatingsExistForMovieAsync(Guid movieId)
+    {
+        using var client = await UserRatingsApiClient.CreateClientAsync();
+
+        var response = await client.GetUserRatingsAsync(movieId);
+        response.EnsureSuccessStatusCode();
+
+        var ratings = await response.ReadContentAsAsync<List<UserRating>>();
+
+        return ratings.Count > 0;
+    }
 }
