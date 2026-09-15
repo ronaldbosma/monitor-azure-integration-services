@@ -6,6 +6,8 @@ using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.AppService;
 
+using IntegrationTests.Configuration;
+
 namespace IntegrationTests.Clients
 {
     /// <summary>
@@ -59,6 +61,24 @@ namespace IntegrationTests.Clients
 
             _workflowTriggerLazy = new Lazy<WorkflowTriggerResource>(CreateWorkflowTrigger);
             _httpClientLazy = new Lazy<Task<HttpClient>>(CreateHttpClientAsync);
+        }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="LogicAppWorkflowClient"/> using configuration values from the TestConfiguration class.
+        /// </summary>
+        /// <returns>A new instance of the <see cref="LogicAppWorkflowClient"/> class.</returns>
+        public static LogicAppWorkflowClient CreateClient(string workflowName, string triggerName)
+        {
+            var config = TestConfiguration.Load();
+
+            return new LogicAppWorkflowClient(
+                config.AzureTenantId,
+                config.AzureSubscriptionId,
+                config.AzureResourceGroup,
+                config.AzureLogicAppName,
+                workflowName,
+                triggerName
+            );
         }
 
         /// <summary>
