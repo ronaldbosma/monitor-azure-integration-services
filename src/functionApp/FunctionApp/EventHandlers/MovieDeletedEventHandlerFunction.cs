@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace FunctionApp.EventHandlers;
 
+/// <summary>
+/// Handles the deletion of a movie by removing all associated user ratings from the table storage.
+/// </summary>
 public class MovieDeletedEventHandlerFunction
 {
     private readonly TableServiceClient _tableServiceClient;

@@ -9,6 +9,9 @@ using Microsoft.Extensions.Logging;
 
 namespace FunctionApp.Api;
 
+/// <summary>
+/// Retrieves user ratings for a specific movie based on the provided movie ID.
+/// </summary>
 public class GetUserRatingsFunction
 {
     private readonly TableServiceClient _tableServiceClient;

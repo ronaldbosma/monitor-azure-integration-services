@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 
 namespace FunctionApp.Api;
 
+/// <summary>
+/// Inserts or updates a user rating for a specific movie based on the provided movie ID and user ID.
+/// </summary>
 public class InsertOrUpdateUserRatingFunction
 {
     private readonly TableServiceClient _tableServiceClient;
