@@ -496,10 +496,9 @@ public class MoviesApiTests
     {
         // Arrange
         var movie = new MovieBuilder().Build();
-        await DataHelper.CreateMovieAsync(movie);
-
         var userRatings = new UserRatingBuilder().WithMovieId(movie.Id).BuildMany();
-        await DataHelper.CreateUserRatingsAsync(userRatings);
+
+        await DataHelper.CreateMovieWithUserRatingsAsync(movie, userRatings);
 
         // Act
         var result = await _sut.DeleteMovieAsync(movie.Id);

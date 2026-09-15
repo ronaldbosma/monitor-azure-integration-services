@@ -28,10 +28,9 @@ public class UserRatingsApiTests
     {
         // Arrange
         var movie = new MovieBuilder().Build();
-        await DataHelper.CreateMovieAsync(movie);
-
         var userRatings = new UserRatingBuilder().WithMovieId(movie.Id).BuildMany();
-        await DataHelper.CreateUserRatingsAsync(userRatings);
+
+        await DataHelper.CreateMovieWithUserRatingsAsync(movie, userRatings);
 
         // Act
         var result = await _sut.GetUserRatingsAsync(movie.Id);
@@ -85,10 +84,8 @@ public class UserRatingsApiTests
     {
         // Arrange
         var movie = new MovieBuilder().Build();
-        await DataHelper.CreateMovieAsync(movie);
-
         var existingUserRating = new UserRatingBuilder().WithMovieId(movie.Id).WithRating(2).Build();
-        await DataHelper.CreateUserRatingAsync(existingUserRating);
+        await DataHelper.CreateMovieWithUserRatingsAsync(movie, [existingUserRating]);
 
         var updatedUserRating = new UserRating
         {
