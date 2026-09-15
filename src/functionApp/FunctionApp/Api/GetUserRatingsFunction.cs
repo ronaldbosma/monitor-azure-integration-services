@@ -36,7 +36,7 @@ public class GetUserRatingsFunction
         try
         {
             // Query all entities where PartitionKey == movieId
-            string filter = $"PartitionKey eq '{movieIdStr}'";
+            string filter = $"PartitionKey eq '{movieId}'";
             var query = tableClient.Query<UserRatingEntity>(filter: filter);
 
             var results = query.Select(e => new UserRating
