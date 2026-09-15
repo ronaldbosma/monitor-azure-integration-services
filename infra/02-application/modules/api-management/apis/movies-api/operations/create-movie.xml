@@ -3,7 +3,7 @@
         <base />
 
         <!-- Verify that another movie with the same title does not exist. Return 409 Conflict if it does. -->
-        <set-variable name="currentMovieId" value="@((string)context.Request.Body.As<JObject>(preserveContent: true)["id"])" />
+        <set-variable name="currentMovieId" value="@((Guid)context.Request.Body.As<JObject>(preserveContent: true)["id"])" />
         <include-fragment fragment-id="verify-movie-with-same-title-does-not-exist" />
 
         <rewrite-uri template="/movies" copy-unmatched-params="false" />
@@ -14,7 +14,7 @@
             var movie = new
             {
                 PartitionKey = "movies",
-                RowKey = (string)body["id"],
+                RowKey = (Guid)body["id"],
                 Title = (string)body["title"],
                 Description = (string)body["description"],
                 Year = (int)body["year"]
@@ -38,7 +38,7 @@
 
                     var movie = new
                     {
-                        id = (string)body["RowKey"],
+                        id = (Guid)body["RowKey"],
                         title = (string)body["Title"],
                         description = (string)body["Description"],
                         year = (int)body["Year"],

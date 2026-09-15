@@ -28,14 +28,14 @@
                     throw new Exception("More than one movie was found with the supplied title.");
                 }
 
-                return (string)movies[0]["id"];
+                return (Guid)movies[0]["id"];
             }" />
 
             <choose>
                 <!-- If an existing movie with the same title is found and it is not the current movie, return a 409 Conflict -->
                 <when condition="@(
                         context.Variables.GetValueOrDefault("existingMovieId") != null &&
-                        context.Variables.GetValueOrDefault<string>("existingMovieId") != context.Variables.GetValueOrDefault<string>("currentMovieId"))">
+                        context.Variables.GetValueOrDefault<Guid>("existingMovieId") != context.Variables.GetValueOrDefault<Guid>("currentMovieId"))">
                     <return-response>
                         <set-status code="409" reason="Conflict" />
                         <set-header name="Content-Type" exists-action="override">

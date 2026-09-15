@@ -5,13 +5,13 @@
         <!-- Return 409 Conflict if a title was provided and another movie with the title already exists -->
         <choose>
             <when condition='@(context.Request.Body.As<JObject>(preserveContent: true)["title"] != null)'>
-                <set-variable name="currentMovieId" value="@(context.Request.MatchedParameters["id"])" />
+                <set-variable name="currentMovieId" value="@(Guid.Parse(context.Request.MatchedParameters["id"]))" />
                 <include-fragment fragment-id="verify-movie-with-same-title-does-not-exist" />
             </when>
         </choose>
 
         <set-method>MERGE</set-method>
-        <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
+        <rewrite-uri template="@($"/movies(PartitionKey='movies',RowKey='{Guid.Parse(context.Request.MatchedParameters["id"])}')")" copy-unmatched-params="false" />
 
         <!-- Force an unconditional update if the client didn't provide an ETag -->
         <set-header name="If-Match" exists-action="skip">

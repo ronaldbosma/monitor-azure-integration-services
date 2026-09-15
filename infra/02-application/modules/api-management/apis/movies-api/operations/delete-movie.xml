@@ -2,7 +2,7 @@
     <inbound>
         <base />
 
-        <rewrite-uri template="/movies(PartitionKey='movies',RowKey='{id}')" copy-unmatched-params="false" />
+        <rewrite-uri template="@($"/movies(PartitionKey='movies',RowKey='{Guid.Parse(context.Request.MatchedParameters["id"])}')")" copy-unmatched-params="false" />
 
         <!-- Force an unconditional delete if the client didn't provide an ETag -->
         <set-header name="If-Match" exists-action="skip">

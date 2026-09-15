@@ -42,7 +42,7 @@
                     {
                         movies.Add(new
                         {
-                            id = (string)movie["RowKey"],
+                            id = (Guid)movie["RowKey"],
                             title = (string)movie["Title"],
                             year = (int)movie["Year"]
                         });
