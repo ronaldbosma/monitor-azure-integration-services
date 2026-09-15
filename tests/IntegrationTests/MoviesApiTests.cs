@@ -147,6 +147,62 @@ public class MoviesApiTests
     }
 
     [TestMethod]
+    public async Task CreateMovieAsync_TitleIsEmptyString_400BadRequestReturned()
+    {
+        // Arrange
+        var movieCreateRequest = new MovieCreateRequestBuilder().Build();
+        movieCreateRequest.Title = string.Empty;
+
+        // Act
+        var result = await _sut.CreateMovieAsync(movieCreateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task CreateMovieAsync_DescriptionIsEmptyString_400BadRequestReturned()
+    {
+        // Arrange
+        var movieCreateRequest = new MovieCreateRequestBuilder().Build();
+        movieCreateRequest.Description = string.Empty;
+
+        // Act
+        var result = await _sut.CreateMovieAsync(movieCreateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task CreateMovieAsync_YearIsTooLow_400BadRequestReturned()
+    {
+        // Arrange
+        var movieCreateRequest = new MovieCreateRequestBuilder().Build();
+        movieCreateRequest.Year = 999; // too low, 1000 is the minimum valid year
+
+        // Act
+        var result = await _sut.CreateMovieAsync(movieCreateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task CreateMovieAsync_YearIsTooHigh_400BadRequestReturned()
+    {
+        // Arrange
+        var movieCreateRequest = new MovieCreateRequestBuilder().Build();
+        movieCreateRequest.Year = 10000; // too high, 9999 is the maximum valid year
+
+        // Act
+        var result = await _sut.CreateMovieAsync(movieCreateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
     public async Task GetMovieByIdAsync_ExistingMovie_200OkWithMovieReturned()
     {
         // Arrange
@@ -289,6 +345,120 @@ public class MoviesApiTests
 
         var updatedMovie = await DataHelper.GetMovieAsync(existingMovie.Id);
         Assert.AreEquivalent<object>(expectedMovie, updatedMovie);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_TitleIsEmptyString_400BadRequestReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Title = string.Empty
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_DescriptionIsEmptyString_400BadRequestReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Description = string.Empty
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_YearIsTooLow_400BadRequestReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Year = 999 // too low, 1000 is the minimum valid year
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_YearIsTooHigh_400BadRequestReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Year = 10000 // too high, 9999 is the maximum valid year
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_RatingIsTooLow_400BadRequestReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Rating = -1.0 // too low, 0.0 is the minimum valid rating
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task UpdateMovieAsync_RatingIsTooHigh_400BadRequestReturned()
+    {
+        // Arrange
+        var existingMovie = new MovieBuilder().Build();
+        await DataHelper.CreateMovieAsync(existingMovie);
+
+        var updateRequest = new MovieUpdateRequest
+        {
+            Rating = 11.0 // too high, 10.0 is the maximum valid rating
+        };
+
+        // Act
+        var result = await _sut.UpdateMovieAsync(existingMovie.Id, updateRequest);
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
     }
 
     [TestMethod]
