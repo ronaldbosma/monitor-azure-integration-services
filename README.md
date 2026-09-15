@@ -5,6 +5,12 @@ An Azure Developer CLI (`azd`) template using Bicep that demonstrates various wa
 > [!IMPORTANT]  
 > This template is under construction
 
+## Overview
+
+See the following diagram for an overview of the integration application that is deployed by this template:
+
+![Integration Application Overview](./images/integration-application-overview.drawio.png)
+
 ## Getting Started
 
 ### Prerequisites
@@ -77,6 +83,7 @@ The repository consists of the following files and directories:
 ├── images                     [ Images used in the README and demo guide ]
 ├── infra                      [ Infrastructure As Code files ]
 │   ├── 01-base                [ Base layer that deploys the various Azure Services ]
+│   ├── 02-application         [ Application layer that deploys application infrastructure resources, like APIs in API Management  ]
 │   └── 99-shared              [ Reusable modules, user-defined functions and user-defined types ]
 ├── src
 │   ├── functionApp            [ Azure Functions solution ]

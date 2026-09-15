@@ -1,0 +1,57 @@
+<policies>
+    <inbound>
+        <base />
+
+        <!-- Verify that another movie with the same title does not exist. Return 409 Conflict if it does. -->
+        <set-variable name="currentMovieId" value="@((Guid)context.Request.Body.As<JObject>(preserveContent: true)["id"])" />
+        <include-fragment fragment-id="verify-movie-with-same-title-does-not-exist" />
+
+        <rewrite-uri template="/movies" copy-unmatched-params="false" />
+
+        <set-body>@{
+            var body = context.Request.Body.As<JObject>();
+
+            var movie = new
+            {
+                PartitionKey = "movies",
+                RowKey = (Guid)body["id"],
+                Title = (string)body["title"],
+                Description = (string)body["description"],
+                Year = (int)body["year"]
+            };
+
+            return JsonConvert.SerializeObject(movie);
+        }</set-body>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+
+        <choose>
+            <when condition="@(context.Response.StatusCode == 201)">
+                <set-body>@{
+                    var body = context.Response.Body.As<JObject>();
+
+                    var movie = new
+                    {
+                        id = (Guid)body["RowKey"],
+                        title = (string)body["Title"],
+                        description = (string)body["Description"],
+                        year = (int)body["Year"],
+                        rating = (double?)body["Rating"]
+                    };
+
+                    return JsonConvert.SerializeObject(movie);
+                }</set-body>
+            </when>
+        </choose>
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

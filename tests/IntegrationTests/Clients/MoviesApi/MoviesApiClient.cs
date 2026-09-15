@@ -1,0 +1,105 @@
+using System.Net.Http.Json;
+
+using IntegrationTests.Clients.MoviesApi.Models;
+using IntegrationTests.Configuration;
+using IntegrationTests.Helpers;
+
+namespace IntegrationTests.Clients.MoviesApi;
+
+/// <summary>
+/// Client for interacting with the Movies API exposed through Azure API Management.
+/// </summary>
+internal class MoviesApiClient : IDisposable
+{
+    private const string SubscriptionKeyHeaderName = "Ocp-Apim-Subscription-Key";
+
+    private readonly IntegrationTestHttpClient _httpClient;
+
+    public MoviesApiClient(Uri baseAddress, string subscriptionKey)
+    {
+        _httpClient = new IntegrationTestHttpClient(baseAddress);
+        _httpClient.DefaultRequestHeaders.Add(SubscriptionKeyHeaderName, subscriptionKey);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the MoviesApiClient, loading configuration and retrieving the subscription key from Azure Key Vault.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the created MoviesApiClient instance.</returns>
+    public static async Task<MoviesApiClient> CreateClientAsync()
+    {
+        var config = TestConfiguration.Load();
+
+        var keyVaultClient = new KeyVaultClient(config.AzureKeyVaultUri);
+        var apimSubscriptionKey = await keyVaultClient.GetSecretValueAsync("integration-tests-apim-subscription-key");
+
+        return new MoviesApiClient(config.AzureApiManagementGatewayUrl, apimSubscriptionKey);
+    }
+
+    /// <summary>
+    /// Gets a list of movies, optionally filtered by title.
+    /// </summary>
+    public async Task<HttpResponseMessage> GetMoviesAsync(string? title = null)
+    {
+        var requestUri = string.IsNullOrEmpty(title)
+            ? "/movies"
+            : $"/movies/?title={Uri.EscapeDataString(title)}";
+
+        return await _httpClient.GetAsync(requestUri);
+    }
+
+    /// <summary>
+    /// Creates a new movie. The ID and title must be unique.
+    /// </summary>
+    public async Task<HttpResponseMessage> CreateMovieAsync(MovieCreateRequest request)
+    {
+        return await _httpClient.PostAsJsonAsync("/movies", request, options: JsonSerializerHelper.JsonSerializerOptions);
+    }
+
+    /// <summary>
+    /// Gets the movie with the specified id, including all its details.
+    /// </summary>
+    public async Task<HttpResponseMessage> GetMovieByIdAsync(Guid id)
+    {
+        return await _httpClient.GetAsync($"/movies/{id}");
+    }
+
+    /// <summary>
+    /// Updates the title, description, year and/or rating of the movie with the specified id.
+    /// If the title is changed, it must remain unique.
+    /// </summary>
+    public async Task<HttpResponseMessage> UpdateMovieAsync(Guid id, MovieUpdateRequest request, string? ifMatch = null)
+    {
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Patch, $"/movies/{id}")
+        {
+            Content = JsonContent.Create(request, options: JsonSerializerHelper.JsonSerializerOptions)
+        };
+
+        if (!string.IsNullOrEmpty(ifMatch))
+        {
+            httpRequest.Headers.TryAddWithoutValidation("If-Match", ifMatch);
+        }
+
+        return await _httpClient.SendAsync(httpRequest);
+    }
+
+    /// <summary>
+    /// Deletes the movie with the specified id.
+    /// </summary>
+    public async Task<HttpResponseMessage> DeleteMovieAsync(Guid id, string? ifMatch = null)
+    {
+        using var httpRequest = new HttpRequestMessage(HttpMethod.Delete, $"/movies/{id}");
+
+        if (!string.IsNullOrEmpty(ifMatch))
+        {
+            httpRequest.Headers.TryAddWithoutValidation("If-Match", ifMatch);
+        }
+
+        return await _httpClient.SendAsync(httpRequest);
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        GC.SuppressFinalize(this);
+    }
+}

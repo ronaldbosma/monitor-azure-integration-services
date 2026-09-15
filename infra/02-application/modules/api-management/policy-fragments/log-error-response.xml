@@ -1,0 +1,22 @@
+<fragment>
+    <!--
+        Log the error response details.
+        NOTE: The value of a metadata element must always have a value. An empty string is not allowed.
+              To prevent the trace from failing and the request not being processed, "<empty>" is used for empty values.
+    -->
+    <trace source='@(context.Operation.Id)' severity="error">
+        <message>Error Response Body</message>
+        <metadata name="ResponseBody" value='@{
+            var body = ((IResponse)context.Response)?.Body?.As<string>(preserveContent: true);
+            return !string.IsNullOrWhiteSpace(body) ? body : "<empty>";
+        }' />
+        <metadata name="ResponseStatusCode" value='@{
+            var statusCode = context.Response?.StatusCode.ToString();
+            return !string.IsNullOrWhiteSpace(statusCode) ? statusCode : "<empty>";
+        }' />
+        <metadata name="ResponseStatusReason" value='@{
+            var statusReason = context.Response?.StatusReason?.ToString();
+            return !string.IsNullOrWhiteSpace(statusReason) ? statusReason : "<empty>";
+        }' />
+    </trace>
+</fragment>

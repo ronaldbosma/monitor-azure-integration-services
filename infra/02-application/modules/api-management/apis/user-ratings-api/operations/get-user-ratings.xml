@@ -1,0 +1,20 @@
+<policies>
+    <inbound>
+        <base />
+
+        <set-backend-service backend-id="function-app" />
+        <rewrite-uri template="/api/GetUserRatingsFunction?movie-id={movie-id}" copy-unmatched-params="false" />
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

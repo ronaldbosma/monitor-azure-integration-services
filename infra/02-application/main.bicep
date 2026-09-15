@@ -1,12 +1,17 @@
 //=============================================================================
-// Sets up connectivity between the different services
+// Monitor Azure Integration Services - Application layer
 //=============================================================================
+
+targetScope = 'subscription'
 
 //=============================================================================
 // Parameters
 //=============================================================================
 
-@description('The name of the API Management Service')
+@description('The name of the resource group in which to deploy the resources')
+param resourceGroupName string
+
+@description('The name of the API Management service')
 param apiManagementServiceName string
 
 @description('The name of the Function App')
@@ -21,14 +26,29 @@ param logicAppName string
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
 
-@description('Name of the storage account that will be used by the Function App')
+@description('The name of the Storage Account')
 param storageAccountName string
 
 //=============================================================================
 // Resources
 //=============================================================================
 
-module apiManagementConnectivity 'api-management-connectivity.bicep' = {
+module serviceBusEntities 'modules/service-bus-entities.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    serviceBusNamespaceName: serviceBusNamespaceName
+  }
+}
+
+module storage 'modules/storage.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    storageAccountName: storageAccountName
+  }
+}
+
+module apiManagement 'modules/api-management/api-management.bicep' = {
+  scope: resourceGroup(resourceGroupName)
   params: {
     apiManagementServiceName: apiManagementServiceName
     functionAppName: functionAppName
@@ -36,24 +56,27 @@ module apiManagementConnectivity 'api-management-connectivity.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
   }
+  dependsOn: [
+    serviceBusEntities
+    storage
+  ]
 }
 
-module functionAppConnectivity 'function-app-connectivity.bicep' = {
+module functionAppSettings 'modules/function-app-settings.bicep' = {
+  scope: resourceGroup(resourceGroupName)
   params: {
-    apiManagementServiceName: apiManagementServiceName
     functionAppName: functionAppName
-    keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
   }
 }
 
-module logicAppConnectivity 'logic-app-connectivity.bicep' = {
+module logicAppSettings 'modules/logic-app-settings.bicep' = {
+  scope: resourceGroup(resourceGroupName)
   params: {
     apiManagementServiceName: apiManagementServiceName
     keyVaultName: keyVaultName
     logicAppName: logicAppName
     serviceBusNamespaceName: serviceBusNamespaceName
-    storageAccountName: storageAccountName
   }
 }

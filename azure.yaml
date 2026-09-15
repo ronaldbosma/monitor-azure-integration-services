@@ -7,6 +7,8 @@ infra:
   layers:
     - name: base
       path: ./infra/01-base
+    - name: application
+      path: ./infra/02-application
 services:
   functionApp:
     project: ./src/functionApp/FunctionApp
