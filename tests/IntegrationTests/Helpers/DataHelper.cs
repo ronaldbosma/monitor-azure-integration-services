@@ -52,7 +52,7 @@ internal static class DataHelper
         return await response.ReadContentAsAsync<Movie>();
     }
 
-    public static async Task<bool> DoesMovieExist(Guid movieId)
+    public static async Task<bool> DoesMovieExistAsync(Guid movieId)
     {
         using var client = await MoviesApiClient.CreateClientAsync();
         var response = await client.GetMovieByIdAsync(movieId);

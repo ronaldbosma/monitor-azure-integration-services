@@ -304,7 +304,7 @@ public class MoviesApiTests
         // Assert
         Assert.AreEqual(HttpStatusCode.NoContent, result.StatusCode);
 
-        bool movieExists = await DataHelper.DoesMovieExist(movie.Id);
+        bool movieExists = await DataHelper.DoesMovieExistAsync(movie.Id);
         Assert.IsFalse(movieExists);
     }
 
