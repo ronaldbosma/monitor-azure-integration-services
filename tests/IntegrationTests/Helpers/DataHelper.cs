@@ -15,8 +15,14 @@ internal static class DataHelper
     {
         foreach (var movie in movies)
         {
-            await DataHelper.CreateMovieAsync(movie);
+            await CreateMovieAsync(movie);
         }
+    }
+
+    public static async Task CreateMovieWithUserRatingsAsync(Movie movie, IEnumerable<UserRating> userRatings)
+    {
+        await CreateMovieAsync(movie);
+        await CreateUserRatingsAsync(userRatings);
     }
 
     public static async Task CreateMovieAsync(Movie movie)
