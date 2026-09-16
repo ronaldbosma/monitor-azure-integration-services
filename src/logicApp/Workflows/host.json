@@ -11,5 +11,12 @@
         "Runtime.ApplicationInsights.PreserveIncomingOperationId": "true"
       }
     }
+  },
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": false
+      }
+    }
   }
 }
