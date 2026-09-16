@@ -427,5 +427,6 @@ AzuriteConfig
 preflight-*.bicepparam
 validation-*.bicepparam
 
-# Ignore local HTTP files
+# Ignore local files
 *.local.http
+*.local.ps1
