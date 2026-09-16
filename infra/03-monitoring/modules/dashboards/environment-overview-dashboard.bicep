@@ -260,9 +260,12 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
               settings: {
                 content: {
                   GridColumnsWidth: {
-                    functionName: '233px'
-                    lastFailure: '125px'
-                    failed: '99px'
+                    failed : '75px'
+                    functionApp : '200px'
+                    functionName : '225px'
+                    lastFailure : '138px'
+                    lastSuccess : '138px'
+                    success : '92px'
                   }
                 }
               }
@@ -363,7 +366,34 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
               settings: {
                 content: {
                   GridColumnsWidth: {
-                    '503': '88px'
+                      '200' : '58px'
+                      '201' : '58px'
+                      '202' : '58px'
+                      '203' : '58px'
+                      '204' : '58px'
+                      '400' : '58px'
+                      '401' : '58px'
+                      '403' : '58px'
+                      '404' : '58px'
+                      '405' : '58px'
+                      '406' : '58px'
+                      '408' : '58px'
+                      '409' : '58px'
+                      '412' : '58px'
+                      '413' : '58px'
+                      '415' : '58px'
+                      '422' : '58px'
+                      '429' : '58px'
+                      '500' : '58px'
+                      '501' : '58px'
+                      '502' : '58px'
+                      '503' : '58px'
+                      '504' : '58px'
+                      '0 [not sent in full (see exception telemetries)]' : '75px'
+                      Api : '125px'
+                      lastClientFailure : '138px'
+                      lastServerFailure : '138px'
+                      lastSuccess : '138px'
                   }
                 }
               }
@@ -424,7 +454,7 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
                 }
                 {
                   name: 'Query'
-                  value: 'traces\n| where customDimensions.Category == \'Workflow.Operations.Runs\'\n| where customDimensions.EventName == \'WorkflowRunEnd\'\n| extend workflow = operation_Name\n| extend status = replace_string(tostring(customDimensions.status), @\'"\', \'\')\n| summarize \n    succeeded=countif(status==\'Succeeded\'),\n    lastSucceeded=maxif(timestamp, status==\'Succeeded\'),\n    failed=countif(status==\'Failed\'),\n    lastFailed=maxif(timestamp, status==\'Failed\'),\n    cancelled=countif(status==\'Cancelled\'),\n    lastCancelled=maxif(timestamp, status==\'Cancelled\')\n  by workflow\n| sort by lastFailed desc, workflow asc\n| project\n    workflow,\n    lastFailed,\n    failed,\n    cancelled,\n    succeeded,\n    lastSucceeded,\n    lastCancelled\n'
+                  value: 'traces\n| where customDimensions.Category == \'Workflow.Operations.Runs\'\n| where customDimensions.EventName == \'WorkflowRunEnd\'\n| extend workflow = operation_Name\n| extend status = replace_string(tostring(customDimensions.status), @\'"\', \'\')\n| summarize \n    succeeded=countif(status==\'Succeeded\'),\n    lastSucceeded=maxif(timestamp, status==\'Succeeded\'),\n    failed=countif(status==\'Failed\'),\n    lastFailure=maxif(timestamp, status==\'Failed\'),\n    cancelled=countif(status==\'Cancelled\'),\n    lastCancelled=maxif(timestamp, status==\'Cancelled\')\n  by workflow\n| sort by lastFailure desc, workflow asc\n| project\n    workflow,\n    lastFailure,\n    failed,\n    cancelled,\n    succeeded,\n    lastSucceeded,\n    lastCancelled\n'
                   isOptional: true
                 }
                 {
@@ -464,13 +494,16 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
               settings: {
                 content: {
                   GridColumnsWidth: {
-                    workflow: '250px'
-                    lastFailed: '126px'
-                    failed: '81px'
-                    cancelled: '95px'
-                    succeeded: '95px'
+                      cancelled : '97px'
+                      failed : '75px'
+                      lastCancelled: '138px'
+                      lastFailure : '138px'
+                      lastSuccess : '138px'
+                      logicApp : '200px'
+                      succeeded : '102px'
+                      workflow : '225px'
                   }
-                  Query: 'traces\n| where customDimensions.Category == \'Workflow.Operations.Runs\'\n| where customDimensions.EventName == \'WorkflowRunEnd\'\n| extend workflow = operation_Name\n| extend status = replace_string(tostring(customDimensions.status), @\'"\', \'\')\n| summarize\n    succeeded = countif(status == \'Succeeded\'),\n    lastSucceeded = maxif(timestamp, status == \'Succeeded\'),\n    failed = countif(status == \'Failed\'),\n    lastFailed = maxif(timestamp, status == \'Failed\'),\n    cancelled = countif(status == \'Cancelled\'),\n    lastCancelled = maxif(timestamp, status == \'Cancelled\')\n  by workflow, cloud_RoleName\n| sort by lastFailed desc, workflow asc\n| project\n    workflow,\n    lastFailed,\n    failed,\n    cancelled,\n    succeeded,\n    lastSucceeded,\n    lastCancelled,\n    logicApp = cloud_RoleName\n'
+                  Query: 'traces\n| where customDimensions.Category == \'Workflow.Operations.Runs\'\n| where customDimensions.EventName == \'WorkflowRunEnd\'\n| extend workflow = operation_Name\n| extend status = replace_string(tostring(customDimensions.status), @\'"\', \'\')\n| summarize\n    succeeded = countif(status == \'Succeeded\'),\n    lastSucceeded = maxif(timestamp, status == \'Succeeded\'),\n    failed = countif(status == \'Failed\'),\n    lastFailure = maxif(timestamp, status == \'Failed\'),\n    cancelled = countif(status == \'Cancelled\'),\n    lastCancelled = maxif(timestamp, status == \'Cancelled\')\n  by workflow, cloud_RoleName\n| sort by lastFailure desc, workflow asc\n| project\n    workflow,\n    lastFailure,\n    failed,\n    cancelled,\n    succeeded,\n    lastSucceeded,\n    lastCancelled,\n    logicApp = cloud_RoleName\n'
                 }
               }
               partHeader: {
