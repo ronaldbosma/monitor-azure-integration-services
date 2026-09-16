@@ -326,7 +326,7 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
                 }
                 {
                   name: 'Query'
-                  value: 'let requestFailures = requests\n| where customDimensions["Service Type"] == "API Management"\n| extend Api = tostring(customDimensions["API Name"])\n| extend isClientFailure = success==false and toint(resultCode) between (400 .. 499)\n| extend isServerFailure = success==false and isClientFailure==false\n| summarize \n    lastClientFailure=maxif(timestamp, isClientFailure),\n    lastServerFailure=maxif(timestamp, isServerFailure),\n    lastSuccess=maxif(timestamp, success==true) \n  by Api;\n              \nrequests\n| where customDimensions["Service Type"] == "API Management"\n| extend Api = tostring(customDimensions["API Name"])\n| evaluate pivot(resultCode, count(), Api)\n| join kind=leftouter requestFailures on Api\n| project-away Api1 // Removes duplicate Api name column introduced by join\n| project-reorder Api, lastServerFailure, * desc, lastSuccess, lastClientFailure // This will make sure the higher result codes (e.g. errors) are rendered first\n| sort by lastServerFailure desc, Api asc\n'
+                  value: 'let requestSummary = requests\n| where customDimensions["Service Type"] == "API Management"\n| extend api = tostring(customDimensions["API Name"])\n| extend isClientFailure = success==false and toint(resultCode) between (400 .. 499)\n| extend isServerFailure = success==false and isClientFailure==false\n| summarize \n    lastClientFailure=maxif(timestamp, isClientFailure),\n    lastServerFailure=maxif(timestamp, isServerFailure),\n    lastSuccess=maxif(timestamp, success==true) \n  by api;\n              \nrequests\n| where customDimensions["Service Type"] == "API Management"\n| extend api = tostring(customDimensions["API Name"])\n| evaluate pivot(resultCode, count(), api)\n| join kind=leftouter requestSummary on api\n| project-away api1 // Removes duplicate api name column introduced by join\n| project-reorder api, lastServerFailure, * desc, lastSuccess, lastClientFailure // This will make sure the higher result codes (e.g. errors) are rendered first\n| sort by lastServerFailure desc, api asc\n'
                   isOptional: true
                 }
                 {
@@ -390,7 +390,7 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
                     '503': '58px'
                     '504': '58px'
                     '0 [not sent in full (see exception telemetries)]': '75px'
-                    Api: '125px'
+                    api: '125px'
                     lastClientFailure: '138px'
                     lastServerFailure: '138px'
                     lastSuccess: '138px'
