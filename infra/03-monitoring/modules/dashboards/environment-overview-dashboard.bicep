@@ -1,0 +1,1034 @@
+//=============================================================================
+// Environment Overview Dashboard
+//=============================================================================
+
+//=============================================================================
+// Imports
+//=============================================================================
+
+import { tagsType } from '../../../99-shared/types.bicep'
+
+//=============================================================================
+// Parameters
+//=============================================================================
+
+@description('The name of the environment overview dashboard')
+param name string
+
+@description('Location to use for all resources')
+param location string
+
+@description('The tags to associate with the resource')
+param tags tagsType
+
+@description('The name of the App Insights instance')
+param appInsightsName string
+
+@description('The name of the Service Bus namespace')
+param serviceBusNamespaceName string
+
+//=============================================================================
+// Variables
+//=============================================================================
+
+var dashboardTags { *: string } = union(tags, {
+  'hidden-title': 'Environment Overview'
+})
+
+//=============================================================================
+// Existing resources
+//=============================================================================
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: appInsightsName
+}
+
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existing = {
+  name: serviceBusNamespaceName
+}
+
+//=============================================================================
+// Resources
+//=============================================================================
+
+#disable-next-line use-recent-api-versions // The newer version 2026-04-01 is not available in every region
+resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' = {
+  name: name
+  location: location
+  tags: dashboardTags
+  properties: {
+    lenses: [
+      {
+        order: 0
+        parts: [
+          {
+            position: {
+              x: 10
+              y: 0
+              colSpan: 8
+              rowSpan: 4
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'sharedTimeRange'
+                  isOptional: true
+                }
+                {
+                  name: 'options'
+                  value: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: appInsights.id
+                          }
+                          name: 'requests/count'
+                          aggregationType: 7
+                          namespace: 'microsoft.insights/components'
+                          metricVisualization: {
+                            displayName: 'Server requests'
+                            resourceDisplayName: appInsights.name
+                            color: '#0078D4'
+                          }
+                        }
+                      ]
+                      title: 'Server requests'
+                      titleKind: 2
+                      visualization: {
+                        chartType: 3
+                      }
+                      openBladeOnClick: {
+                        openBlade: true
+                        destinationBlade: {
+                          bladeName: 'ResourceMenuBlade'
+                          parameters: {
+                            id: appInsights.id
+                            menuid: 'performance'
+                          }
+                          extensionName: 'HubsExtension'
+                          options: {
+                            parameters: {
+                              id: appInsights.id
+                              menuid: 'performance'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/MonitorChartPart'
+              settings: {
+                content: {
+                  options: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: appInsights.id
+                          }
+                          name: 'requests/count'
+                          aggregationType: 7
+                          namespace: 'microsoft.insights/components'
+                          metricVisualization: {
+                            displayName: 'Server requests'
+                            resourceDisplayName: appInsights.name
+                            color: '#0078D4'
+                          }
+                        }
+                      ]
+                      title: 'Server requests'
+                      titleKind: 2
+                      visualization: {
+                        chartType: 3
+                        disablePinning: true
+                      }
+                      openBladeOnClick: {
+                        openBlade: true
+                        destinationBlade: {
+                          bladeName: 'ResourceMenuBlade'
+                          parameters: {
+                            id: appInsights.id
+                            menuid: 'performance'
+                          }
+                          extensionName: 'HubsExtension'
+                          options: {
+                            parameters: {
+                              id: appInsights.id
+                              menuid: 'performance'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          {
+            position: {
+              x: 18
+              y: 0
+              colSpan: 9
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'resourceTypeMode'
+                  isOptional: true
+                }
+                {
+                  name: 'ComponentId'
+                  isOptional: true
+                }
+                {
+                  name: 'Scope'
+                  value: {
+                    resourceIds: [
+                      appInsights.id
+                    ]
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'PartId'
+                  value: 'f598a581-cd60-4697-81c2-aa9340b50cf2'
+                  isOptional: true
+                }
+                {
+                  name: 'Version'
+                  value: '2.0'
+                  isOptional: true
+                }
+                {
+                  name: 'TimeRange'
+                  value: 'P1D'
+                  isOptional: true
+                }
+                {
+                  name: 'DashboardId'
+                  isOptional: true
+                }
+                {
+                  name: 'DraftRequestParameters'
+                  isOptional: true
+                }
+                {
+                  name: 'Query'
+                  value: 'requests\n| where customDimensions[\'faas.name\'] != \'\' or customDimensions[\'Category\'] == \'Host.Results\'\n| extend functionName = tostring(coalesce(customDimensions[\'faas.name\'], name))\n| summarize \n    success=countif(success==true), \n    lastSuccess=maxif(timestamp, success==true),\n    failed=countif(success==false), \n    lastFailure=maxif(timestamp, success==false)\n  by functionName, cloud_RoleName\n| project \n    functionName, \n    lastFailure, \n    failed, \n    lastSuccess, \n    success, \n    functionApp = cloud_RoleName\n| sort by lastFailure desc, functionName asc\n'
+                  isOptional: true
+                }
+                {
+                  name: 'ControlType'
+                  value: 'AnalyticsGrid'
+                  isOptional: true
+                }
+                {
+                  name: 'SpecificChart'
+                  isOptional: true
+                }
+                {
+                  name: 'PartTitle'
+                  value: 'Log Analytics'
+                  isOptional: true
+                }
+                {
+                  name: 'PartSubTitle'
+                  value: appInsights.name
+                  isOptional: true
+                }
+                {
+                  name: 'Dimensions'
+                  isOptional: true
+                }
+                {
+                  name: 'LegendOptions'
+                  isOptional: true
+                }
+                {
+                  name: 'IsQueryContainTimeRange'
+                  value: false
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart'
+              settings: {
+                content: {
+                  GridColumnsWidth: {
+                    functionName: '233px'
+                    lastFailure: '125px'
+                    failed: '99px'
+                  }
+                }
+              }
+              partHeader: {
+                title: 'Azure Functions'
+                subtitle: 'Number of failures and successes per function, including the timestamps of the most recent failure and success'
+              }
+            }
+          }
+          {
+            position: {
+              x: 0
+              y: 3
+              colSpan: 10
+              rowSpan: 5
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'resourceTypeMode'
+                  isOptional: true
+                }
+                {
+                  name: 'ComponentId'
+                  isOptional: true
+                }
+                {
+                  name: 'Scope'
+                  value: {
+                    resourceIds: [
+                      appInsights.id
+                    ]
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'PartId'
+                  value: 'b2f975f1-d716-44e9-be3d-866c400a9c37'
+                  isOptional: true
+                }
+                {
+                  name: 'Version'
+                  value: '2.0'
+                  isOptional: true
+                }
+                {
+                  name: 'TimeRange'
+                  value: 'P1D'
+                  isOptional: true
+                }
+                {
+                  name: 'DashboardId'
+                  isOptional: true
+                }
+                {
+                  name: 'DraftRequestParameters'
+                  isOptional: true
+                }
+                {
+                  name: 'Query'
+                  value: 'let requestFailures = requests\n| where customDimensions["Service Type"] == "API Management"\n| extend Api = tostring(customDimensions["API Name"])\n| extend isClientFailure = success==false and toint(resultCode) between (400 .. 499)\n| extend isServerFailure = success==false and isClientFailure==false\n| summarize \n    lastClientFailure=maxif(timestamp, isClientFailure),\n    lastServerFailure=maxif(timestamp, isServerFailure),\n    lastSuccess=maxif(timestamp, success==true) \n  by Api;\n              \nrequests\n| where customDimensions["Service Type"] == "API Management"\n| extend Api = tostring(customDimensions["API Name"])\n| evaluate pivot(resultCode, count(), Api)\n| join kind=leftouter requestFailures on Api\n| project-away Api1 // Removes duplicate Api name column introduced by join\n| project-reorder Api, lastServerFailure, * desc, lastSuccess, lastClientFailure // This will make sure the higher result codes (e.g. errors) are rendered first\n| sort by lastServerFailure desc, Api asc\n'
+                  isOptional: true
+                }
+                {
+                  name: 'ControlType'
+                  value: 'AnalyticsGrid'
+                  isOptional: true
+                }
+                {
+                  name: 'SpecificChart'
+                  isOptional: true
+                }
+                {
+                  name: 'PartTitle'
+                  value: 'Log Analytics'
+                  isOptional: true
+                }
+                {
+                  name: 'PartSubTitle'
+                  value: appInsights.name
+                  isOptional: true
+                }
+                {
+                  name: 'Dimensions'
+                  isOptional: true
+                }
+                {
+                  name: 'LegendOptions'
+                  isOptional: true
+                }
+                {
+                  name: 'IsQueryContainTimeRange'
+                  value: false
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart'
+              settings: {
+                content: {
+                  GridColumnsWidth: {
+                    '503': '88px'
+                  }
+                }
+              }
+              partHeader: {
+                title: 'API Management requests'
+                subtitle: 'Number of requests per API and result code, including the timestamps of the latest success, server-side failure, and client-side failure'
+              }
+            }
+          }
+          {
+            position: {
+              x: 18
+              y: 3
+              colSpan: 9
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'resourceTypeMode'
+                  isOptional: true
+                }
+                {
+                  name: 'ComponentId'
+                  isOptional: true
+                }
+                {
+                  name: 'Scope'
+                  value: {
+                    resourceIds: [
+                      appInsights.id
+                    ]
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'PartId'
+                  value: '4d398adf-0ce9-4c58-b831-91fa2b90c60d'
+                  isOptional: true
+                }
+                {
+                  name: 'Version'
+                  value: '2.0'
+                  isOptional: true
+                }
+                {
+                  name: 'TimeRange'
+                  value: 'P1D'
+                  isOptional: true
+                }
+                {
+                  name: 'DashboardId'
+                  isOptional: true
+                }
+                {
+                  name: 'DraftRequestParameters'
+                  isOptional: true
+                }
+                {
+                  name: 'Query'
+                  value: 'traces\n| where customDimensions.Category == \'Workflow.Operations.Runs\'\n| where customDimensions.EventName == \'WorkflowRunEnd\'\n| extend workflow = operation_Name\n| extend status = replace_string(tostring(customDimensions.status), @\'"\', \'\')\n| summarize \n    succeeded=countif(status==\'Succeeded\'),\n    lastSucceeded=maxif(timestamp, status==\'Succeeded\'),\n    failed=countif(status==\'Failed\'),\n    lastFailed=maxif(timestamp, status==\'Failed\'),\n    cancelled=countif(status==\'Cancelled\'),\n    lastCancelled=maxif(timestamp, status==\'Cancelled\')\n  by workflow\n| sort by lastFailed desc, workflow asc\n| project\n    workflow,\n    lastFailed,\n    failed,\n    cancelled,\n    succeeded,\n    lastSucceeded,\n    lastCancelled\n'
+                  isOptional: true
+                }
+                {
+                  name: 'ControlType'
+                  value: 'AnalyticsGrid'
+                  isOptional: true
+                }
+                {
+                  name: 'SpecificChart'
+                  isOptional: true
+                }
+                {
+                  name: 'PartTitle'
+                  value: 'Log Analytics'
+                  isOptional: true
+                }
+                {
+                  name: 'PartSubTitle'
+                  value: appInsights.name
+                  isOptional: true
+                }
+                {
+                  name: 'Dimensions'
+                  isOptional: true
+                }
+                {
+                  name: 'LegendOptions'
+                  isOptional: true
+                }
+                {
+                  name: 'IsQueryContainTimeRange'
+                  value: false
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart'
+              settings: {
+                content: {
+                  GridColumnsWidth: {
+                    workflow: '250px'
+                    lastFailed: '126px'
+                    failed: '81px'
+                    cancelled: '95px'
+                    succeeded: '95px'
+                  }
+                  Query: 'traces\n| where customDimensions.Category == \'Workflow.Operations.Runs\'\n| where customDimensions.EventName == \'WorkflowRunEnd\'\n| extend workflow = operation_Name\n| extend status = replace_string(tostring(customDimensions.status), @\'"\', \'\')\n| summarize\n    succeeded = countif(status == \'Succeeded\'),\n    lastSucceeded = maxif(timestamp, status == \'Succeeded\'),\n    failed = countif(status == \'Failed\'),\n    lastFailed = maxif(timestamp, status == \'Failed\'),\n    cancelled = countif(status == \'Cancelled\'),\n    lastCancelled = maxif(timestamp, status == \'Cancelled\')\n  by workflow, cloud_RoleName\n| sort by lastFailed desc, workflow asc\n| project\n    workflow,\n    lastFailed,\n    failed,\n    cancelled,\n    succeeded,\n    lastSucceeded,\n    lastCancelled,\n    logicApp = cloud_RoleName\n'
+                }
+              }
+              partHeader: {
+                title: 'Logic App workflows'
+                subtitle: 'Number of instances per status for each workflow, including the timestamp of the most recent occurrence of each status'
+              }
+            }
+          }
+          {
+            position: {
+              x: 10
+              y: 4
+              colSpan: 8
+              rowSpan: 4
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'sharedTimeRange'
+                  isOptional: true
+                }
+                {
+                  name: 'options'
+                  value: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: appInsights.id
+                          }
+                          name: 'requests/failed'
+                          aggregationType: 7
+                          namespace: 'microsoft.insights/components'
+                          metricVisualization: {
+                            displayName: 'Failed requests'
+                            resourceDisplayName: appInsights.name
+                            color: '#EC008C'
+                          }
+                        }
+                      ]
+                      title: 'Failed requests'
+                      titleKind: 2
+                      visualization: {
+                        chartType: 3
+                      }
+                      openBladeOnClick: {
+                        openBlade: true
+                        destinationBlade: {
+                          bladeName: 'ResourceMenuBlade'
+                          parameters: {
+                            id: appInsights.id
+                            menuid: 'failures'
+                          }
+                          extensionName: 'HubsExtension'
+                          options: {
+                            parameters: {
+                              id: appInsights.id
+                              menuid: 'failures'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/MonitorChartPart'
+              settings: {
+                content: {
+                  options: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: appInsights.id
+                          }
+                          name: 'requests/failed'
+                          aggregationType: 7
+                          namespace: 'microsoft.insights/components'
+                          metricVisualization: {
+                            displayName: 'Failed requests'
+                            resourceDisplayName: appInsights.name
+                            color: '#EC008C'
+                          }
+                        }
+                      ]
+                      title: 'Failed requests'
+                      titleKind: 2
+                      visualization: {
+                        chartType: 3
+                        disablePinning: true
+                      }
+                      openBladeOnClick: {
+                        openBlade: true
+                        destinationBlade: {
+                          bladeName: 'ResourceMenuBlade'
+                          parameters: {
+                            id: appInsights.id
+                            menuid: 'failures'
+                          }
+                          extensionName: 'HubsExtension'
+                          options: {
+                            parameters: {
+                              id: appInsights.id
+                              menuid: 'failures'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          {
+            position: {
+              x: 18
+              y: 6
+              colSpan: 9
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'sharedTimeRange'
+                  isOptional: true
+                }
+                {
+                  name: 'options'
+                  value: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: serviceBusNamespace.id
+                          }
+                          name: 'ActiveMessages'
+                          aggregationType: 3
+                          namespace: 'microsoft.servicebus/namespaces'
+                          metricVisualization: {
+                            displayName: 'Count of active messages in a Queue/Topic.'
+                          }
+                        }
+                      ]
+                      title: 'Max Count of active messages in a Queue/Topic for ${serviceBusNamespace.name} by EntityName'
+                      titleKind: 1
+                      visualization: {
+                        chartType: 2
+                        legendVisualization: {
+                          isVisible: true
+                          position: 2
+                          hideHoverCard: false
+                          hideLabelNames: true
+                        }
+                        axisVisualization: {
+                          x: {
+                            isVisible: true
+                            axisType: 2
+                          }
+                          y: {
+                            isVisible: true
+                            axisType: 1
+                          }
+                        }
+                      }
+                      grouping: {
+                        dimension: 'EntityName'
+                        sort: 2
+                        top: 10
+                      }
+                      timespan: {
+                        relative: {
+                          duration: 86400000
+                        }
+                        showUTCTime: false
+                        grain: 1
+                      }
+                    }
+                  }
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/MonitorChartPart'
+              settings: {
+                content: {
+                  options: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: serviceBusNamespace.id
+                          }
+                          name: 'ActiveMessages'
+                          aggregationType: 3
+                          namespace: 'microsoft.servicebus/namespaces'
+                          metricVisualization: {
+                            displayName: 'Count of active messages in a Queue/Topic.'
+                          }
+                        }
+                      ]
+                      title: 'Max Count of active messages in a Queue/Topic for ${serviceBusNamespace.name} by EntityName'
+                      titleKind: 1
+                      visualization: {
+                        chartType: 2
+                        legendVisualization: {
+                          isVisible: true
+                          position: 2
+                          hideHoverCard: false
+                          hideLabelNames: true
+                        }
+                        axisVisualization: {
+                          x: {
+                            isVisible: true
+                            axisType: 2
+                          }
+                          y: {
+                            isVisible: true
+                            axisType: 1
+                          }
+                        }
+                        disablePinning: true
+                      }
+                      grouping: {
+                        dimension: 'EntityName'
+                        sort: 2
+                        top: 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          {
+            position: {
+              x: 10
+              y: 8
+              colSpan: 8
+              rowSpan: 4
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'resourceTypeMode'
+                  isOptional: true
+                }
+                {
+                  name: 'ComponentId'
+                  isOptional: true
+                }
+                {
+                  name: 'Scope'
+                  value: {
+                    resourceIds: [
+                      appInsights.id
+                    ]
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'PartId'
+                  value: 'd5cb0d9b-b6fe-4a3b-a47c-486be550308f'
+                  isOptional: true
+                }
+                {
+                  name: 'Version'
+                  value: '2.0'
+                  isOptional: true
+                }
+                {
+                  name: 'TimeRange'
+                  isOptional: true
+                }
+                {
+                  name: 'DashboardId'
+                  isOptional: true
+                }
+                {
+                  name: 'DraftRequestParameters'
+                  isOptional: true
+                }
+                {
+                  name: 'Query'
+                  value: 'requests\n| make-series \n    average = avg(duration), \n    median = percentile(duration, 50),\n    p80 = percentile(duration, 80),\n    p95 = percentile(duration, 95),\n    p99 = percentile(duration, 99),\n    default=0\n  on timestamp from ago(15m) to now() step 1m\n| render timechart'
+                  isOptional: true
+                }
+                {
+                  name: 'ControlType'
+                  value: 'FrameControlChart'
+                  isOptional: true
+                }
+                {
+                  name: 'SpecificChart'
+                  value: 'Line'
+                  isOptional: true
+                }
+                {
+                  name: 'PartTitle'
+                  value: 'Log Analytics'
+                  isOptional: true
+                }
+                {
+                  name: 'PartSubTitle'
+                  value: appInsights.name
+                  isOptional: true
+                }
+                {
+                  name: 'Dimensions'
+                  value: {
+                    xAxis: {
+                      name: 'timestamp'
+                      type: 'datetime'
+                    }
+                    yAxis: [
+                      {
+                        name: 'average'
+                        type: 'real'
+                      }
+                      {
+                        name: 'median'
+                        type: 'real'
+                      }
+                      {
+                        name: 'p80'
+                        type: 'real'
+                      }
+                      {
+                        name: 'p95'
+                        type: 'real'
+                      }
+                    ]
+                    splitBy: []
+                    aggregation: 'Sum'
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'LegendOptions'
+                  value: {
+                    isEnabled: true
+                    position: 'Bottom'
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'IsQueryContainTimeRange'
+                  value: true
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart'
+              settings: {
+                content: {
+                  Query: 'requests\n| summarize\n    average = avg(duration),\n    median = percentile(duration, 50),\n    p80 = percentile(duration, 80),\n    p95 = percentile(duration, 95),\n    p99 = percentile(duration, 99)\n  by bin(timestamp, 5m)\n| render timechart\n\n'
+                  Dimensions: {
+                    xAxis: {
+                      name: 'timestamp'
+                      type: 'datetime'
+                    }
+                    yAxis: [
+                      {
+                        name: 'average'
+                        type: 'real'
+                      }
+                      {
+                        name: 'median'
+                        type: 'real'
+                      }
+                      {
+                        name: 'p80'
+                        type: 'real'
+                      }
+                      {
+                        name: 'p95'
+                        type: 'real'
+                      }
+                      {
+                        name: 'p99'
+                        type: 'real'
+                      }
+                    ]
+                    splitBy: []
+                    aggregation: 'Sum'
+                  }
+                  IsQueryContainTimeRange: false
+                }
+              }
+              partHeader: {
+                title: 'Request duration'
+                subtitle: 'Average, median, P80, P95, and P99 request duration, aggregated in 5-minute intervals'
+              }
+            }
+          }
+          {
+            position: {
+              x: 18
+              y: 9
+              colSpan: 9
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'sharedTimeRange'
+                  isOptional: true
+                }
+                {
+                  name: 'options'
+                  value: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: serviceBusNamespace.id
+                          }
+                          name: 'DeadletteredMessages'
+                          aggregationType: 3
+                          namespace: 'microsoft.servicebus/namespaces'
+                          metricVisualization: {
+                            displayName: 'Count of dead-lettered messages in a Queue/Topic.'
+                          }
+                        }
+                      ]
+                      title: 'Max Count of dead-lettered messages in a Queue/Topic for ${serviceBusNamespace.name} by EntityName'
+                      titleKind: 1
+                      visualization: {
+                        chartType: 2
+                        legendVisualization: {
+                          isVisible: true
+                          position: 2
+                          hideHoverCard: false
+                          hideLabelNames: true
+                        }
+                        axisVisualization: {
+                          x: {
+                            isVisible: true
+                            axisType: 2
+                          }
+                          y: {
+                            isVisible: true
+                            axisType: 1
+                          }
+                        }
+                      }
+                      grouping: {
+                        dimension: 'EntityName'
+                        sort: 2
+                        top: 10
+                      }
+                      timespan: {
+                        absolute: {
+                          startTime: '2026-09-16T07:53:14.477Z'
+                          endTime: '2026-09-16T10:08:42.417Z'
+                        }
+                        showUTCTime: false
+                        grain: 1
+                      }
+                    }
+                  }
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/MonitorChartPart'
+              settings: {
+                content: {
+                  options: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: serviceBusNamespace.id
+                          }
+                          name: 'DeadletteredMessages'
+                          aggregationType: 3
+                          namespace: 'microsoft.servicebus/namespaces'
+                          metricVisualization: {
+                            displayName: 'Count of dead-lettered messages in a Queue/Topic.'
+                          }
+                        }
+                      ]
+                      title: 'Max Count of dead-lettered messages in a Queue/Topic for ${serviceBusNamespace.name} by EntityName'
+                      titleKind: 1
+                      visualization: {
+                        chartType: 2
+                        legendVisualization: {
+                          isVisible: true
+                          position: 2
+                          hideHoverCard: false
+                          hideLabelNames: true
+                        }
+                        axisVisualization: {
+                          x: {
+                            isVisible: true
+                            axisType: 2
+                          }
+                          y: {
+                            isVisible: true
+                            axisType: 1
+                          }
+                        }
+                        disablePinning: true
+                      }
+                      grouping: {
+                        dimension: 'EntityName'
+                        sort: 2
+                        top: 10
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+    metadata: {
+      model: {
+        timeRange: {
+          value: {
+            relative: {
+              duration: 24
+              timeUnit: 1
+            }
+          }
+          type: 'MsPortalFx.Composition.Configuration.ValueTypes.TimeRange'
+        }
+        filterLocale: {
+          value: 'en-us'
+        }
+        filters: {
+          value: {
+            MsPortalFx_TimeRange: {
+              model: {
+                format: 'local'
+                granularity: 'auto'
+                relative: '4h'
+              }
+              displayCache: {
+                name: 'Local Time'
+                value: 'Past 4 hours'
+              }
+              filteredPartIds: [
+                'StartboardPart-MonitorChartPart-6b3e7cb5-8f57-46e5-9aab-9bf06a37a13f'
+                'StartboardPart-LogsDashboardPart-6b3e7cb5-8f57-46e5-9aab-9bf06a37a1ca'
+                'StartboardPart-LogsDashboardPart-6b3e7cb5-8f57-46e5-9aab-9bf06a37a191'
+                'StartboardPart-LogsDashboardPart-6b3e7cb5-8f57-46e5-9aab-9bf06a37a1a9'
+                'StartboardPart-MonitorChartPart-6b3e7cb5-8f57-46e5-9aab-9bf06a37a15f'
+                'StartboardPart-MonitorChartPart-0a8e5bf1-59b1-4836-8184-f00b5fbba198'
+                'StartboardPart-MonitorChartPart-0a8e5bf1-59b1-4836-8184-f00b5fbba1ed'
+                'StartboardPart-LogsDashboardPart-6b3e7cb5-8f57-46e5-9aab-9bf06a37a1e3'
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
