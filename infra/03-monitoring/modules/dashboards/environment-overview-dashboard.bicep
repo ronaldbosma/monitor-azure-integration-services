@@ -220,7 +220,7 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
                 }
                 {
                   name: 'Query'
-                  value: 'requests\n| where customDimensions[\'faas.name\'] != \'\' or customDimensions[\'Category\'] == \'Host.Results\'\n| extend functionName = tostring(coalesce(customDimensions[\'faas.name\'], name))\n| summarize \n    success=countif(success==true), \n    lastSuccess=maxif(timestamp, success==true),\n    failed=countif(success==false), \n    lastFailure=maxif(timestamp, success==false)\n  by functionName, cloud_RoleName\n| project \n    functionName, \n    lastFailure, \n    failed, \n    lastSuccess, \n    success, \n    functionApp = cloud_RoleName\n| sort by lastFailure desc, functionName asc\n'
+                  value: 'requests\n| where customDimensions[\'faas.name\'] != \'\' or customDimensions[\'Category\'] == \'Host.Results\'\n| extend function = tostring(coalesce(customDimensions[\'faas.name\'], name))\n| summarize \n    success=countif(success==true), \n    lastSuccess=maxif(timestamp, success==true),\n    failed=countif(success==false), \n    lastFailure=maxif(timestamp, success==false)\n  by function, cloud_RoleName\n| project \n    function, \n    lastFailure, \n    failed, \n    lastSuccess, \n    success, \n    functionApp = cloud_RoleName\n| sort by lastFailure desc, function asc\n'
                   isOptional: true
                 }
                 {
@@ -261,8 +261,8 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
                 content: {
                   GridColumnsWidth: {
                     failed: '75px'
+                    function: '225px'
                     functionApp: '200px'
-                    functionName: '225px'
                     lastFailure: '138px'
                     lastSuccess: '138px'
                     success: '92px'
