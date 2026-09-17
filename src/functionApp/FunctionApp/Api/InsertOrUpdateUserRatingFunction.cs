@@ -85,7 +85,7 @@ public class InsertOrUpdateUserRatingFunction
     {
         try
         {
-            var tableClient = _tableServiceClient.GetTableClient("userratings");
+            var tableClient = _tableServiceClient.GetTableClient(Constants.UserSettingsTableName);
 
             var entity = new UserRatingEntity
             {
