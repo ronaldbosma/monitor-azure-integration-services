@@ -64,8 +64,8 @@ internal static class ServiceCollectionExtensions
     public static IServiceCollection ConfigureHealthChecks(this IServiceCollection services)
     {
         services.AddHealthChecks()
-            .AddCheck<UserRatingsStorageTableHealthCheck>(nameof(UserRatingsStorageTableHealthCheck))
-            .AddCheck<DeletedMoviesSubscriptionHealthCheck>(nameof(DeletedMoviesSubscriptionHealthCheck));
+            .AddCheck<UserRatingsStorageTableHealthCheck>("user-ratings-storage-table")
+            .AddCheck<DeletedMoviesSubscriptionHealthCheck>("deleted-movies-subscription");
 
         return services;
     }
