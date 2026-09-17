@@ -9,6 +9,8 @@ infra:
       path: ./infra/01-base
     - name: application
       path: ./infra/02-application
+    - name: monitoring
+      path: ./infra/03-monitoring
 services:
   functionApp:
     project: ./src/functionApp/FunctionApp
