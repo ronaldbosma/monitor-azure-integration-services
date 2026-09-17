@@ -1,3 +1,5 @@
+using FunctionApp.Models;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
@@ -18,19 +20,7 @@ public class HealthFunction
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req)
     {
         var healthResult = await _healthService.CheckHealthAsync();
-
-        var responseContent = new
-        {
-            status = healthResult.Status.ToString(),
-            entries = healthResult.Entries.Select(e => new
-            {
-                name = e.Key,
-                status = e.Value.Status.ToString(),
-                description = e.Value.Description,
-                exception = e.Value.Exception?.ToString(),
-                data = e.Value.Data.ToDictionary(d => d.Key, d => d.Value)
-            })
-        };
+        var responseContent = HealthResponse.FromHealthReport(healthResult);
         return new JsonResult(responseContent)
         {
             StatusCode = healthResult.Status == HealthStatus.Healthy ? 200 : 503
