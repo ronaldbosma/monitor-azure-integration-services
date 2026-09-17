@@ -100,6 +100,15 @@ jobs:
           AZURE_SERVICE_BUS_NAMESPACE_NAME: sample
           AZURE_STORAGE_ACCOUNT_NAME: sample
 
+      - name: Bicep Lint Monitoring Layer Template
+        run: |
+          az bicep lint --file ./infra/03-monitoring/main.bicepparam
+        env:
+          # Configure dummy values for environment values to satisfy readEnvironmentVariable calls in the bicepparam files during linting.
+          AZURE_RESOURCE_GROUP: sample
+          AZURE_API_MANAGEMENT_NAME: sample
+          AZURE_APPLICATION_INSIGHTS_NAME: sample
+
       - name: Validate Base Layer Template
         run: |
           az deployment sub validate `
@@ -120,6 +129,17 @@ jobs:
                          logicAppName='sample' `
                          serviceBusNamespaceName='sample' `
                          storageAccountName='sample'
+
+      - name: Validate Monitoring Layer Template
+        run: |
+          az deployment sub validate `
+            --template-file './infra/03-monitoring/main.bicep' `
+            --location $env:AZURE_LOCATION `
+            --parameters environmentName=$env:AZURE_ENV_NAME `
+                         location=$env:AZURE_LOCATION `
+                         resourceGroupName='sample' `
+                         apiManagementServiceName='sample' `
+                         appInsightsName='sample'
 
       - name: Create artifacts folder
         run: |
@@ -175,6 +195,7 @@ jobs:
     outputs:
       AZURE_API_MANAGEMENT_GATEWAY_URL: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_GATEWAY_URL }}
       AZURE_API_MANAGEMENT_NAME: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_NAME }}
+      AZURE_APPLICATION_INSIGHTS_NAME: ${{ steps.get-outputs.outputs.AZURE_APPLICATION_INSIGHTS_NAME }}
       AZURE_FUNCTION_APP_NAME: ${{ steps.get-outputs.outputs.AZURE_FUNCTION_APP_NAME }}
       AZURE_KEY_VAULT_NAME: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_NAME }}
       AZURE_KEY_VAULT_URI: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_URI }}
@@ -234,6 +255,7 @@ jobs:
           $variableNames = @(
             "AZURE_API_MANAGEMENT_GATEWAY_URL",
             "AZURE_API_MANAGEMENT_NAME",
+            "AZURE_APPLICATION_INSIGHTS_NAME",
             "AZURE_FUNCTION_APP_NAME",
             "AZURE_KEY_VAULT_NAME",
             "AZURE_KEY_VAULT_URI",
@@ -338,6 +360,7 @@ jobs:
           # so that azd can compile the various layer templates correctly.
           AZURE_RESOURCE_GROUP: ${{ needs.deploy.outputs.AZURE_RESOURCE_GROUP }}
           AZURE_API_MANAGEMENT_NAME: ${{ needs.deploy.outputs.AZURE_API_MANAGEMENT_NAME }}
+          AZURE_APPLICATION_INSIGHTS_NAME: ${{ needs.deploy.outputs.AZURE_APPLICATION_INSIGHTS_NAME }}
           AZURE_FUNCTION_APP_NAME: ${{ needs.deploy.outputs.AZURE_FUNCTION_APP_NAME }}
           AZURE_KEY_VAULT_NAME: ${{ needs.deploy.outputs.AZURE_KEY_VAULT_NAME }}
           AZURE_LOGIC_APP_NAME: ${{ needs.deploy.outputs.AZURE_LOGIC_APP_NAME }}
