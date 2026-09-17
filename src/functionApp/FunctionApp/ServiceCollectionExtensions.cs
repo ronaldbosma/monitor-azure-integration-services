@@ -1,6 +1,7 @@
 using System.Text.Json;
 
 using Azure.Data.Tables;
+using Azure.Messaging.ServiceBus;
 using Azure.Identity;
 using Azure.Monitor.OpenTelemetry.Exporter;
 
@@ -53,13 +54,18 @@ internal static class ServiceCollectionExtensions
             ?? throw new InvalidOperationException("Configuration setting 'StorageAccountConnection:tableServiceUri' is missing.");
         services.AddSingleton(new TableServiceClient(new Uri(tableServiceUri), new DefaultAzureCredential()));
 
+        var serviceBusFqdn = configuration["ServiceBusConnection:fullyQualifiedNamespace"]
+            ?? throw new InvalidOperationException("Configuration setting 'ServiceBusConnection:fullyQualifiedNamespace' is missing.");
+        services.AddSingleton(new ServiceBusClient(serviceBusFqdn, new DefaultAzureCredential()));
+
         return services;
     }
 
     public static IServiceCollection ConfigureHealthChecks(this IServiceCollection services)
     {
         services.AddHealthChecks()
-            .AddCheck<UserRatingsStorageTableHealthCheck>(nameof(UserRatingsStorageTableHealthCheck));
+            .AddCheck<UserRatingsStorageTableHealthCheck>(nameof(UserRatingsStorageTableHealthCheck))
+            .AddCheck<DeletedMoviesSubscriptionHealthCheck>(nameof(DeletedMoviesSubscriptionHealthCheck));
 
         return services;
     }

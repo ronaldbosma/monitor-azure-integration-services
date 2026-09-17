@@ -4,6 +4,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace FunctionApp.HealthChecks;
 
+/// <summary>
+/// Represents a health check for the user ratings storage table in Azure Table Storage.
+/// </summary>
 internal class UserRatingsStorageTableHealthCheck : IHealthCheck
 {
     private readonly TableServiceClient _tableServiceClient;

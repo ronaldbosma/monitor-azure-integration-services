@@ -7,6 +7,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace FunctionApp.HealthChecks;
 
+/// <summary>
+/// Represents an Azure Function that checks the health of the application and its dependencies.
+/// </summary>
 public class HealthFunction
 {
     private readonly HealthCheckService _healthService;
