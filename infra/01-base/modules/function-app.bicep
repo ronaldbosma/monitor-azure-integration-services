@@ -111,6 +111,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
       minTlsVersion: '1.2'
       netFrameworkVersion: functionAppSettings.netFrameworkVersion
       linuxFxVersion: functionAppSettings.linuxFxVersion
+      healthCheckPath: '/api/health'
     }
     httpsOnly: true
   }
