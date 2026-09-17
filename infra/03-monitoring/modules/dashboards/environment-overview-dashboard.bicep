@@ -1046,11 +1046,11 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
               model: {
                 format: 'local'
                 granularity: 'auto'
-                relative: '4h'
+                relative: '1h'
               }
               displayCache: {
                 name: 'Local Time'
-                value: 'Past 4 hours'
+                value: 'Past hour'
               }
               filteredPartIds: [
                 'StartboardPart-MonitorChartPart-18d2dd69-b87f-40d8-a310-9e20401f3093'
