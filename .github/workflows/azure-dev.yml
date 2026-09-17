@@ -318,6 +318,12 @@ jobs:
           path: ./artifacts/integration-tests/TestResults/
           retention-days: 1
 
+      - name: Verify Availability Tests
+        run: |
+          .\.github\workflows\scripts\verify-availability-tests.ps1 `
+            -ResourceGroupName "${{ needs.deploy.outputs.AZURE_RESOURCE_GROUP }}" `
+            -AppInsightsName "${{ needs.deploy.outputs.AZURE_APPLICATION_INSIGHTS_NAME }}"
+
   # ------------------------------------------------------------
   # Clean Up Resources
   # ------------------------------------------------------------
