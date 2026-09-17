@@ -23,7 +23,7 @@ public class MovieDeletedEventHandlerFunction
 
     [Function("MovieDeletedEventHandlerFunction")]
     public async Task Run(
-        [ServiceBusTrigger("deleted-movies", "function-app", Connection = "ServiceBusConnection")]
+        [ServiceBusTrigger(Constants.DeletedMoviesTopicName, Constants.DeletedMoviesSubscriptionName, Connection = Constants.ServiceBusConnectionName)]
         MovieDeletedEvent deletedMovie)
     {
         var tableClient = _tableServiceClient.GetTableClient(Constants.UserRatingsTableName);
