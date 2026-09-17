@@ -15,6 +15,9 @@ import { tagsType } from '../../../99-shared/types.bicep'
 @description('The name of the environment overview dashboard')
 param name string
 
+@description('The name of the environment to deploy to')
+param environmentName string
+
 @description('Location to use for all resources')
 param location string
 
@@ -32,7 +35,7 @@ param serviceBusNamespaceName string
 //=============================================================================
 
 var dashboardTags { *: string } = union(tags, {
-  'hidden-title': 'Environment Overview'
+  'hidden-title': 'Environment Overview - ${environmentName}'
 })
 
 //=============================================================================
