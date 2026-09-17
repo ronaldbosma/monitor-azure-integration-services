@@ -278,6 +278,9 @@ jobs:
       id-token: write # Required to fetch an OIDC token for Azure authentication
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v6
         with:
