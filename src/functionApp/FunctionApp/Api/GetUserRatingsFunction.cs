@@ -34,7 +34,7 @@ public class GetUserRatingsFunction
             return new BadRequestObjectResult("Please provide a valid movie-id (GUID) in the query string, e.g. ?movie-id={guid}");
         }
 
-        var tableClient = _tableServiceClient.GetTableClient(Constants.UserSettingsTableName);
+        var tableClient = _tableServiceClient.GetTableClient(Constants.UserRatingsTableName);
 
         try
         {
