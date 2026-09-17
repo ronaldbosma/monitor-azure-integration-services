@@ -40,7 +40,7 @@ var tags tagsType = getTemplateTags(environmentName)
 // Resources
 //=============================================================================
 
-module availabilityTests './modules/dashboards/availability-tests.bicep' = {
+module availabilityTests './modules/availability-tests.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     environmentName: environmentName

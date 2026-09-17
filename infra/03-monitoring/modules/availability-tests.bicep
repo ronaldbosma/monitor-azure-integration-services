@@ -6,9 +6,9 @@
 // Imports
 //=============================================================================
 
-import { getResourceName } from '../../../99-shared/naming-conventions.bicep'
-import * as helpers from '../../../99-shared/helpers.bicep'
-import { tagsType } from '../../../99-shared/types.bicep'
+import { getResourceName } from '../../99-shared/naming-conventions.bicep'
+import * as helpers from '../../99-shared/helpers.bicep'
+import { tagsType } from '../../99-shared/types.bicep'
 
 //=============================================================================
 // Parameters
