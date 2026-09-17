@@ -83,6 +83,7 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2025-03-01' = {
   tags: tags
   kind: 'linux'
   sku: {
+    // Consumption and Flex Consumption don't support health checks, so we use a Basic plan here.
     name: 'B1'
     tier: 'Basic'
     capacity: 1
