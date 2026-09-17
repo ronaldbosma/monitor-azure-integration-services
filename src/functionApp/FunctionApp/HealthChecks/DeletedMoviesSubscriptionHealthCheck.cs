@@ -31,8 +31,13 @@ internal class DeletedMoviesSubscriptionHealthCheck : IHealthCheck
         {
             // Users don't experience any issues if the subscription is not accessible, so we return a degraded health check result instead of unhealthy.
             return HealthCheckResult.Degraded(
-                description: $"Unable to access Service Bus subscription {Constants.DeletedMoviesTopicName}/{Constants.DeletedMoviesSubscriptionName}",
-                exception: ex
+                description: $"Unable to access Service Bus subscription",
+                exception: ex,
+                data: new Dictionary<string, object>
+                {
+                    { "TopicName", Constants.DeletedMoviesTopicName },
+                    { "SubscriptionName", Constants.DeletedMoviesSubscriptionName }
+                }
             );
         }
     }

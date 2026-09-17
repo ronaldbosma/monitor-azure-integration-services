@@ -32,8 +32,12 @@ internal class UserRatingsStorageTableHealthCheck : IHealthCheck
         catch (Exception ex)
         {
             return HealthCheckResult.Unhealthy(
-                description: $"Unable to access storage table {Constants.UserRatingsTableName}",
-                exception: ex
+                description: $"Unable to access storage table",
+                exception: ex,
+                data: new Dictionary<string, object>
+                {
+                    { "TableName", Constants.UserRatingsTableName }
+                }
             );
         }
     }
