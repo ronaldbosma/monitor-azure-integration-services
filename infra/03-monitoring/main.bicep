@@ -30,6 +30,9 @@ param apiManagementServiceName string
 @description('The name of the App Insights instance')
 param appInsightsName string
 
+@description('The name of the Service Bus namespace')
+param serviceBusNamespaceName string
+
 //=============================================================================
 // Variables
 //=============================================================================
@@ -48,5 +51,16 @@ module availabilityTests './modules/availability-tests.bicep' = {
     tags: tags
     apiManagementServiceName: apiManagementServiceName
     appInsightsName: appInsightsName
+  }
+}
+
+module dashboards './modules/dashboards.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+    serviceBusNamespaceName: serviceBusNamespaceName
   }
 }

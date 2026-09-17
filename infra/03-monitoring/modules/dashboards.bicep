@@ -1,19 +1,17 @@
 //=============================================================================
-// Environment Overview Dashboard
+// Dashboards
 //=============================================================================
 
 //=============================================================================
 // Imports
 //=============================================================================
 
-import { tagsType } from '../../../99-shared/types.bicep'
+import { getResourceName } from '../../99-shared/naming-conventions.bicep'
+import { tagsType } from '../../99-shared/types.bicep'
 
 //=============================================================================
 // Parameters
 //=============================================================================
-
-@description('The name of the environment overview dashboard')
-param name string
 
 @description('The name of the environment to deploy to')
 param environmentName string
@@ -34,9 +32,7 @@ param serviceBusNamespaceName string
 // Variables
 //=============================================================================
 
-var dashboardTags { *: string } = union(tags, {
-  'hidden-title': 'Environment Overview - ${environmentName}'
-})
+var environmentOverviewDashboardName string = getResourceName('dashboard', environmentName, location, 'environment-overview')
 
 //=============================================================================
 // Existing resources
@@ -56,9 +52,11 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existi
 
 #disable-next-line use-recent-api-versions // The newer version 2026-04-01 is not available in every region
 resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' = {
-  name: name
+  name: environmentOverviewDashboardName
   location: location
-  tags: dashboardTags
+  tags: union(tags, {
+    'hidden-title': 'Environment Overview - ${environmentName}'
+  })
   properties: {
     lenses: [
       {

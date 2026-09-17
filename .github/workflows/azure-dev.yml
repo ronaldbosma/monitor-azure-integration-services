@@ -108,6 +108,7 @@ jobs:
           AZURE_RESOURCE_GROUP: sample
           AZURE_API_MANAGEMENT_NAME: sample
           AZURE_APPLICATION_INSIGHTS_NAME: sample
+          AZURE_SERVICE_BUS_NAMESPACE_NAME: sample
 
       - name: Validate Base Layer Template
         run: |
@@ -139,7 +140,8 @@ jobs:
                          location=$env:AZURE_LOCATION `
                          resourceGroupName='sample' `
                          apiManagementServiceName='sample' `
-                         appInsightsName='sample'
+                         appInsightsName='sample' `
+                         serviceBusNamespaceName='sample'
 
       - name: Create artifacts folder
         run: |
