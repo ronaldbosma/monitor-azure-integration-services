@@ -430,3 +430,6 @@ validation-*.bicepparam
 # Ignore local files
 *.local.http
 *.local.ps1
+
+# Ignore devcontainer lock file
+devcontainer-lock.json
