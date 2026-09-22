@@ -26,7 +26,7 @@ public class HealthFunction
         var responseContent = HealthResponse.FromHealthReport(healthResult);
         return new JsonResult(responseContent)
         {
-            StatusCode = healthResult.Status == HealthStatus.Healthy ? 200 : 503
+            StatusCode = healthResult.Status == HealthStatus.Unhealthy ? 503 : 200
         };
     }
 }
