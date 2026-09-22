@@ -1,0 +1,21 @@
+<policies>
+    <inbound>
+        <base />
+
+        <set-backend-service backend-id="function-app" />
+        <rewrite-uri template="/api/health" copy-unmatched-params="false" />
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+        <include-fragment fragment-id="handle-health-check-response" />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
@@ -7,9 +7,10 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>e83d6a28-fe9b-4265-ad5f-4398a9967e29</UserSecretsId>
   </PropertyGroup>
-  <ItemGroup>
+    <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Azure.Data.Tables" Version="12.12.0" />
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.2" />
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.9.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.52.0" />

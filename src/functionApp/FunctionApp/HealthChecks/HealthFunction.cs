@@ -1,0 +1,32 @@
+using FunctionApp.Models;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+namespace FunctionApp.HealthChecks;
+
+/// <summary>
+/// Represents an Azure Function that checks the health of the application and its dependencies.
+/// </summary>
+public class HealthFunction
+{
+    private readonly HealthCheckService _healthService;
+
+    public HealthFunction(HealthCheckService healthService)
+    {
+        _healthService = healthService;
+    }
+
+    [Function("HealthFunction")]
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req)
+    {
+        var healthResult = await _healthService.CheckHealthAsync(req.HttpContext.RequestAborted);
+        var responseContent = HealthResponse.FromHealthReport(healthResult);
+        return new JsonResult(responseContent)
+        {
+            StatusCode = healthResult.Status == HealthStatus.Unhealthy ? 503 : 200
+        };
+    }
+}

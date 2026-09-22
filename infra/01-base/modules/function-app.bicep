@@ -81,12 +81,16 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2025-03-01' = {
   name: functionAppSettings.appServicePlanName
   location: location
   tags: tags
-  kind: 'functionapp'
+  kind: 'linux'
   sku: {
-    name: 'Y1'
-    tier: 'Dynamic'
+    // Consumption and Flex Consumption don't support health checks, so we use a Basic plan here.
+    name: 'B1'
+    tier: 'Basic'
+    capacity: 1
   }
-  properties: {}
+  properties: {
+    reserved: true
+  }
 }
 
 // Create the Function App
@@ -95,7 +99,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
   name: functionAppSettings.functionAppName
   location: location
   tags: serviceTags
-  kind: 'functionapp'
+  kind: 'functionapp,linux'
   identity: {
     type: 'SystemAssigned'
   }
@@ -106,6 +110,8 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
       netFrameworkVersion: functionAppSettings.netFrameworkVersion
+      linuxFxVersion: functionAppSettings.linuxFxVersion
+      healthCheckPath: '/api/health'
     }
     httpsOnly: true
   }

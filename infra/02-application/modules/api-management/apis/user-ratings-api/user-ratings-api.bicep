@@ -36,6 +36,19 @@ resource userRatingsApi 'Microsoft.ApiManagement/service/apis@2025-09-01-preview
   }
 }
 
+resource getHealthOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
+  name: 'get-health'
+  parent: userRatingsApi
+
+  resource policies 'policies' = {
+    name: 'policy'
+    properties: {
+      format: 'rawxml'
+      value: loadTextContent('operations/get-health.xml')
+    }
+  }
+}
+
 resource getUserRatingsOperation 'Microsoft.ApiManagement/service/apis/operations@2025-09-01-preview' existing = {
   name: 'get-user-ratings'
   parent: userRatingsApi

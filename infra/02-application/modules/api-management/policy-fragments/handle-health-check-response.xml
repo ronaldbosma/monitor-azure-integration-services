@@ -1,0 +1,47 @@
+<fragment>
+    <choose>
+        <when condition="@(context.Response.StatusCode < 400)">
+            <!-- Extract health status from response message if available -->
+            <set-variable name="healthStatus" value="@{
+                var body = context.Response.Body?.As<JObject>(preserveContent: true);
+                return !string.IsNullOrWhiteSpace((string)body["status"]) ? (string)body["status"] : "Healthy";
+            }" />
+
+            <choose>
+                <when condition="@((string)context.Variables["healthStatus"] == "Healthy")">
+                    <trace source='@(context.Operation.Id)' severity="information">Health Status: Healthy</trace>
+                </when>
+                <otherwise>
+                    <!-- Log response body if health status is e.g. degraded -->
+                    <trace source='@(context.Operation.Id)' severity="information">
+                        <message>@($"Health Status: {(string)context.Variables["healthStatus"]}")</message>
+                        <metadata name="ResponseBody" value='@{
+                            var body = ((IResponse)context.Response)?.Body?.As<string>(preserveContent: true);
+                            return !string.IsNullOrWhiteSpace(body) ? body : "<empty>";
+                        }' />
+                        <metadata name="ResponseStatusCode" value='@{
+                            var statusCode = context.Response?.StatusCode.ToString();
+                            return !string.IsNullOrWhiteSpace(statusCode) ? statusCode : "<empty>";
+                        }' />
+                        <metadata name="ResponseStatusReason" value='@{
+                            var statusReason = context.Response?.StatusReason?.ToString();
+                            return !string.IsNullOrWhiteSpace(statusReason) ? statusReason : "<empty>";
+                        }' />
+                    </trace>
+                </otherwise>
+            </choose>
+
+            <set-status code="200" />
+        </when>
+        <otherwise>
+            <set-variable name="healthStatus" value="Unhealthy" />
+            <set-status code="503" />
+            <!-- The global policy will take care of logging the unhealthy response. So no additional logging is needed here. -->
+        </otherwise>
+    </choose>
+
+    <set-header name="Content-Type" exists-action="override">
+        <value>text/plain</value>
+    </set-header>
+    <set-body>@((string)context.Variables["healthStatus"])</set-body>
+</fragment>

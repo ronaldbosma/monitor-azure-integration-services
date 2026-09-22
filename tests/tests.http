@@ -1,3 +1,12 @@
+# Get Health of User Ratings API
+GET https://{{apimHostname}}/user-ratings/health
+Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}
+Ocp-Apim-Trace: true
+
+
+###
+
+
 # Get all movies
 GET https://{{apimHostname}}/movies
 Ocp-Apim-Subscription-Key: {{apimSubscriptionKey}}

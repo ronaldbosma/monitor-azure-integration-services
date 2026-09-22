@@ -75,6 +75,15 @@ resource handleErrorResponseFragment 'Microsoft.ApiManagement/service/policyFrag
   }
 }
 
+resource handleHealthCheckResponseFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
+  parent: apiManagementService
+  name: 'handle-health-check-response'
+  properties: {
+      format: 'rawxml'
+      value: loadTextContent('policy-fragments/handle-health-check-response.xml')
+  }
+}
+
 resource logErrorResponseFragment 'Microsoft.ApiManagement/service/policyFragments@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'log-error-response'
@@ -133,6 +142,7 @@ module moviesApi 'apis/movies-api/movies-api.bicep' = {
     globalPolicies
     serviceBusBackend
     storageAccountBackends
+    handleHealthCheckResponseFragment
     verifyMovieWithSameTitleDoesNotExistFragment
   ]
 }
@@ -145,6 +155,7 @@ module userRatingsApi 'apis/user-ratings-api/user-ratings-api.bicep' = {
   dependsOn: [
     globalPolicies
     functionAppBackend
+    handleHealthCheckResponseFragment
   ]
 }
 
