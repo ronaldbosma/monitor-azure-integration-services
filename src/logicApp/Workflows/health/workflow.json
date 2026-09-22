@@ -1,0 +1,73 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "actions": {
+            "Response": {
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                    "statusCode": 200
+                },
+                "runAfter": {
+                    "Check_Movies_API_Health": [
+                        "SUCCEEDED"
+                    ],
+                    "Check_User_Ratings_API_Health": [
+                        "SUCCEEDED"
+                    ]
+                }
+            },
+            "Check_Movies_API_Health": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('api-management-gateway-url')}/movies/health",
+                    "method": "GET",
+                    "headers": {
+                        "Ocp-Apim-Subscription-Key": "@{parameters('api-management-subscription-key')}"
+                    },
+                    "retryPolicy": {
+                        "type": "fixed",
+                        "count": 2,
+                        "interval": "PT5S"
+                    }
+                },
+                "runAfter": {},
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                }
+            },
+            "Check_User_Ratings_API_Health": {
+                "type": "Http",
+                "inputs": {
+                    "uri": "@{parameters('api-management-gateway-url')}/user-ratings/health",
+                    "method": "GET",
+                    "headers": {
+                        "Ocp-Apim-Subscription-Key": "@{parameters('api-management-subscription-key')}"
+                    },
+                    "retryPolicy": {
+                        "type": "fixed",
+                        "count": 2,
+                        "interval": "PT5S"
+                    }
+                },
+                "runAfter": {},
+                "runtimeConfiguration": {
+                    "contentTransfer": {
+                        "transferMode": "Chunked"
+                    }
+                }
+            }
+        },
+        "outputs": {},
+        "triggers": {
+            "HTTP_request": {
+                "type": "Request",
+                "kind": "Http"
+            }
+        }
+    },
+    "kind": "Stateful"
+}

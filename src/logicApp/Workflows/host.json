@@ -8,7 +8,8 @@
     "workflow": {
       "Settings": {
         "Runtime.ApplicationInsightTelemetryVersion": "v2",
-        "Runtime.ApplicationInsights.PreserveIncomingOperationId": "true"
+        "Runtime.ApplicationInsights.PreserveIncomingOperationId": "true",
+        "Workflows.HealthCheckWorkflowName" : "health"
       }
     }
   }
