@@ -24,7 +24,7 @@ public class GetUserRatingsFunction
     }
 
     [Function("GetUserRatingsFunction")]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "user-ratings")] HttpRequest req)
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "user-ratings")] HttpRequest req)
     {
         _logger.LogInformation("GetUserRatingsFunction processed a request.");
 
@@ -40,14 +40,18 @@ public class GetUserRatingsFunction
         {
             // Query all entities where PartitionKey == movieId
             string filter = $"PartitionKey eq '{movieId}'";
-            var query = tableClient.Query<UserRatingEntity>(filter: filter);
+            var query = tableClient.QueryAsync<UserRatingEntity>(filter: filter, cancellationToken: req.HttpContext.RequestAborted);
 
-            var results = query.Select(e => new UserRating
+            var results = new List<UserRating>();
+            await foreach (var entity in query)
             {
-                MovieId = movieId,
-                UserId = Guid.Parse(e.RowKey),
-                Rating = e.Rating
-            }).ToList();
+                results.Add(new UserRating
+                {
+                    MovieId = movieId,
+                    UserId = Guid.Parse(entity.RowKey),
+                    Rating = entity.Rating
+                });
+            }
 
             return new OkObjectResult(results);
         }
