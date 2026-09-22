@@ -101,7 +101,7 @@ public class InsertOrUpdateUserRatingFunction
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error inserting/updating user rating for movie {MovieId} user {UserId}", userRating.MovieId, userRating.UserId);
-            throw;
+            return new ObjectResult("Failed to insert or update user rating") { StatusCode = 500 };
         }
     }
 }

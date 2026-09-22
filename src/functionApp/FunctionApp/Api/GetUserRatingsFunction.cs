@@ -39,7 +39,7 @@ public class GetUserRatingsFunction
         try
         {
             // Query all entities where PartitionKey == movieId
-            string filter = $"PartitionKey foo '{movieId}'";
+            string filter = $"PartitionKey eq '{movieId}'";
             var query = tableClient.QueryAsync<UserRatingEntity>(filter: filter, cancellationToken: req.HttpContext.RequestAborted);
 
             var results = new List<UserRating>();
@@ -58,7 +58,7 @@ public class GetUserRatingsFunction
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error querying user ratings for movie {MovieId}", movieId);
-            throw;
+            return new ObjectResult("Failed to retrieve user ratings") { StatusCode = 500 };
         }
     }
 }
