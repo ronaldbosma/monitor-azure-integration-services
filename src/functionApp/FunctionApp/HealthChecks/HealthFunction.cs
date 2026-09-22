@@ -22,7 +22,7 @@ public class HealthFunction
     [Function("HealthFunction")]
     public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequest req)
     {
-        var healthResult = await _healthService.CheckHealthAsync();
+        var healthResult = await _healthService.CheckHealthAsync(req.HttpContext.RequestAborted);
         var responseContent = HealthResponse.FromHealthReport(healthResult);
         return new JsonResult(responseContent)
         {
