@@ -28,7 +28,7 @@ public class InsertOrUpdateUserRatingFunction
     }
 
     [Function("InsertOrUpdateUserRatingFunction")]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", "put")] HttpRequest req)
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", "put", Route = "user-ratings")] HttpRequest req)
     {
         _logger.LogInformation("InsertOrUpdateUserRatingFunction processed a request.");
 
@@ -43,14 +43,14 @@ public class InsertOrUpdateUserRatingFunction
             return validationResult;
         }
 
-        return await InsertOrUpdateUserRatingAsync(userRating);
+        return await InsertOrUpdateUserRatingAsync(userRating, req.HttpContext.RequestAborted);
     }
 
     private async Task<UserRating?> ParseRequestAsync(HttpRequest req)
     {
         try
         {
-            return await req.ReadFromJsonAsync<UserRating>();
+            return await req.ReadFromJsonAsync<UserRating>(cancellationToken: req.HttpContext.RequestAborted);
         }
         catch (JsonException ex)
         {
@@ -81,7 +81,7 @@ public class InsertOrUpdateUserRatingFunction
         return true;
     }
 
-    private async Task<IActionResult> InsertOrUpdateUserRatingAsync(UserRating userRating)
+    private async Task<IActionResult> InsertOrUpdateUserRatingAsync(UserRating userRating, CancellationToken cancellationToken)
     {
         try
         {
@@ -94,14 +94,14 @@ public class InsertOrUpdateUserRatingFunction
                 Rating = userRating.Rating
             };
 
-            tableClient.UpsertEntity(entity, TableUpdateMode.Replace);
+            await tableClient.UpsertEntityAsync(entity, TableUpdateMode.Replace, cancellationToken);
 
             return new OkResult();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error inserting/updating user rating for movie {MovieId} user {UserId}", userRating.MovieId, userRating.UserId);
-            return new ObjectResult("Failed to insert or update user rating") { StatusCode = 500 };
+            throw;
         }
     }
 }
