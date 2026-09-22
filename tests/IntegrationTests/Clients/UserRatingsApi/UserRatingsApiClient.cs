@@ -22,6 +22,14 @@ internal class UserRatingsApiClient : IDisposable
     }
 
     /// <summary>
+    /// Gets the health status for the User Ratings API.
+    /// </summary>
+    public async Task<HttpResponseMessage> GetHealthAsync()
+    {
+        return await _httpClient.GetAsync("/user-ratings/health");
+    }
+
+    /// <summary>
     /// Creates a new instance of the UserRatingsApiClient, loading configuration and retrieving the subscription key from Azure Key Vault.
     /// </summary>
     /// <returns>A task that represents the asynchronous operation. The task result contains the created UserRatingsApiClient instance.</returns>
