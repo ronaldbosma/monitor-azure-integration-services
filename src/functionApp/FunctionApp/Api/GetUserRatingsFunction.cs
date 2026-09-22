@@ -58,7 +58,7 @@ public class GetUserRatingsFunction
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error querying user ratings for movie {MovieId}", movieId);
-            return new ObjectResult("Failed to retrieve user ratings") { StatusCode = 500 };
+            throw;
         }
     }
 }
