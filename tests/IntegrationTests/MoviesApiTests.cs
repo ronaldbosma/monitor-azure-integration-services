@@ -27,6 +27,19 @@ public class MoviesApiTests
     }
 
     [TestMethod]
+    public async Task GetHealth_NoArguments_200OkReturnedWithHealthyStatus()
+    {
+        // Act
+        var result = await _sut.GetHealthAsync();
+
+        // Assert
+        Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+
+        var actualStatus = await result.Content.ReadAsStringAsync();
+        Assert.AreEqual("Healthy", actualStatus);
+    }
+
+    [TestMethod]
     public async Task GetMoviesAsync_NoFilterSpecified_MoviesReturned()
     {
         // Arrange
