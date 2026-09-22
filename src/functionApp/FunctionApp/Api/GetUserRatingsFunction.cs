@@ -24,7 +24,7 @@ public class GetUserRatingsFunction
     }
 
     [Function("GetUserRatingsFunction")]
-    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+    public IActionResult Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "user-ratings")] HttpRequest req)
     {
         _logger.LogInformation("GetUserRatingsFunction processed a request.");
 

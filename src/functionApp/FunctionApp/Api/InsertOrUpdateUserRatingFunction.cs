@@ -28,7 +28,7 @@ public class InsertOrUpdateUserRatingFunction
     }
 
     [Function("InsertOrUpdateUserRatingFunction")]
-    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", "put")] HttpRequest req)
+    public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", "put", Route = "user-ratings")] HttpRequest req)
     {
         _logger.LogInformation("InsertOrUpdateUserRatingFunction processed a request.");
 

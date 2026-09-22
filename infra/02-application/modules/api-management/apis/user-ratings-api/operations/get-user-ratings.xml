@@ -3,7 +3,7 @@
         <base />
 
         <set-backend-service backend-id="function-app" />
-        <rewrite-uri template="/api/GetUserRatingsFunction?movie-id={movie-id}" copy-unmatched-params="false" />
+        <rewrite-uri template="/api/user-ratings?movie-id={movie-id}" copy-unmatched-params="false" />
     </inbound>
 
     <backend>
