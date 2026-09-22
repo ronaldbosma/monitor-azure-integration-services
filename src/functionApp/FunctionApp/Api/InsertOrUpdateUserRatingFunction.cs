@@ -43,14 +43,14 @@ public class InsertOrUpdateUserRatingFunction
             return validationResult;
         }
 
-        return await InsertOrUpdateUserRatingAsync(userRating);
+        return await InsertOrUpdateUserRatingAsync(userRating, req.HttpContext.RequestAborted);
     }
 
     private async Task<UserRating?> ParseRequestAsync(HttpRequest req)
     {
         try
         {
-            return await req.ReadFromJsonAsync<UserRating>();
+            return await req.ReadFromJsonAsync<UserRating>(cancellationToken: req.HttpContext.RequestAborted);
         }
         catch (JsonException ex)
         {
@@ -81,7 +81,7 @@ public class InsertOrUpdateUserRatingFunction
         return true;
     }
 
-    private async Task<IActionResult> InsertOrUpdateUserRatingAsync(UserRating userRating)
+    private async Task<IActionResult> InsertOrUpdateUserRatingAsync(UserRating userRating, CancellationToken cancellationToken)
     {
         try
         {
@@ -94,7 +94,7 @@ public class InsertOrUpdateUserRatingFunction
                 Rating = userRating.Rating
             };
 
-            tableClient.UpsertEntity(entity, TableUpdateMode.Replace);
+            await tableClient.UpsertEntityAsync(entity, TableUpdateMode.Replace, cancellationToken);
 
             return new OkResult();
         }
