@@ -36,6 +36,14 @@ internal class MoviesApiClient : IDisposable
     }
 
     /// <summary>
+    /// Gets the health status for the Movies API.
+    /// </summary>
+    public async Task<HttpResponseMessage> GetHealthAsync()
+    {
+        return await _httpClient.GetAsync("/movies/health");
+    }
+
+    /// <summary>
     /// Gets a list of movies, optionally filtered by title.
     /// </summary>
     public async Task<HttpResponseMessage> GetMoviesAsync(string? title = null)
