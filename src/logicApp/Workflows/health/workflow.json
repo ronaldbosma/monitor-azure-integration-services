@@ -65,7 +65,10 @@
         "triggers": {
             "HTTP_request": {
                 "type": "Request",
-                "kind": "Http"
+                "kind": "Http",
+                "inputs": {
+                    "method": "GET"
+                }
             }
         }
     },
