@@ -119,6 +119,7 @@ resource logicApp 'Microsoft.Web/sites@2025-03-01' = {
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
       netFrameworkVersion: logicAppSettings.netFrameworkVersion
+      // Path to the health check endpoint for the Logic App must not exceed 64 characters.
       healthCheckPath: '/api/health/triggers/HTTP_request/invoke?api-version=2022-05-01'
     }
     httpsOnly: true
