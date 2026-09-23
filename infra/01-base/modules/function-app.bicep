@@ -57,6 +57,11 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
   WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionString
   WEBSITE_CONTENTSHARE: toLower(functionAppSettings.functionAppName)
   WEBSITE_USE_PLACEHOLDER_DOTNETISOLATED: '1'
+
+  // Number of minutes before given instance is deemed unhealthy and:
+  // - reflected in the "Health check status" metric
+  // - removed from the load balancer if applicable
+  WEBSITE_HEALTHCHECK_MAXPINGFAILURES: 2
 }
 
 //=============================================================================
