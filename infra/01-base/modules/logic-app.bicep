@@ -67,7 +67,7 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
   // Number of minutes before given instance is deemed unhealthy and:
   // - reflected in the "Health check status" metric
   // - removed from the load balancer if applicable
-  WEBSITE_HEALTHCHECK_MAXPINGFAILURES: 2
+  WEBSITE_HEALTHCHECK_MAXPINGFAILURES: '2'
 }
 
 //=============================================================================
