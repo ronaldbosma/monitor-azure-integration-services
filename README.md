@@ -85,6 +85,7 @@ The repository consists of the following files and directories:
 │   ├── 01-base                [ Base layer that deploys the various Azure Services ]
 │   ├── 02-application         [ Application layer that deploys application infrastructure resources, like APIs in API Management  ]
 │   └── 99-shared              [ Reusable modules, user-defined functions and user-defined types ]
+├── scripts                    [ Helper scripts for development and deployment tasks ]
 ├── src
 │   ├── functionApp            [ Azure Functions solution ]
 │   └── logicApp               [ Logic App workspace ]
