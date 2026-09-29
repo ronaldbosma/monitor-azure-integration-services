@@ -1117,6 +1117,63 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
           }
           {
             position: {
+              x: 0
+              y: 9
+              colSpan: 10
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'partTitle'
+                  value: 'Fired alerts in ${resourceGroup().name}'
+                  isOptional: true
+                }
+                {
+                  name: 'isShared'
+                  isOptional: true
+                }
+                {
+                  name: 'queryId'
+                  isOptional: true
+                }
+                {
+                  name: 'chartType'
+                  value: {}
+                  isOptional: true
+                }
+                {
+                  name: 'queryScope'
+                  value: {
+                    scope: {
+                      scope: 0
+                      values: []
+                    }
+                    values: []
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'formatResults'
+                  value: true
+                  isOptional: true
+                }
+                {
+                  name: 'query'
+                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(properties.essentials.targetResource),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == \'Fired\'\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/ArgQueryGridTile'
+              settings: {}
+              partHeader: {
+                title: 'Fired alerts in ${resourceGroup().name}'
+                subtitle: ''
+              }
+            }
+          }
+          {
+            position: {
               x: 18
               y: 9
               colSpan: 9
@@ -1265,16 +1322,16 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 value: 'Past hour'
               }
               filteredPartIds: [
-                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56600e'
-                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d566010'
-                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d566012'
-                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d566014'
-                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d566016'
-                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d566018'
-                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56601e'
-                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d56601a'
-                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56601c'
-                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56611a'
+                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd00e'
+                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd010'
+                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd012'
+                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd014'
+                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd016'
+                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd018'
+                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd01a'
+                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd01c'
+                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd01e'
+                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd022'
               ]
             }
           }
