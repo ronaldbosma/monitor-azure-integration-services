@@ -12,5 +12,12 @@
         "Workflows.HealthCheckWorkflowName" : "health"
       }
     }
+  },
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": false
+      }
+    }
   }
 }
