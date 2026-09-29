@@ -108,6 +108,8 @@ jobs:
           AZURE_RESOURCE_GROUP: sample
           AZURE_API_MANAGEMENT_NAME: sample
           AZURE_APPLICATION_INSIGHTS_NAME: sample
+          AZURE_FUNCTION_APP_NAME: sample
+          AZURE_LOGIC_APP_NAME: sample
           AZURE_SERVICE_BUS_NAMESPACE_NAME: sample
 
       - name: Validate Base Layer Template
