@@ -13,6 +13,8 @@
       - apiManagement        (Microsoft.ApiManagement/service)
       - logicApp             (Microsoft.Web/sites)
       - functionApp          (Microsoft.Web/sites)
+      - resourceGroup()      (function)
+      - subscription()       (function)
       - environmentName      (parameter)
       - location             (parameter)
 
@@ -130,6 +132,8 @@ $replacements = [ordered]@{
     $ApiManagementName                                                                   = 'apiManagement.name'
     $LogicAppName                                                                        = 'logicApp.name'
     $FunctionAppName                                                                     = 'functionApp.name'
+    $ResourceGroupName                                                                   = 'resourceGroup().name'
+    $SubscriptionId                                                                      = 'subscription().subscriptionId'
     $EnvironmentName                                                                     = 'environmentName'
     $Location                                                                            = 'location'
     'INSERT LOCATION'                                                                    = 'location'
