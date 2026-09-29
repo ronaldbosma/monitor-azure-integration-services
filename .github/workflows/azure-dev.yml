@@ -141,6 +141,8 @@ jobs:
                          resourceGroupName='sample' `
                          apiManagementServiceName='sample' `
                          appInsightsName='sample' `
+                         functionAppName='sample' `
+                         logicAppName='sample' `
                          serviceBusNamespaceName='sample'
 
       - name: Create artifacts folder
