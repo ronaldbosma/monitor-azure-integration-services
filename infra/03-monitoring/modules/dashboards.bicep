@@ -25,6 +25,12 @@ param tags tagsType
 @description('The name of the App Insights instance')
 param appInsightsName string
 
+@description('The name of the Function App')
+param functionAppName string
+
+@description('The name of the Logic App')
+param logicAppName string
+
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
 
@@ -42,6 +48,14 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
 }
 
+resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
+  name: functionAppName
+}
+
+resource logicApp 'Microsoft.Web/sites@2025-03-01' existing = {
+  name: logicAppName
+}
+
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existing = {
   name: serviceBusNamespaceName
 }
@@ -51,12 +65,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existi
 //=============================================================================
 
 #disable-next-line use-recent-api-versions // The newer version 2026-04-01 is not available in every region
-resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' = {
-  name: environmentOverviewDashboardName
-  location: location
-  tags: union(tags, {
-    'hidden-title': 'Environment Overview - ${environmentName}'
-  })
+resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-preview' = {
   properties: {
     lenses: [
       {
@@ -1066,4 +1075,9 @@ resource Environment_Overview 'Microsoft.Portal/dashboards@2025-04-01-preview' =
       }
     }
   }
+  name: environmentOverviewDashboardName
+  location: location
+  tags: union(tags, {
+    'hidden-title': 'Environment Overview - ${environmentName}'
+  })
 }

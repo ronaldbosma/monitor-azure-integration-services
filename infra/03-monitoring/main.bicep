@@ -30,6 +30,12 @@ param apiManagementServiceName string
 @description('The name of the App Insights instance')
 param appInsightsName string
 
+@description('The name of the Function App')
+param functionAppName string
+
+@description('The name of the Logic App')
+param logicAppName string
+
 @description('The name of the Service Bus namespace')
 param serviceBusNamespaceName string
 
@@ -61,6 +67,8 @@ module dashboards './modules/dashboards.bicep' = {
     location: location
     tags: tags
     appInsightsName: appInsightsName
+    functionAppName: functionAppName
+    logicAppName: logicAppName
     serviceBusNamespaceName: serviceBusNamespaceName
   }
 }
