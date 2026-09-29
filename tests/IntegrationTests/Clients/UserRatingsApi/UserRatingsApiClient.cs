@@ -36,6 +36,14 @@ internal class UserRatingsApiClient : IDisposable
     }
 
     /// <summary>
+    /// Gets the health status for the User Ratings API.
+    /// </summary>
+    public async Task<HttpResponseMessage> GetHealthAsync()
+    {
+        return await _httpClient.GetAsync("/user-ratings/health");
+    }
+
+    /// <summary>
     /// Gets all user ratings for the specified movie.
     /// </summary>
     public async Task<HttpResponseMessage> GetUserRatingsAsync(Guid movieId)

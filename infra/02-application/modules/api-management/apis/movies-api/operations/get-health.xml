@@ -1,0 +1,27 @@
+<policies>
+    <inbound>
+        <base />
+
+        <!-- Select RowKey of first movie to check if backend is accessible -->
+        <rewrite-uri template="/movies()" copy-unmatched-params="false" />
+        <set-query-parameter name="$top" exists-action="override">
+            <value>1</value>
+        </set-query-parameter>
+        <set-query-parameter name="$select" exists-action="override">
+            <value>RowKey</value>
+        </set-query-parameter>
+    </inbound>
+
+    <backend>
+        <base />
+    </backend>
+
+    <outbound>
+        <base />
+        <include-fragment fragment-id="handle-health-check-response" />
+    </outbound>
+
+    <on-error>
+        <base />
+    </on-error>
+</policies>

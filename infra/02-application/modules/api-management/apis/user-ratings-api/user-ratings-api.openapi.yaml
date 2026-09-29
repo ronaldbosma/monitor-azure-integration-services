@@ -4,6 +4,29 @@ info:
   description: API for retrieving user ratings for a movie.
   version: 1.0.0
 paths:
+  /health:
+    get:
+      operationId: get-health
+      summary: Get API health
+      description: Gets the health status of the User Ratings API.
+      responses:
+        '200':
+          description: The API is healthy or degraded.
+          content:
+            text/plain:
+              schema:
+                type: string
+                enum:
+                  - Healthy
+                  - Degraded
+        '503':
+          description: The API is unhealthy.
+          content:
+            text/plain:
+              schema:
+                type: string
+                enum:
+                  - Unhealthy
   /:
     get:
       operationId: get-user-ratings

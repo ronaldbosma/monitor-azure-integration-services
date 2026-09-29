@@ -63,6 +63,11 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
   WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: storageAccountConnectionString
   WEBSITE_CONTENTSHARE: toLower(logicAppSettings.logicAppName)
   WEBSITE_NODE_DEFAULT_VERSION: '~22'
+
+  // Number of minutes before given instance is deemed unhealthy and:
+  // - reflected in the "Health check status" metric
+  // - removed from the load balancer if applicable
+  WEBSITE_HEALTHCHECK_MAXPINGFAILURES: '2'
 }
 
 //=============================================================================
@@ -114,6 +119,8 @@ resource logicApp 'Microsoft.Web/sites@2025-03-01' = {
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
       netFrameworkVersion: logicAppSettings.netFrameworkVersion
+      // Path to the health check endpoint for the Logic App must not exceed 64 characters.
+      healthCheckPath: '/api/health/triggers/HTTP_request/invoke?api-version=2022-05-01'
     }
     httpsOnly: true
   }
