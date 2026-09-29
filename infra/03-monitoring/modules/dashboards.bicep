@@ -73,6 +73,134 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
         parts: [
           {
             position: {
+              x: 0
+              y: 0
+              colSpan: 10
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'options'
+                  value: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: appInsights.id
+                          }
+                          name: 'availabilityResults/availabilityPercentage'
+                          aggregationType: 4
+                          namespace: 'microsoft.insights/components'
+                          metricVisualization: {
+                            displayName: 'Availability'
+                            resourceDisplayName: appInsights.name
+                            color: '#54A300'
+                          }
+                        }
+                      ]
+                      title: 'Availability'
+                      titleKind: 2
+                      visualization: {
+                        chartType: 2
+                        axisVisualization: {
+                          y: {
+                            isVisible: true
+                            min: 0
+                            max: 100
+                          }
+                          x: {
+                            isVisible: true
+                          }
+                        }
+                      }
+                      openBladeOnClick: {
+                        openBlade: true
+                        destinationBlade: {
+                          bladeName: 'ResourceMenuBlade'
+                          parameters: {
+                            id: appInsights.id
+                            menuid: 'availability'
+                          }
+                          extensionName: 'HubsExtension'
+                          options: {
+                            parameters: {
+                              id: appInsights.id
+                              menuid: 'availability'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'sharedTimeRange'
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/HubsExtension/PartType/MonitorChartPart'
+              settings: {
+                content: {
+                  options: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: appInsights.id
+                          }
+                          name: 'availabilityResults/availabilityPercentage'
+                          aggregationType: 4
+                          namespace: 'microsoft.insights/components'
+                          metricVisualization: {
+                            displayName: 'Availability'
+                            resourceDisplayName: appInsights.name
+                            color: '#54A300'
+                          }
+                        }
+                      ]
+                      title: 'Availability'
+                      titleKind: 2
+                      visualization: {
+                        chartType: 2
+                        axisVisualization: {
+                          y: {
+                            isVisible: true
+                            min: 0
+                            max: 100
+                          }
+                          x: {
+                            isVisible: true
+                          }
+                        }
+                        disablePinning: true
+                      }
+                      openBladeOnClick: {
+                        openBlade: true
+                        destinationBlade: {
+                          bladeName: 'ResourceMenuBlade'
+                          parameters: {
+                            id: appInsights.id
+                            menuid: 'availability'
+                          }
+                          extensionName: 'HubsExtension'
+                          options: {
+                            parameters: {
+                              id: appInsights.id
+                              menuid: 'availability'
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+          {
+            position: {
               x: 10
               y: 0
               colSpan: 8
@@ -290,126 +418,75 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
               x: 0
               y: 3
               colSpan: 10
-              rowSpan: 5
+              rowSpan: 3
             }
             metadata: {
               inputs: [
                 {
-                  name: 'resourceTypeMode'
+                  name: 'options'
                   isOptional: true
                 }
                 {
-                  name: 'ComponentId'
-                  isOptional: true
-                }
-                {
-                  name: 'Scope'
-                  value: {
-                    resourceIds: [
-                      appInsights.id
-                    ]
-                  }
-                  isOptional: true
-                }
-                {
-                  name: 'PartId'
-                  value: 'b2f975f1-d716-44e9-be3d-866c400a9c37'
-                  isOptional: true
-                }
-                {
-                  name: 'Version'
-                  value: '2.0'
-                  isOptional: true
-                }
-                {
-                  name: 'TimeRange'
-                  value: 'P1D'
-                  isOptional: true
-                }
-                {
-                  name: 'DashboardId'
-                  isOptional: true
-                }
-                {
-                  name: 'DraftRequestParameters'
-                  isOptional: true
-                }
-                {
-                  name: 'Query'
-                  value: 'let requestSummary = requests\n| where customDimensions["Service Type"] == "API Management"\n| extend api = tostring(customDimensions["API Name"])\n| extend isClientFailure = success==false and toint(resultCode) between (400 .. 499)\n| extend isServerFailure = success==false and isClientFailure==false\n| summarize \n    lastClientFailure=maxif(timestamp, isClientFailure),\n    lastServerFailure=maxif(timestamp, isServerFailure),\n    lastSuccess=maxif(timestamp, success==true) \n  by api;\n              \nrequests\n| where customDimensions["Service Type"] == "API Management"\n| extend api = tostring(customDimensions["API Name"])\n| evaluate pivot(resultCode, count(), api)\n| join kind=leftouter requestSummary on api\n| project-away api1 // Removes duplicate api name column introduced by join\n| project-reorder api, lastServerFailure, * desc, lastSuccess, lastClientFailure // This will make sure the higher result codes (e.g. errors) are rendered first\n| sort by lastServerFailure desc, api asc\n'
-                  isOptional: true
-                }
-                {
-                  name: 'ControlType'
-                  value: 'AnalyticsGrid'
-                  isOptional: true
-                }
-                {
-                  name: 'SpecificChart'
-                  isOptional: true
-                }
-                {
-                  name: 'PartTitle'
-                  value: 'Log Analytics'
-                  isOptional: true
-                }
-                {
-                  name: 'PartSubTitle'
-                  value: appInsights.name
-                  isOptional: true
-                }
-                {
-                  name: 'Dimensions'
-                  isOptional: true
-                }
-                {
-                  name: 'LegendOptions'
-                  isOptional: true
-                }
-                {
-                  name: 'IsQueryContainTimeRange'
-                  value: false
+                  name: 'sharedTimeRange'
                   isOptional: true
                 }
               ]
-              type: 'Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart'
+              type: 'Extension/HubsExtension/PartType/MonitorChartPart'
               settings: {
                 content: {
-                  GridColumnsWidth: {
-                    '200': '58px'
-                    '201': '58px'
-                    '202': '58px'
-                    '203': '58px'
-                    '204': '58px'
-                    '400': '58px'
-                    '401': '58px'
-                    '403': '58px'
-                    '404': '58px'
-                    '405': '58px'
-                    '406': '58px'
-                    '408': '58px'
-                    '409': '58px'
-                    '412': '58px'
-                    '413': '58px'
-                    '415': '58px'
-                    '422': '58px'
-                    '429': '58px'
-                    '500': '58px'
-                    '501': '58px'
-                    '502': '58px'
-                    '503': '58px'
-                    '504': '58px'
-                    '0 [not sent in full (see exception telemetries)]': '75px'
-                    api: '125px'
-                    lastClientFailure: '138px'
-                    lastServerFailure: '138px'
-                    lastSuccess: '138px'
+                  options: {
+                    chart: {
+                      metrics: [
+                        {
+                          resourceMetadata: {
+                            id: functionApp.id
+                          }
+                          name: 'HealthCheckStatus'
+                          aggregationType: 4
+                          namespace: 'microsoft.web/sites'
+                          metricVisualization: {
+                            displayName: 'Health check status'
+                            resourceDisplayName: functionApp.name
+                          }
+                        }
+                        {
+                          resourceMetadata: {
+                            id: logicApp.id
+                          }
+                          name: 'HealthCheckStatus'
+                          aggregationType: 4
+                          namespace: 'microsoft.web/sites'
+                          metricVisualization: {
+                            displayName: 'Health check status'
+                            resourceDisplayName: logicApp.name
+                          }
+                        }
+                      ]
+                      title: 'Avg Health check status for ${functionApp.name} and ${logicApp.name}'
+                      titleKind: 1
+                      visualization: {
+                        chartType: 2
+                        legendVisualization: {
+                          isVisible: true
+                          position: 2
+                          hideHoverCard: false
+                          hideLabelNames: true
+                        }
+                        axisVisualization: {
+                          x: {
+                            isVisible: true
+                            axisType: 2
+                          }
+                          y: {
+                            isVisible: true
+                            axisType: 1
+                          }
+                        }
+                        disablePinning: true
+                      }
+                    }
                   }
                 }
-              }
-              partHeader: {
-                title: 'API Management requests'
-                subtitle: 'Number of requests per API and result code, including the timestamps of the latest success, server-side failure, and client-side failure'
               }
             }
           }
@@ -628,6 +705,134 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                     }
                   }
                 }
+              }
+            }
+          }
+          {
+            position: {
+              x: 0
+              y: 6
+              colSpan: 10
+              rowSpan: 3
+            }
+            metadata: {
+              inputs: [
+                {
+                  name: 'resourceTypeMode'
+                  isOptional: true
+                }
+                {
+                  name: 'ComponentId'
+                  isOptional: true
+                }
+                {
+                  name: 'Scope'
+                  value: {
+                    resourceIds: [
+                      appInsights.id
+                    ]
+                  }
+                  isOptional: true
+                }
+                {
+                  name: 'PartId'
+                  value: 'b2f975f1-d716-44e9-be3d-866c400a9c37'
+                  isOptional: true
+                }
+                {
+                  name: 'Version'
+                  value: '2.0'
+                  isOptional: true
+                }
+                {
+                  name: 'TimeRange'
+                  value: 'P1D'
+                  isOptional: true
+                }
+                {
+                  name: 'DashboardId'
+                  isOptional: true
+                }
+                {
+                  name: 'DraftRequestParameters'
+                  isOptional: true
+                }
+                {
+                  name: 'Query'
+                  value: 'let requestSummary = requests\n| where customDimensions["Service Type"] == "API Management"\n| extend api = tostring(customDimensions["API Name"])\n| extend isClientFailure = success==false and toint(resultCode) between (400 .. 499)\n| extend isServerFailure = success==false and isClientFailure==false\n| summarize \n    lastClientFailure=maxif(timestamp, isClientFailure),\n    lastServerFailure=maxif(timestamp, isServerFailure),\n    lastSuccess=maxif(timestamp, success==true) \n  by api;\n              \nrequests\n| where customDimensions["Service Type"] == "API Management"\n| extend api = tostring(customDimensions["API Name"])\n| evaluate pivot(resultCode, count(), api)\n| join kind=leftouter requestSummary on api\n| project-away api1 // Removes duplicate api name column introduced by join\n| project-reorder api, lastServerFailure, * desc, lastSuccess, lastClientFailure // This will make sure the higher result codes (e.g. errors) are rendered first\n| sort by lastServerFailure desc, api asc\n'
+                  isOptional: true
+                }
+                {
+                  name: 'ControlType'
+                  value: 'AnalyticsGrid'
+                  isOptional: true
+                }
+                {
+                  name: 'SpecificChart'
+                  isOptional: true
+                }
+                {
+                  name: 'PartTitle'
+                  value: 'Log Analytics'
+                  isOptional: true
+                }
+                {
+                  name: 'PartSubTitle'
+                  value: appInsights.name
+                  isOptional: true
+                }
+                {
+                  name: 'Dimensions'
+                  isOptional: true
+                }
+                {
+                  name: 'LegendOptions'
+                  isOptional: true
+                }
+                {
+                  name: 'IsQueryContainTimeRange'
+                  value: false
+                  isOptional: true
+                }
+              ]
+              type: 'Extension/Microsoft_OperationsManagementSuite_Workspace/PartType/LogsDashboardPart'
+              settings: {
+                content: {
+                  GridColumnsWidth: {
+                    '200': '58px'
+                    '201': '58px'
+                    '202': '58px'
+                    '203': '58px'
+                    '204': '58px'
+                    '400': '58px'
+                    '401': '58px'
+                    '403': '58px'
+                    '404': '58px'
+                    '405': '58px'
+                    '406': '58px'
+                    '408': '58px'
+                    '409': '58px'
+                    '412': '58px'
+                    '413': '58px'
+                    '415': '58px'
+                    '422': '58px'
+                    '429': '58px'
+                    '500': '58px'
+                    '501': '58px'
+                    '502': '58px'
+                    '503': '58px'
+                    '504': '58px'
+                    '0 [not sent in full (see exception telemetries)]': '75px'
+                    api: '125px'
+                    lastClientFailure: '138px'
+                    lastServerFailure: '138px'
+                    lastSuccess: '138px'
+                  }
+                }
+              }
+              partHeader: {
+                title: 'API Management requests'
+                subtitle: 'Number of requests per API and result code, including the timestamps of the latest success, server-side failure, and client-side failure'
               }
             }
           }
@@ -1060,14 +1265,16 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 value: 'Past hour'
               }
               filteredPartIds: [
-                'StartboardPart-MonitorChartPart-18d2dd69-b87f-40d8-a310-9e20401f3093'
-                'StartboardPart-LogsDashboardPart-18d2dd69-b87f-40d8-a310-9e20401f3095'
-                'StartboardPart-LogsDashboardPart-18d2dd69-b87f-40d8-a310-9e20401f3097'
-                'StartboardPart-LogsDashboardPart-18d2dd69-b87f-40d8-a310-9e20401f3099'
-                'StartboardPart-MonitorChartPart-18d2dd69-b87f-40d8-a310-9e20401f309b'
-                'StartboardPart-MonitorChartPart-18d2dd69-b87f-40d8-a310-9e20401f309d'
-                'StartboardPart-LogsDashboardPart-18d2dd69-b87f-40d8-a310-9e20401f309f'
-                'StartboardPart-MonitorChartPart-18d2dd69-b87f-40d8-a310-9e20401f30a1'
+                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56600e'
+                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d566010'
+                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d566012'
+                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d566014'
+                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d566016'
+                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d566018'
+                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56601e'
+                'StartboardPart-LogsDashboardPart-f7f57b78-0b63-4236-ac4d-69e72d56601a'
+                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56601c'
+                'StartboardPart-MonitorChartPart-f7f57b78-0b63-4236-ac4d-69e72d56611a'
               ]
             }
           }
