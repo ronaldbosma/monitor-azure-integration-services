@@ -1229,9 +1229,8 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                         top: 10
                       }
                       timespan: {
-                        absolute: {
-                          startTime: '2026-09-16T07:53:14.477Z'
-                          endTime: '2026-09-16T10:08:42.417Z'
+                        relative: {
+                          duration: 86400000
                         }
                         showUTCTime: false
                         grain: 1
