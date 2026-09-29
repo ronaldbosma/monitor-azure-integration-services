@@ -38,7 +38,7 @@
 
 .PARAMETER FilePath
     Path to the Bicep file in which the values should be replaced.
-    Defaults to '../infra/03-monitoring/modules/dashboards.bicep'.
+    Defaults to (Join-Path $PSScriptRoot '../infra/03-monitoring/modules/dashboards.bicep').
 
 .PARAMETER EnvironmentName
     The name of the environment. Defaults to the AZURE_ENV_NAME environment variable.
@@ -88,7 +88,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$FilePath = '../infra/03-monitoring/modules/dashboards.bicep',
+    [string]$FilePath = (Join-Path $PSScriptRoot '../infra/03-monitoring/modules/dashboards.bicep'),
     [string]$EnvironmentName = $env:AZURE_ENV_NAME,
     [string]$Location = $env:AZURE_LOCATION,
     [string]$SubscriptionId = $env:AZURE_SUBSCRIPTION_ID,
