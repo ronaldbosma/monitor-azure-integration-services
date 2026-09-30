@@ -73,7 +73,19 @@ module dashboards './modules/dashboards.bicep' = {
   }
 }
 
+// Alerts
+
 module failedAvailabilityTestAlert './modules/alerts/failed-availability-test-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+  }
+}
+
+module failedWorkflowAlert './modules/alerts/failed-workflow-alert.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     environmentName: environmentName
