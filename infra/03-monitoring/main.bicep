@@ -92,5 +92,6 @@ module failedWorkflowAlert './modules/alerts/failed-workflow-alert.bicep' = {
     location: location
     tags: tags
     appInsightsName: appInsightsName
+    logicAppName: logicAppName
   }
 }
