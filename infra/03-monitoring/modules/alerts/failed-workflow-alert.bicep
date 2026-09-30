@@ -53,7 +53,7 @@ resource failedWorkflowAlertBasedOnLogging 'Microsoft.Insights/scheduledQueryRul
     displayName: 'Failed Workflow Alert'
     description: 'Alert that triggers when a workflow fails'
     severity: 1
-    enabled: true
+    enabled: false
     autoMitigate: false
 
     evaluationFrequency: 'PT1M' // Execute every 1 minute
@@ -112,7 +112,7 @@ resource failedWorkflowAlertBasedOnMetric 'microsoft.insights/metricAlerts@2026-
   properties: {
     description: 'Alert that triggers when a workflow fails'
     severity: 1
-    enabled: true
+    enabled: false
     autoMitigate: true
 
     scopes: [
