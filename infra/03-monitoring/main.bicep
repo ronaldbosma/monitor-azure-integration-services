@@ -72,3 +72,13 @@ module dashboards './modules/dashboards.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
   }
 }
+
+module failedAvailabilityTestAlert './modules/alerts/failed-availability-test-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+  }
+}
