@@ -127,6 +127,7 @@ resource failedWorkflowAlertBasedOnMetric 'microsoft.insights/metricAlerts@2026-
     criteria: {
       allOf: [
         {
+          // See https://learn.microsoft.com/en-us/azure/azure-monitor/reference/supported-metrics/microsoft-web-sites-metrics for supported site metrics
           name: 'FailedWorkflowMetric'
           metricNamespace: 'Microsoft.Web/sites'
           metricName: 'WorkflowRunsFailureRate'
