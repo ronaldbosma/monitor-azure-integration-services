@@ -1160,7 +1160,7 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 }
                 {
                   name: 'query'
-                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(properties.essentials.targetResource),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == "Fired"\r\n| where state != "Closed"\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
+                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(split(properties.essentials.targetResource, "/")[-1]),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == "Fired"\r\n| where state != "Closed"\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
                   isOptional: true
                 }
               ]
@@ -1321,16 +1321,16 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 value: 'Past hour'
               }
               filteredPartIds: [
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76825'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76827'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76829'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d7682b'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d7682d'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d7682f'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76831'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76833'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76835'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76839'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c32'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c34'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c36'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c38'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c3a'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c3c'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c3e'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c40'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c42'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c46'
               ]
             }
           }
