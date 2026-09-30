@@ -1126,7 +1126,7 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
               inputs: [
                 {
                   name: 'partTitle'
-                  value: 'Fired alerts in ${resourceGroup().name}'
+                  value: 'Open alerts in ${resourceGroup().name}'
                   isOptional: true
                 }
                 {
@@ -1160,14 +1160,14 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 }
                 {
                   name: 'query'
-                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(properties.essentials.targetResource),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == \'Fired\'\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
+                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(properties.essentials.targetResource),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == "Fired"\r\n| where state != "Closed"\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
                   isOptional: true
                 }
               ]
               type: 'Extension/HubsExtension/PartType/ArgQueryGridTile'
               settings: {}
               partHeader: {
-                title: 'Fired alerts in ${resourceGroup().name}'
+                title: 'Open alerts in ${resourceGroup().name}'
                 subtitle: ''
               }
             }
@@ -1321,16 +1321,16 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 value: 'Past hour'
               }
               filteredPartIds: [
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd00e'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd010'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd012'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd014'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd016'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd018'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd01a'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd01c'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd01e'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd022'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76825'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76827'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76829'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d7682b'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d7682d'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d7682f'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76831'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76833'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76835'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76839'
               ]
             }
           }
