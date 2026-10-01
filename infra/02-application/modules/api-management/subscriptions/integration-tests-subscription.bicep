@@ -20,7 +20,7 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
   name: apiManagementServiceName
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' existing = {
   name: keyVaultName
 }
 
@@ -38,7 +38,7 @@ resource integrationTestsApimSubscription 'Microsoft.ApiManagement/service/subsc
   }
 }
 
-resource integrationTestsApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
+resource integrationTestsApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
   name: 'integration-tests-apim-subscription-key'
   parent: keyVault
   properties: {
