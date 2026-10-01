@@ -1,5 +1,5 @@
 //=============================================================================
-// Health Check Status Alert
+// Health Check Status Alert for Site
 //=============================================================================
 
 //=============================================================================
@@ -22,15 +22,18 @@ param location string
 @description('The tags to associate with the resource')
 param tags tagsType
 
-@description('The name of the Logic App')
-param logicAppName string
+@description('The name of the site')
+param siteName string
+
+@description('The short name of the site. Will be used in the alert name.')
+param siteNameShort string
 
 //=============================================================================
 // Existing resources
 //=============================================================================
 
-resource logicApp 'Microsoft.Web/sites@2025-03-01' existing = {
-  name: logicAppName
+resource site 'Microsoft.Web/sites@2025-03-01' existing = {
+  name: siteName
 }
 
 //=============================================================================
@@ -38,21 +41,21 @@ resource logicApp 'Microsoft.Web/sites@2025-03-01' existing = {
 //=============================================================================
 
 resource healthCheckAlert 'microsoft.insights/metricAlerts@2026-01-01' = {
-  name: getResourceName('alert', environmentName, location, 'logicapp-healthcheck')
+  name: getResourceName('alert', environmentName, location, '${siteNameShort}-healthcheck')
   location: 'global'
   tags: tags
 
   properties: {
-    description: 'Alert that triggers when health check on Logic App fails'
+    description: 'Alert that triggers when health check on ${siteName} fails'
     severity: 1
     enabled: true
     autoMitigate: true
 
     scopes: [
-      logicApp.id
+      site.id
     ]
     targetResourceType: 'Microsoft.Web/sites'
-    targetResourceRegion: logicApp.location
+    targetResourceRegion: site.location
 
     evaluationFrequency: 'PT1M' // Execute every 1 minute
     windowSize: 'PT5M' // Look at the results from the last 5 minutes

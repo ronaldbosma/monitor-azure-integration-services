@@ -96,12 +96,24 @@ module failedWorkflowAlert './modules/alerts/failed-workflow-alert.bicep' = {
   }
 }
 
-module healthCheckStatusAlert './modules/alerts/health-check-status-alert.bicep' = {
+module functionAppHealthCheckStatusAlert './modules/alerts/health-check-status-alert.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     environmentName: environmentName
     location: location
     tags: tags
-    logicAppName: logicAppName
+    siteName: functionAppName
+    siteNameShort: 'functionapp'
+  }
+}
+
+module logicAppHealthCheckStatusAlert './modules/alerts/health-check-status-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    siteName: logicAppName
+    siteNameShort: 'logicapp'
   }
 }
