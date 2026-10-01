@@ -95,3 +95,13 @@ module failedWorkflowAlert './modules/alerts/failed-workflow-alert.bicep' = {
     logicAppName: logicAppName
   }
 }
+
+module healthCheckStatusAlert './modules/alerts/health-check-status-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    logicAppName: logicAppName
+  }
+}
