@@ -85,6 +85,17 @@ module failedAvailabilityTestAlert './modules/alerts/failed-availability-test-al
   }
 }
 
+module failedFunctionAlert './modules/alerts/failed-function-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+    functionAppName: functionAppName
+  }
+}
+
 module failedWorkflowAlert './modules/alerts/failed-workflow-alert.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
