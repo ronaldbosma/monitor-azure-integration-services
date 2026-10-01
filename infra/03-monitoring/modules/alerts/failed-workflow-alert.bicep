@@ -50,11 +50,10 @@ resource failedWorkflowAlertBasedOnLogging 'Microsoft.Insights/scheduledQueryRul
   tags: tags
 
   properties: {
-    displayName: 'Failed Workflow Alert'
-    description: 'Alert that triggers when a workflow fails'
+    description: 'Alert that triggers when a workflow fails (based on logging)'
     severity: 1
-    enabled: false
-    autoMitigate: false
+    enabled: true
+    autoMitigate: true
 
     evaluationFrequency: 'PT1M' // Execute every 1 minute
     windowSize: 'PT5M' // Look at the workflow failures from the last 5 minutes
@@ -110,9 +109,9 @@ resource failedWorkflowAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2026-
   tags: tags
 
   properties: {
-    description: 'Alert that triggers when a workflow fails'
+    description: 'Alert that triggers when a workflow fails (based on metric)'
     severity: 1
-    enabled: false
+    enabled: true
     autoMitigate: true
 
     scopes: [
