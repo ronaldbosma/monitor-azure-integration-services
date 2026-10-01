@@ -104,7 +104,7 @@ resource failedWorkflowAlertBasedOnLogging 'Microsoft.Insights/scheduledQueryRul
   }
 }
 
-resource failedWorkflowAlertBasedOnMetric 'microsoft.insights/metricAlerts@2026-01-01' = {
+resource failedWorkflowAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2026-01-01' = {
   name: getResourceName('alert', environmentName, location, 'failed-workflow-metric')
   location: 'global'
   tags: tags
