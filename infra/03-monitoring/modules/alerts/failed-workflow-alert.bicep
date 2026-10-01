@@ -55,6 +55,13 @@ resource failedWorkflowAlertBasedOnLogging 'Microsoft.Insights/scheduledQueryRul
     enabled: true
     autoMitigate: true
 
+    scopes: [
+      appInsights.id
+    ]
+    targetResourceTypes: [
+      'Microsoft.Insights/components'
+    ]
+
     evaluationFrequency: 'PT1M' // Execute every 1 minute
     windowSize: 'PT5M' // Look at the workflow failures from the last 5 minutes
 
@@ -92,14 +99,6 @@ resource failedWorkflowAlertBasedOnLogging 'Microsoft.Insights/scheduledQueryRul
         }
       ]
     }
-
-    scopes: [
-      appInsights.id
-    ]
-
-    targetResourceTypes: [
-      'Microsoft.Insights/components'
-    ]
   }
 }
 
