@@ -23,7 +23,7 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
   name: apiManagementServiceName
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' existing = {
   name: keyVaultName
 }
 
@@ -35,7 +35,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
 // Resources
 //=============================================================================
 
-resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
+resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
   name: 'function-app-api-key'
   parent: keyVault
   properties: {
