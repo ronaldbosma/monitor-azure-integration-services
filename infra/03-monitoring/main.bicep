@@ -75,6 +75,16 @@ module dashboards './modules/dashboards.bicep' = {
 
 // Alerts
 
+module deadLetteredMessagesAlert './modules/alerts/deadlettered-messages-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    serviceBusNamespaceName: serviceBusNamespaceName
+  }
+}
+
 module failedAvailabilityTestAlert './modules/alerts/failed-availability-test-alert.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
