@@ -64,12 +64,12 @@ resource failedFunctionAlertBasedOnLogging 'Microsoft.Insights/scheduledQueryRul
     criteria: {
       allOf: [
         {
-          // TODO: filter on result code?
           query: '''
             requests
             | extend functionName = tostring(customDimensions['faas.name'])
             | where functionName != '' // Only include Azure Function related requests
             | where success == false
+            | where resultCode !in (400, 404, 409, 412)
           '''
 
           timeAggregation: 'Count'
@@ -143,7 +143,17 @@ resource failedFunctionAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2026-
                 functionAppName // Only trigger on failed requests for the Function App. Ignore other failed requests from e.g. API Management.
               ]
             }
-            // TODO: exclude 4xx result codes?
+            {
+              name: 'request/resultCode'
+              operator: 'Exclude'
+              // Ignore client errors we're not interested in
+              values: [
+                '400'
+                '404'
+                '409'
+                '412'
+              ]
+            }
           ]
 
           skipMetricValidation: false
