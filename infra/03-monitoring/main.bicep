@@ -128,3 +128,13 @@ module logicAppHealthCheckStatusAlert './modules/alerts/health-check-status-aler
     siteNameShort: 'logicapp'
   }
 }
+
+module recalculateRatingForAllMoviesWorkflowNotStartedAlert './modules/alerts/recalculate-ratings-workflow-not-started-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    logicAppName: logicAppName
+  }
+}
