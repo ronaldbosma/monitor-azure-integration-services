@@ -37,7 +37,7 @@ resource logicApp 'Microsoft.Web/sites@2025-03-01' existing = {
 // Resources
 //=============================================================================
 
-resource failedWorkflowAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2026-01-01' = {
+resource recalculateRatingsWorkflowNotStartedAlert 'Microsoft.Insights/metricAlerts@2026-01-01' = {
   name: getResourceName('alert', environmentName, location, 'recalculate-ratings-workflow-not-started')
   location: 'global'
   tags: tags
