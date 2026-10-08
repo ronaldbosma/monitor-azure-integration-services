@@ -124,7 +124,7 @@ resource failedFunctionAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2026-
         {
 
           // There's no Azure Functions specific metric for failed functions as there is with Logic App workflows, so we're using failed requests.
-          // Available metrics can be found here: https://learn.microsoft.com/en-us/azure/azure-monitor/app/metrics-overview?tabs=standard#available-metrics
+          // Available metrics can be found here: https://learn.microsoft.com/en-us/azure/azure-monitor/app/metrics-overview?tabs=standard#failure-metrics
           name: 'FailedFunctionMetric'
           metricNamespace: 'microsoft.insights/components'
           metricName: 'requests/failed'

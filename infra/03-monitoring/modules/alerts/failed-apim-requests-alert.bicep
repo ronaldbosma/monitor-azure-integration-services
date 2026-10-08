@@ -132,7 +132,7 @@ resource failedApimRequestsAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2
         {
 
           // There's no API Management specific metric for failed requests as there is with Logic App workflows, so we're using failed requests.
-          // Available metrics can be found here: https://learn.microsoft.com/en-us/azure/azure-monitor/app/metrics-overview?tabs=standard#available-metrics
+          // Available metrics can be found here: https://learn.microsoft.com/en-us/azure/azure-monitor/app/metrics-overview?tabs=standard#failure-metrics
           name: 'FailedApimRequestMetric'
           metricNamespace: 'microsoft.insights/components'
           metricName: 'requests/failed'
