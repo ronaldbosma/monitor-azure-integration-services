@@ -72,3 +72,90 @@ module dashboards './modules/dashboards.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
   }
 }
+
+// Alerts
+
+module deadLetteredMessagesAlert './modules/alerts/deadlettered-messages-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    serviceBusNamespaceName: serviceBusNamespaceName
+  }
+}
+
+module failedApimRequestsAlert './modules/alerts/failed-apim-requests-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    apiManagementServiceName: apiManagementServiceName
+    appInsightsName: appInsightsName
+  }
+}
+
+module failedAvailabilityTestAlert './modules/alerts/failed-availability-test-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+  }
+}
+
+module failedFunctionAlert './modules/alerts/failed-function-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+    functionAppName: functionAppName
+  }
+}
+
+module failedWorkflowAlert './modules/alerts/failed-workflow-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    appInsightsName: appInsightsName
+    logicAppName: logicAppName
+  }
+}
+
+module functionAppHealthCheckStatusAlert './modules/alerts/health-check-status-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    siteName: functionAppName
+    siteNameShort: 'functionapp'
+  }
+}
+
+module logicAppHealthCheckStatusAlert './modules/alerts/health-check-status-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    siteName: logicAppName
+    siteNameShort: 'logicapp'
+  }
+}
+
+module recalculateRatingForAllMoviesWorkflowNotStartedAlert './modules/alerts/recalculate-ratings-workflow-not-started-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    logicAppName: logicAppName
+  }
+}

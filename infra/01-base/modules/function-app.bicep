@@ -72,7 +72,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2025-08-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
   name: storageAccountName
 }
 
@@ -116,6 +116,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' = {
       minTlsVersion: '1.2'
       netFrameworkVersion: functionAppSettings.netFrameworkVersion
       linuxFxVersion: functionAppSettings.linuxFxVersion
+      alwaysOn: true
       healthCheckPath: '/api/health'
     }
     httpsOnly: true

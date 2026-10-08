@@ -64,6 +64,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existi
 // Resources
 //=============================================================================
 
+#disable-diagnostics BCP036 BCP037 // Ignore the BCP036 and BCP037 warnings for the dashboard resource
 #disable-next-line use-recent-api-versions // The newer version 2026-04-01 is not available in every region
 resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-preview' = {
   properties: {
@@ -1126,7 +1127,7 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
               inputs: [
                 {
                   name: 'partTitle'
-                  value: 'Fired alerts in ${resourceGroup().name}'
+                  value: 'Open alerts in ${resourceGroup().name}'
                   isOptional: true
                 }
                 {
@@ -1160,14 +1161,14 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 }
                 {
                   name: 'query'
-                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(properties.essentials.targetResource),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == \'Fired\'\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
+                  value: 'alertsmanagementresources\r\n| where type =~ "microsoft.alertsmanagement/alerts"\r\n| extend\r\n    severity = tostring(properties.essentials.severity),\r\n    fireTime = todatetime(properties.essentials.startDateTime),\r\n    condition = tostring(properties.essentials.monitorCondition),\r\n    state = tostring(properties.essentials.alertState),\r\n    affectedResource = tostring(split(properties.essentials.targetResource, "/")[-1]),\r\n    targetResourceGroup = tostring(properties.essentials.targetResourceGroup)\r\n| where condition == "Fired"\r\n| where state != "Closed"\r\n| where targetResourceGroup == "${resourceGroup().name}"\r\n| where subscriptionId == "${subscription().subscriptionId}"\r\n| project\r\n    id,\r\n    alert = name,\r\n    severity,\r\n    fireTime,\r\n    state,\r\n    affectedResource\r\n| order by fireTime desc\r'
                   isOptional: true
                 }
               ]
               type: 'Extension/HubsExtension/PartType/ArgQueryGridTile'
               settings: {}
               partHeader: {
-                title: 'Fired alerts in ${resourceGroup().name}'
+                title: 'Open alerts in ${resourceGroup().name}'
                 subtitle: ''
               }
             }
@@ -1321,16 +1322,16 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 value: 'Past hour'
               }
               filteredPartIds: [
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd00e'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd010'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd012'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd014'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd016'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd018'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd01a'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd01c'
-                'StartboardPart-LogsDashboardPart-de611727-a6b3-481d-9126-52ced56dd01e'
-                'StartboardPart-MonitorChartPart-de611727-a6b3-481d-9126-52ced56dd022'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c32'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c34'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c36'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c38'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c3a'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c3c'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c3e'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c40'
+                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c42'
+                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c46'
               ]
             }
           }
