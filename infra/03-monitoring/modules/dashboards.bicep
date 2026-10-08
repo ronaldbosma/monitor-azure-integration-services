@@ -64,6 +64,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existi
 // Resources
 //=============================================================================
 
+#disable-diagnostics BCP036 BCP037 // Ignore the BCP036 and BCP037 warnings for the dashboard resource
 #disable-next-line use-recent-api-versions // The newer version 2026-04-01 is not available in every region
 resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-preview' = {
   properties: {
