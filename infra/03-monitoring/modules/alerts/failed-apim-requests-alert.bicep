@@ -146,7 +146,7 @@ resource failedApimRequestsAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2
           dimensions: [
             {
               name: 'cloud/roleName'
-              operator: 'Include'
+              operator: 'StartsWith' // Cloud role name of the API Management service includes the location, so we use 'StartsWith' to match the service name regardless of the location suffix.
               values: [
                 apiManagementServiceName // Only trigger on failed requests for the API Management service. Ignore other failed requests from e.g. the Function App.
               ]
