@@ -85,6 +85,17 @@ module deadLetteredMessagesAlert './modules/alerts/deadlettered-messages-alert.b
   }
 }
 
+module failedApimRequestsAlert './modules/alerts/failed-apim-requests-alert.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    apiManagementServiceName: apiManagementServiceName
+    appInsightsName: appInsightsName
+  }
+}
+
 module failedAvailabilityTestAlert './modules/alerts/failed-availability-test-alert.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
