@@ -32,6 +32,10 @@ param appInsightsName string
 // Existing resources
 //=============================================================================
 
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
+  name: apiManagementServiceName
+}
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
 }
@@ -119,10 +123,10 @@ resource failedApimRequestsAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2
     autoMitigate: false
 
     scopes: [
-      appInsights.id
+      apiManagementService.id
     ]
-    targetResourceType: 'microsoft.insights/components'
-    targetResourceRegion: appInsights.location
+    targetResourceType: 'Microsoft.ApiManagement/service'
+    targetResourceRegion: apiManagementService.location
 
     evaluationFrequency: 'PT1M' // Execute every 1 minute
     windowSize: 'PT5M' // Look at the failed API Management requests from the last 5 minutes
@@ -131,28 +135,36 @@ resource failedApimRequestsAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2
       allOf: [
         {
 
-          // There's no API Management specific metric for failed requests as there is with Logic App workflows, so we're using failed requests.
-          // Available metrics can be found here: https://learn.microsoft.com/en-us/azure/azure-monitor/app/metrics-overview?tabs=standard#failure-metrics
+          // Available metrics can be found here: https://learn.microsoft.com/en-us/azure/azure-monitor/reference/supported-metrics/microsoft-apimanagement-service-metrics
           name: 'FailedApimRequestMetric'
-          metricNamespace: 'microsoft.insights/components'
-          metricName: 'requests/failed'
+          metricNamespace: 'microsoft.apimanagement/service'
+          metricName: 'Requests'
 
           // Alert triggers when the number of failed API Management requests is greater than 0
-          timeAggregation: 'Count'
+          timeAggregation: 'Total'
           operator: 'GreaterThan'
           threshold: 0
 
-          // These dimensions are used to split the alerts on the name of the API Management service. There's no dimension for e.g. the API name or operation.
           dimensions: [
             {
-              name: 'cloud/roleName'
-              operator: 'StartsWith' // Cloud role name of the API Management service includes the location, so we use 'StartsWith' to match the service name regardless of the location suffix.
+              name: 'ApiId'
+              operator: 'Include'
               values: [
-                apiManagementServiceName // Only trigger on failed requests for the API Management service. Ignore other failed requests from e.g. the Function App.
+                '*'
               ]
             }
             {
-              name: 'request/resultCode'
+              name: 'GatewayResponseCodeCategory'
+              operator: 'Include'
+              // Trigger on client and server errors. Also include requests with no response code (these include for example client connection failures)
+              values: [
+                '4xx'
+                '5xx'
+                'None'
+              ]
+            }
+            {
+              name: 'GatewayResponseCode'
               operator: 'Exclude'
               // Ignore client errors we're not interested in
               values: [
