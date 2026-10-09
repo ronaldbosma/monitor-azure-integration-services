@@ -74,7 +74,7 @@ resource workbook 'Microsoft.Insights/workbooks@2023-06-01' = {
   properties: {
     displayName: workbookDisplayName
     category: category
-    serializedData: workbookContent
+    serializedData: !like(workbookContent, '*##*##*') ? workbookContent : fail('Workbook "${workbookDisplayName}" still contains unresolved placeholders.')
     sourceId: sourceId
     version: version
   }
