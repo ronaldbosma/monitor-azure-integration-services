@@ -177,7 +177,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "let functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\nlet successFilter = '{Success}';\r\n\r\nrequests\r\n| extend functionName = tostring(customDimensions['faas.name'])\r\n| where functionName != '' // Only include Azure Function related requests\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or functionName in (functionFilter)\r\n| extend status = iff(success==true, 'success', 'error')\r\n| project\r\n    status,\r\n    timestamp,\r\n    cloud_RoleName,\r\n    functionName,\r\n    duration,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by timestamp desc\r\n",
+        "query": "let functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\nlet successFilter = '{Success}';\r\n\r\nrequests\r\n| extend functionName = tostring(customDimensions['faas.name'])\r\n| where functionName != '' // Only include Azure Function related requests\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or functionName in (functionFilter)\r\n| extend status = iff(success==true, 'success', 'error')\r\n| extend functionTrigger = tostring(customDimensions['faas.trigger'])\r\n| project\r\n    status,\r\n    timestamp,\r\n    cloud_RoleName,\r\n    functionName,\r\n    duration,\r\n    resultCode,\r\n    functionTrigger,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by timestamp desc\r\n",
         "size": 2,
         "showAnalytics": true,
         "timeContextFromParameter": "TimeRange",
@@ -270,6 +270,14 @@
             {
               "columnId": "duration",
               "label": "Duration"
+            },
+            {
+              "columnId": "resultCode",
+              "label": "Result Code"
+            },
+            {
+              "columnId": "functionTrigger",
+              "label": "Trigger"
             },
             {
               "columnId": "details",
