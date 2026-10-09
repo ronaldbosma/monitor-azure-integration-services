@@ -209,6 +209,22 @@ module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
   }
 }
 
+module azureFunctionsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'Azure Functions'
+    serializedData: loadTextContent('./modules/workbooks/Azure Functions.workbook')
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsights: appInsights.id
+    }
+    sourceId: appInsights.id
+  }
+}
+
 module logicAppWorkflowsWorkbook './modules/workbooks/workbook.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {

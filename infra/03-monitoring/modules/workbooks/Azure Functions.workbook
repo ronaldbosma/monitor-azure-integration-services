@@ -1,0 +1,289 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "parameters": [
+          {
+            "id": "308c9a05-291a-42a4-8162-afb54d675d77",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "##AzureSubscriptionId##",
+            "label": "Subscription"
+          },
+          {
+            "id": "78d01b22-9160-4479-83e8-8e98780915a4",
+            "version": "KqlParameterItem/1.0",
+            "name": "ApplicationInsights",
+            "type": 5,
+            "isRequired": true,
+            "query": "where type in~('microsoft.insights/components')\r\n| order by name asc\r\n| project value = id, label = name",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "##ApplicationInsights##",
+            "label": "Application Insights"
+          },
+          {
+            "id": "2f2c3f34-ac0a-4712-8504-a7d71dad9c6a",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time",
+            "type": 4,
+            "isRequired": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "value": {
+              "durationMs": 86400000
+            }
+          },
+          {
+            "id": "251c6ce1-108b-4f0f-a4be-69e539690b56",
+            "version": "KqlParameterItem/1.0",
+            "name": "Success",
+            "type": 2,
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "jsonData": "[\r\n    { \"value\": \"true\", \"label\": \"yes\"},\r\n    { \"value\": \"false\", \"label\": \"no\"}\r\n]",
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "value": null
+          },
+          {
+            "id": "d7ac71c1-a908-40ed-a788-8e760c5484fb",
+            "version": "KqlParameterItem/1.0",
+            "name": "FunctionApp",
+            "label": "Function App",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let successFilter = '{Success}';\r\n\r\nrequests\r\n| where customDimensions[\"Category\"] == 'Host.Results'\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| distinct cloud_RoleName\r\n| sort by cloud_RoleName asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components"
+          },
+          {
+            "id": "7cd65841-2e89-40e9-ae20-1617a1740be6",
+            "version": "KqlParameterItem/1.0",
+            "name": "Function",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let successFilter = '{Success}';\r\nlet functionAppFilter = dynamic([{FunctionApp}]);\r\n\r\nrequests\r\n| where customDimensions[\"Category\"] == 'Host.Results'\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| distinct name\r\n| sort by name asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\nlet successFilter = '{Success}';\r\n\r\nrequests\r\n| where customDimensions[\"Category\"] == 'Host.Results'\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or name in (functionFilter)\r\n| extend status = iff(success==true, 'success', 'error')\r\n| project\r\n    status,\r\n    timestamp,\r\n    cloud_RoleName,\r\n    name,\r\n    duration,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by timestamp desc\r\n",
+        "size": 2,
+        "showAnalytics": true,
+        "timeContextFromParameter": "TimeRange",
+        "showRefreshButton": true,
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "status",
+              "formatter": 11,
+              "formatOptions": {
+                "customColumnWidthSetting": "11ch"
+              }
+            },
+            {
+              "columnMatch": "timestamp",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "duration",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "blue",
+                "customColumnWidthSetting": "13ch"
+              },
+              "numberFormat": {
+                "unit": 23,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            },
+            {
+              "columnMatch": "details",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "RequestDetails",
+                "linkLabel": "details",
+                "linkIsContextBlade": true,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "11ch"
+              }
+            },
+            {
+              "columnMatch": "trace",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "RequestDetails",
+                "linkLabel": "trace",
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "10ch"
+              }
+            }
+          ],
+          "filter": true,
+          "labelSettings": [
+            {
+              "columnId": "status",
+              "label": "Status"
+            },
+            {
+              "columnId": "timestamp",
+              "label": "Timestamp"
+            },
+            {
+              "columnId": "cloud_RoleName",
+              "label": "Function App"
+            },
+            {
+              "columnId": "name",
+              "label": "Name"
+            },
+            {
+              "columnId": "duration",
+              "label": "Duration"
+            },
+            {
+              "columnId": "details",
+              "label": "Details"
+            },
+            {
+              "columnId": "trace",
+              "label": "Trace"
+            }
+          ]
+        }
+      },
+      "name": "query - 1"
+    }
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
