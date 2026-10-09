@@ -30,8 +30,8 @@ param serializedData string
 @description('A dictionary of placeholder values to replace in the serializedData. The keys are the placeholder names, and the values are the replacement values.')
 param placeholders { *: string }?
 
-@description('The resource ID of the source resource for the workbook. This can be an Application Insights instance, a Log Analytics workspace, or another supported resource.')
-param sourceId string
+@description('The resource ID of the source resource for the workbook. This can be an Application Insights instance, a Log Analytics workspace, or another supported resource. Defaults to \'azure monitor\' if not specified.')
+param sourceId string = 'azure monitor'
 
 @description('Workbook category, as defined by the user at creation time. Default: workbook.')
 param category string = 'workbook'
