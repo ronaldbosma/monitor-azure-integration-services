@@ -40,7 +40,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "##ApplicationInsights##",
+            "value": "##ApplicationInsightsId##",
             "label": "Application Insights"
           },
           {

@@ -39,7 +39,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": "##ApplicationInsights##"
+            "value": "##ApplicationInsightsId##"
           },
           {
             "id": "9b459eb2-6a17-4954-bb50-8b3c55d823d3",

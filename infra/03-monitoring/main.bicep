@@ -186,7 +186,7 @@ module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
     serializedData: loadTextContent('./modules/workbooks/APIM Requests.workbook')
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
-      ApplicationInsights: appInsights.id
+      ApplicationInsightsId: appInsights.id
     }
     sourceId: appInsights.id
   }
@@ -202,7 +202,7 @@ module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
     serializedData: loadTextContent('./modules/workbooks/APIM Insights.workbook')
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
-      ApplicationInsights: appInsights.id
+      ApplicationInsightsId: appInsights.id
       ApiManagementId: apiManagementService.id
     }
     sourceId: appInsights.id
@@ -219,7 +219,7 @@ module azureFunctionsWorkbook './modules/workbooks/workbook.bicep' = {
     serializedData: loadTextContent('./modules/workbooks/Azure Functions.workbook')
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
-      ApplicationInsights: appInsights.id
+      ApplicationInsightsId: appInsights.id
     }
     sourceId: appInsights.id
   }
@@ -235,7 +235,7 @@ module logicAppWorkflowsWorkbook './modules/workbooks/workbook.bicep' = {
     serializedData: loadTextContent('./modules/workbooks/Logic App Workflows.workbook')
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
-      ApplicationInsights: appInsights.id
+      ApplicationInsightsId: appInsights.id
     }
     sourceId: appInsights.id
   }
