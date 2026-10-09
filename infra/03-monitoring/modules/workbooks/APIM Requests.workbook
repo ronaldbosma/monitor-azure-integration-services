@@ -105,19 +105,36 @@
             }
           },
           {
-            "id": "75fc74aa-42ec-4718-8416-d1af1098418b",
+            "id": "297988cf-f076-4365-854a-4964f601460b",
             "version": "KqlParameterItem/1.0",
-            "name": "ApimSubscription",
+            "name": "Status",
             "type": 2,
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "requests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| distinct subscription\r\n| sort by subscription asc",
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    { \"value\": \"success\", \"label\": \"Success\"},\r\n    { \"value\": \"warning\", \"label\": \"Warning\"},\r\n    { \"value\": \"error\", \"label\": \"Error\"}\r\n]",
+            "value": []
+          },
+          {
+            "id": "75fc74aa-42ec-4718-8416-d1af1098418b",
+            "version": "KqlParameterItem/1.0",
+            "name": "ApimSubscription",
+            "label": "Subscription (APIM)",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let statusFilter = dynamic([{Status}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| distinct subscription\r\n| sort by subscription asc",
             "crossComponentResources": [
               "{ApplicationInsights}"
             ],
             "typeSettings": {
-              "additionalResourceOptions": []
+              "additionalResourceOptions": [],
+              "showDefault": false
             },
             "timeContext": {
               "durationMs": 0
@@ -125,8 +142,7 @@
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
             "resourceType": "microsoft.insights/components",
-            "value": [],
-            "label": "Subscription (APIM)"
+            "value": []
           },
           {
             "id": "608c75e3-df46-4584-aa51-e2f6b7c6e5e1",
@@ -137,20 +153,20 @@
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| distinct api\r\n| sort by api asc",
+            "query": "let statusFilter = dynamic([{Status}]);\r\nlet subscriptionFilter = dynamic([{ApimSubscription}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| distinct api\r\n| sort by api asc",
             "crossComponentResources": [
               "{ApplicationInsights}"
             ],
             "typeSettings": {
-              "additionalResourceOptions": []
+              "additionalResourceOptions": [],
+              "showDefault": false
             },
             "timeContext": {
               "durationMs": 0
             },
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
-            "resourceType": "microsoft.insights/components",
-            "value": []
+            "resourceType": "microsoft.insights/components"
           },
           {
             "id": "72a08801-0af3-4b5d-a5e9-0801965c7550",
@@ -160,31 +176,20 @@
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| distinct operation\r\n| sort by operation asc",
+            "query": "let statusFilter = dynamic([{Status}]);\r\nlet subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| distinct operation\r\n| sort by operation asc",
             "crossComponentResources": [
               "{ApplicationInsights}"
             ],
             "typeSettings": {
-              "additionalResourceOptions": []
+              "additionalResourceOptions": [],
+              "showDefault": false
             },
             "timeContext": {
               "durationMs": 0
             },
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
-            "resourceType": "microsoft.insights/components",
-            "value": []
-          },
-          {
-            "id": "297988cf-f076-4365-854a-4964f601460b",
-            "version": "KqlParameterItem/1.0",
-            "name": "Success",
-            "type": 2,
-            "typeSettings": {
-              "additionalResourceOptions": []
-            },
-            "jsonData": "[\r\n    { \"value\": \"true\", \"label\": \"yes\"},\r\n    { \"value\": \"false\", \"label\": \"no\"}\r\n]",
-            "value": null
+            "resourceType": "microsoft.insights/components"
           },
           {
             "id": "68efa361-f3a9-46da-a34f-ddc566dd9a07",
@@ -195,12 +200,13 @@
             "multiSelect": true,
             "quote": "'",
             "delimiter": ",",
-            "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\nlet operationFilter = dynamic([{Operation}]);\r\nlet successFilter = '{Success}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| where array_length(operationFilter) == 0 or operation in (operationFilter)\r\n| distinct resultCode\r\n| sort by resultCode asc",
+            "query": "let statusFilter = dynamic([{Status}]);\r\nlet subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\nlet operationFilter = dynamic([{Operation}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| where array_length(operationFilter) == 0 or operation in (operationFilter)\r\n| distinct resultCode\r\n| sort by resultCode asc",
             "crossComponentResources": [
               "{ApplicationInsights}"
             ],
             "typeSettings": {
-              "additionalResourceOptions": []
+              "additionalResourceOptions": [],
+              "showDefault": false
             },
             "timeContext": {
               "durationMs": 0
@@ -220,7 +226,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\nlet operationFilter = dynamic([{Operation}]);\r\nlet successFilter = '{Success}';\r\nlet resultCodeFilter = dynamic([{ResultCode}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(resultCodeFilter) == 0 or resultCode in (resultCodeFilter)\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    httpMethod = tostring(customDimensions[\"HTTP Method\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"]),\r\n    status = iff(success==true, 'success', 'error')\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| where array_length(operationFilter) == 0 or operation in (operationFilter)\r\n| project\r\n    status,\r\n    timestamp,\r\n    subscription,\r\n    api,\r\n    name,\r\n    resultCode,\r\n    duration,\r\n    details = itemId,\r\n    trace = itemId,\r\n    operation,\r\n    url\r\n| sort by timestamp desc",
+        "query": "let statusFilter = dynamic([{Status}]);\r\nlet subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\nlet operationFilter = dynamic([{Operation}]);\r\nlet resultCodeFilter = dynamic([{ResultCode}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where array_length(resultCodeFilter) == 0 or resultCode in (resultCodeFilter)\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    httpMethod = tostring(customDimensions[\"HTTP Method\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| where array_length(operationFilter) == 0 or operation in (operationFilter)\r\n| project\r\n    status,\r\n    timestamp,\r\n    subscription,\r\n    api,\r\n    name,\r\n    resultCode,\r\n    duration,\r\n    details = itemId,\r\n    trace = itemId,\r\n    operation,\r\n    url\r\n| sort by timestamp desc",
         "size": 2,
         "showAnalytics": true,
         "timeContextFromParameter": "TimeRange",
