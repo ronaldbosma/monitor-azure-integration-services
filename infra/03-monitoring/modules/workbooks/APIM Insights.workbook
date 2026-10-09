@@ -243,21 +243,6 @@
         ],
         "parameters": [
           {
-            "id": "147574af-4269-44a7-a327-23adeb5167b3",
-            "version": "KqlParameterItem/1.0",
-            "name": "TimeGranularity",
-            "label": "Time granularity of graphs",
-            "type": 2,
-            "typeSettings": {
-              "additionalResourceOptions": []
-            },
-            "jsonData": "[\r\n    { \"value\": \"1m\", \"label\": \"1 minute\"},\r\n    { \"value\": \"5m\", \"label\": \"5 minutes\"},\r\n    { \"value\": \"15m\", \"label\": \"15 minutes\"},\r\n    { \"value\": \"1h\", \"label\": \"1 hour\"},\r\n    { \"value\": \"4h\", \"label\": \"4 hours\"},\r\n    { \"value\": \"12h\", \"label\": \"12 hours\"},\r\n    { \"value\": \"1d\", \"label\": \"1 day\"}\r\n]",
-            "timeContext": {
-              "durationMs": 86400000
-            },
-            "value": "1h"
-          },
-          {
             "id": "33efc72d-00fa-4f03-b3e3-150d0ce96b15",
             "version": "KqlParameterItem/1.0",
             "name": "ApimSubscription",
@@ -325,7 +310,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeGranularity:value} by success",
+              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by success",
               "size": 1,
               "showAnalytics": true,
               "title": "Number of requests (time range: {TimeRange:label})",
@@ -361,7 +346,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where success == false\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeGranularity:value}",
+              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where success == false\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain}",
               "size": 1,
               "showAnalytics": true,
               "title": "Number of failed requests (time range: {TimeRange:label})",
@@ -391,7 +376,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeGranularity:value}) to typeof(datetime)\r\n    | extend duration=0.0\r\n    )\r\n| summarize avg = avg(duration), (median, p80, p95) = percentiles(duration, 50, 80, 95) by bin(timestamp, {TimeGranularity:value})",
+              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeRange:grain}) to typeof(datetime)\r\n    | extend duration=0.0\r\n    )\r\n| summarize avg = avg(duration), (median, p80, p95) = percentiles(duration, 50, 80, 95) by bin(timestamp, {TimeRange:grain})",
               "size": 1,
               "aggregation": 3,
               "showAnalytics": true,
@@ -1192,7 +1177,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeGranularity:value} by resultCode",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by resultCode",
                     "size": 0,
                     "showAnalytics": true,
                     "timeContextFromParameter": "TimeRange",
@@ -1221,7 +1206,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where success == false\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeGranularity:value} by resultCode",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where success == false\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by resultCode",
                     "size": 0,
                     "showAnalytics": true,
                     "timeContextFromParameter": "TimeRange",
@@ -1250,7 +1235,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeGranularity:value}) to typeof(datetime)\r\n    | extend duration=0.0\r\n    )\r\n| summarize avg = avg(duration), (median, p80, p95) = percentiles(duration, 50, 80, 95) by bin(timestamp, {TimeGranularity:value})",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeRange:grain}) to typeof(datetime)\r\n    | extend duration=0.0\r\n    )\r\n| summarize avg = avg(duration), (median, p80, p95) = percentiles(duration, 50, 80, 95) by bin(timestamp, {TimeRange:grain})",
                     "size": 0,
                     "aggregation": 3,
                     "showAnalytics": true,
@@ -1277,7 +1262,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| extend requestSize = toint(customMeasurements[\"Request Size\"])\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeGranularity:value}) to typeof(datetime)\r\n    | extend requestSize=toint(0)\r\n    )\r\n| summarize avg = avg(requestSize), (median, p80, p95, p99) = percentiles(requestSize, 50, 80, 95, 99) by bin(timestamp, {TimeGranularity:value})",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| extend requestSize = toint(customMeasurements[\"Request Size\"])\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeRange:grain}) to typeof(datetime)\r\n    | extend requestSize=toint(0)\r\n    )\r\n| summarize avg = avg(requestSize), (median, p80, p95, p99) = percentiles(requestSize, 50, 80, 95, 99) by bin(timestamp, {TimeRange:grain})",
                     "size": 0,
                     "aggregation": 3,
                     "showAnalytics": true,
@@ -1304,7 +1289,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| extend responseSize = toint(customMeasurements[\"Response Size\"])\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeGranularity:value}) to typeof(datetime)\r\n    | extend responseSize=toint(0)\r\n    )\r\n| summarize avg = avg(responseSize), (median, p80, p95, p99) = percentiles(responseSize, 50, 80, 95, 99) by bin(timestamp, {TimeGranularity:value})",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| extend responseSize = toint(customMeasurements[\"Response Size\"])\r\n| union (\r\n    range x from 1 to 1 step 1\r\n    | mv-expand timestamp=range(todatetime(\"{TimeRange:startISO}\"), todatetime(\"{TimeRange:endISO}\"), {TimeRange:grain}) to typeof(datetime)\r\n    | extend responseSize=toint(0)\r\n    )\r\n| summarize avg = avg(responseSize), (median, p80, p95, p99) = percentiles(responseSize, 50, 80, 95, 99) by bin(timestamp, {TimeRange:grain})",
                     "size": 0,
                     "aggregation": 3,
                     "showAnalytics": true,
