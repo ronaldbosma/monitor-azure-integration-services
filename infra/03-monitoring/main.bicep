@@ -46,6 +46,15 @@ param serviceBusNamespaceName string
 var tags tagsType = getTemplateTags(environmentName)
 
 //=============================================================================
+// Existing resources
+//=============================================================================
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: appInsightsName
+  scope: resourceGroup(resourceGroupName)
+}
+
+//=============================================================================
 // Resources
 //=============================================================================
 
@@ -157,5 +166,23 @@ module recalculateRatingForAllMoviesWorkflowNotStartedAlert './modules/alerts/re
     location: location
     tags: tags
     logicAppName: logicAppName
+  }
+}
+
+// Workbooks
+
+module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'APIM Requests'
+    serializedData: loadTextContent('./modules/workbooks/APIM Requests.workbook')
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsights: appInsights.id
+    }
+    sourceId: appInsights.id
   }
 }

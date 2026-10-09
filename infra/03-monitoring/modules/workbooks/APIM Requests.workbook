@@ -1,0 +1,363 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "parameters": [
+          {
+            "id": "308c9a05-291a-42a4-8162-afb54d675d77",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "##AzureSubscriptionId##",
+            "label": "Azure Subscription"
+          },
+          {
+            "id": "78d01b22-9160-4479-83e8-8e98780915a4",
+            "version": "KqlParameterItem/1.0",
+            "name": "ApplicationInsights",
+            "type": 5,
+            "isRequired": true,
+            "query": "where type in~('microsoft.insights/components')\r\n| order by name asc\r\n| project value = id, label = name",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "##ApplicationInsights##",
+            "label": "Application Insights"
+          },
+          {
+            "id": "56949e95-e3d6-4415-8d18-55ad5708956c",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "type": 4,
+            "isRequired": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "label": "Time",
+            "value": {
+              "durationMs": 86400000
+            }
+          },
+          {
+            "id": "75fc74aa-42ec-4718-8416-d1af1098418b",
+            "version": "KqlParameterItem/1.0",
+            "name": "ApimSubscription",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "requests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| distinct subscription\r\n| sort by subscription asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": [],
+            "label": "Subscription (APIM)"
+          },
+          {
+            "id": "608c75e3-df46-4584-aa51-e2f6b7c6e5e1",
+            "version": "KqlParameterItem/1.0",
+            "name": "Api",
+            "label": "API",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| distinct api\r\n| sort by api asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": []
+          },
+          {
+            "id": "72a08801-0af3-4b5d-a5e9-0801965c7550",
+            "version": "KqlParameterItem/1.0",
+            "name": "Operation",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| distinct operation\r\n| sort by operation asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": []
+          },
+          {
+            "id": "297988cf-f076-4365-854a-4964f601460b",
+            "version": "KqlParameterItem/1.0",
+            "name": "Success",
+            "type": 2,
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "jsonData": "[\r\n    { \"value\": \"true\", \"label\": \"yes\"},\r\n    { \"value\": \"false\", \"label\": \"no\"}\r\n]",
+            "value": null
+          },
+          {
+            "id": "68efa361-f3a9-46da-a34f-ddc566dd9a07",
+            "version": "KqlParameterItem/1.0",
+            "name": "ResultCode",
+            "label": "Result Code",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\nlet operationFilter = dynamic([{Operation}]);\r\nlet successFilter = '{Success}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| where array_length(operationFilter) == 0 or operation in (operationFilter)\r\n| distinct resultCode\r\n| sort by resultCode asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{Api}]);\r\nlet operationFilter = dynamic([{Operation}]);\r\nlet successFilter = '{Success}';\r\nlet resultCodeFilter = dynamic([{ResultCode}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(resultCodeFilter) == 0 or resultCode in (resultCodeFilter)\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n    httpMethod = tostring(customDimensions[\"HTTP Method\"]),\r\n    operation = tostring(customDimensions[\"Operation Name\"]),\r\n    status = iff(success==true, 'success', 'error')\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| where array_length(operationFilter) == 0 or operation in (operationFilter)\r\n| project\r\n    status,\r\n    timestamp,\r\n    subscription,\r\n    api,\r\n    name,\r\n    resultCode,\r\n    duration,\r\n    details = itemId,\r\n    trace = itemId,\r\n    operation,\r\n    url\r\n| sort by timestamp desc",
+        "size": 2,
+        "showAnalytics": true,
+        "timeContextFromParameter": "TimeRange",
+        "showRefreshButton": true,
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "status",
+              "formatter": 11,
+              "formatOptions": {
+                "customColumnWidthSetting": "11ch"
+              }
+            },
+            {
+              "columnMatch": "timestamp",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "resultCode",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "11ch"
+              }
+            },
+            {
+              "columnMatch": "duration",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "blue",
+                "customColumnWidthSetting": "13ch"
+              },
+              "numberFormat": {
+                "unit": 23,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            },
+            {
+              "columnMatch": "details",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "RequestDetails",
+                "linkLabel": "details",
+                "linkIsContextBlade": true,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "11ch"
+              }
+            },
+            {
+              "columnMatch": "trace",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "RequestDetails",
+                "linkLabel": "trace",
+                "linkIsContextBlade": false,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "10ch"
+              }
+            },
+            {
+              "columnMatch": "url",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "100ch"
+              }
+            }
+          ],
+          "filter": true,
+          "labelSettings": [
+            {
+              "columnId": "status",
+              "label": "Status"
+            },
+            {
+              "columnId": "timestamp",
+              "label": "Timestamp"
+            },
+            {
+              "columnId": "subscription",
+              "label": "Subscription"
+            },
+            {
+              "columnId": "api",
+              "label": "API"
+            },
+            {
+              "columnId": "name",
+              "label": "Name"
+            },
+            {
+              "columnId": "resultCode",
+              "label": "Result"
+            },
+            {
+              "columnId": "duration",
+              "label": "Duration"
+            },
+            {
+              "columnId": "details",
+              "label": "Details"
+            },
+            {
+              "columnId": "trace",
+              "label": "Trace"
+            },
+            {
+              "columnId": "operation",
+              "label": "Operation"
+            },
+            {
+              "columnId": "url",
+              "label": "URL"
+            }
+          ]
+        }
+      },
+      "name": "requests"
+    }
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
