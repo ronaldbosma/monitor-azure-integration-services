@@ -208,3 +208,19 @@ module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
     sourceId: appInsights.id
   }
 }
+
+module logicAppWorkflowsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'Logic App Workflows'
+    serializedData: loadTextContent('./modules/workbooks/Logic App Workflows.workbook')
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsights: appInsights.id
+    }
+    sourceId: appInsights.id
+  }
+}

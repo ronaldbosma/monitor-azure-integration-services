@@ -1,0 +1,270 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "308c9a05-291a-42a4-8162-afb54d675d77",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "##AzureSubscriptionId##",
+            "label": "Subscription"
+          },
+          {
+            "id": "78d01b22-9160-4479-83e8-8e98780915a4",
+            "version": "KqlParameterItem/1.0",
+            "name": "ApplicationInsights",
+            "type": 5,
+            "isRequired": true,
+            "query": "where type in~('microsoft.insights/components')\r\n| order by name asc\r\n| project value = id, label = name",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "##ApplicationInsights##",
+            "label": "Application Insights"
+          },
+          {
+            "id": "2f2c3f34-ac0a-4712-8504-a7d71dad9c6a",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time",
+            "type": 4,
+            "isRequired": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "value": {
+              "durationMs": 86400000
+            }
+          },
+          {
+            "id": "a860333a-8362-44cf-ab45-605efb319206",
+            "version": "KqlParameterItem/1.0",
+            "name": "Status",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "jsonData": "[\r\n    { \"value\": \"Cancelled\", \"label\": \"Cancelled\"},\r\n    { \"value\": \"Failed\", \"label\": \"Failed\"},\r\n    { \"value\": \"Succeeded\", \"label\": \"Succeeded\"}\r\n]",
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "value": []
+          },
+          {
+            "id": "53626f5d-09a6-4404-b2d7-bb3efbc997c5",
+            "version": "KqlParameterItem/1.0",
+            "name": "LogicApp",
+            "label": "Logic App",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let statusFilter = dynamic([{Status}]);\r\n\r\ntraces\r\n| where customDimensions[\"Category\"] == 'Workflow.Operations.Runs'\r\n| where customDimensions[\"EventName\"] == 'WorkflowRunEnd'\r\n| extend status = replace_string(tostring(customDimensions.status), @'\"', '')\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| distinct cloud_RoleName\r\n| sort by cloud_RoleName asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": []
+          },
+          {
+            "id": "35012d32-95d6-4239-9b7f-89305445a0f2",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workflow",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\n\r\ntraces\r\n| where customDimensions[\"Category\"] == 'Workflow.Operations.Runs'\r\n| where customDimensions[\"EventName\"] == 'WorkflowRunEnd'\r\n| extend status = replace_string(tostring(customDimensions.status), @'\"', '')\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| distinct operation_Name\r\n| sort by operation_Name asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": []
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\nlet workflowFilter = dynamic([{Workflow}]);\r\n\r\ntraces\r\n| where customDimensions[\"Category\"] == 'Workflow.Operations.Runs'\r\n| where customDimensions[\"EventName\"] == 'WorkflowRunEnd'\r\n| extend status = replace_string(tostring(customDimensions.status), @'\"', '')\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| where array_length(workflowFilter) == 0 or operation_Name in (workflowFilter)\r\n| extend statusIcon = case(status==\"Succeeded\", \"success\", status==\"Failed\", \"error\", tolower(status))\r\n| project\r\n    statusIcon,\r\n    timestamp,\r\n    cloud_RoleName,\r\n    operation_Name,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by timestamp desc",
+        "size": 2,
+        "showAnalytics": true,
+        "timeContextFromParameter": "TimeRange",
+        "showRefreshButton": true,
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "status",
+              "formatter": 11
+            },
+            {
+              "columnMatch": "timestamp",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "details",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "TraceDetails",
+                "linkLabel": "details",
+                "linkIsContextBlade": true,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "11ch"
+              }
+            },
+            {
+              "columnMatch": "trace",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "TraceDetails",
+                "linkLabel": "trace",
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "10ch"
+              }
+            }
+          ],
+          "filter": true,
+          "labelSettings": [
+            {
+              "columnId": "statusIcon",
+              "label": "Status"
+            },
+            {
+              "columnId": "timestamp",
+              "label": "Timestamp"
+            },
+            {
+              "columnId": "cloud_RoleName",
+              "label": "Logic App"
+            },
+            {
+              "columnId": "operation_Name",
+              "label": "Workflow"
+            },
+            {
+              "columnId": "details",
+              "label": "Details"
+            },
+            {
+              "columnId": "trace",
+              "label": "Trace"
+            }
+          ]
+        }
+      },
+      "name": "query - 1"
+    }
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
