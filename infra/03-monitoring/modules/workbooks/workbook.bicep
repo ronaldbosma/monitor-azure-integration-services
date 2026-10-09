@@ -44,7 +44,6 @@ param version string = 'Notebook/1.0'
 //=============================================================================
 
 var workbookDisplayName = environmentName == '' ? displayName : '${displayName} (${environmentName})'
-// TODO: Can we fail if the workbookContent still has placeholders after the replacePlaceholders function is called?
 var workbookContent = placeholders == null ? serializedData : replacePlaceholders(serializedData, items(placeholders!))
 
 //=============================================================================
