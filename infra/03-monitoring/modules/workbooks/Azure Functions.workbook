@@ -164,7 +164,32 @@
             },
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
-            "resourceType": "microsoft.insights/components"
+            "resourceType": "microsoft.insights/components",
+            "value": []
+          },
+          {
+            "id": "c10cf57c-4ec7-48d6-836d-21723a53d37b",
+            "version": "KqlParameterItem/1.0",
+            "name": "ResultCode",
+            "label": "Result Code",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let successFilter = '{Success}';\r\nlet functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\n\r\nrequests\r\n| extend functionName = tostring(customDimensions['faas.name'])\r\n| where functionName != '' // Only include Azure Function related requests\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or functionName in (functionFilter)\r\n| distinct resultCode\r\n| sort by resultCode asc\r\n",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": []
           }
         ],
         "style": "pills",
@@ -177,7 +202,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "let functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\nlet successFilter = '{Success}';\r\n\r\nrequests\r\n| extend functionName = tostring(customDimensions['faas.name'])\r\n| where functionName != '' // Only include Azure Function related requests\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or functionName in (functionFilter)\r\n| extend status = iff(success==true, 'success', 'error')\r\n| extend functionTrigger = tostring(customDimensions['faas.trigger'])\r\n| project\r\n    status,\r\n    timestamp,\r\n    cloud_RoleName,\r\n    functionName,\r\n    duration,\r\n    resultCode,\r\n    functionTrigger,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by timestamp desc\r\n",
+        "query": "let successFilter = '{Success}';\r\nlet functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\nlet resultCodeFilter = dynamic([{ResultCode}]);\r\n\r\nrequests\r\n| extend functionName = tostring(customDimensions['faas.name'])\r\n| where functionName != '' // Only include Azure Function related requests\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or functionName in (functionFilter)\r\n| where array_length(resultCodeFilter) == 0 or resultCode in (resultCodeFilter)\r\n| extend status = iff(success==true, 'success', 'error')\r\n| extend functionTrigger = tostring(customDimensions['faas.trigger'])\r\n| project\r\n    status,\r\n    timestamp,\r\n    cloud_RoleName,\r\n    functionName,\r\n    duration,\r\n    resultCode,\r\n    functionTrigger,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by timestamp desc\r\n",
         "size": 2,
         "showAnalytics": true,
         "timeContextFromParameter": "TimeRange",
