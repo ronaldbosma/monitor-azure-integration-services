@@ -49,6 +49,11 @@ var tags tagsType = getTemplateTags(environmentName)
 // Existing resources
 //=============================================================================
 
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
+  name: apiManagementServiceName
+  scope: resourceGroup(resourceGroupName)
+}
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
   scope: resourceGroup(resourceGroupName)
@@ -182,6 +187,23 @@ module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsights: appInsights.id
+    }
+    sourceId: appInsights.id
+  }
+}
+
+module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'APIM Insights'
+    serializedData: loadTextContent('./modules/workbooks/APIM Insights.workbook')
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsights: appInsights.id
+      ApiManagementId: apiManagementService.id
     }
     sourceId: appInsights.id
   }
