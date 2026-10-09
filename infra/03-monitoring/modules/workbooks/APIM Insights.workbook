@@ -135,7 +135,7 @@
               "allowCustom": true
             },
             "value": {
-              "durationMs": 1209600000
+              "durationMs": 3600000
             }
           }
         ],
