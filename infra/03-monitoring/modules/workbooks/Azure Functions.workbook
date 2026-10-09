@@ -285,5 +285,8 @@
       "name": "query - 1"
     }
   ],
+  "fallbackResourceIds": [
+    "##ApplicationInsightsId##"
+  ],
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
