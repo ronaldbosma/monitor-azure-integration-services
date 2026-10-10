@@ -183,7 +183,7 @@ module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
     location: location
     tags: tags
     displayName: 'APIM Requests'
-    serializedData: loadTextContent('./modules/workbooks/APIM Requests.workbook')
+    serializedData: string(loadJsonContent('./modules/workbooks/APIM Requests.workbook'))
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
@@ -199,7 +199,7 @@ module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
     location: location
     tags: tags
     displayName: 'APIM Insights'
-    serializedData: loadTextContent('./modules/workbooks/APIM Insights.workbook')
+    serializedData: string(loadJsonContent('./modules/workbooks/APIM Insights.workbook'))
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
@@ -216,7 +216,7 @@ module azureFunctionsWorkbook './modules/workbooks/workbook.bicep' = {
     location: location
     tags: tags
     displayName: 'Azure Functions'
-    serializedData: loadTextContent('./modules/workbooks/Azure Functions.workbook')
+    serializedData: string(loadJsonContent('./modules/workbooks/Azure Functions.workbook'))
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
@@ -232,7 +232,7 @@ module logicAppWorkflowsWorkbook './modules/workbooks/workbook.bicep' = {
     location: location
     tags: tags
     displayName: 'Logic App Workflows'
-    serializedData: loadTextContent('./modules/workbooks/Logic App Workflows.workbook')
+    serializedData: string(loadJsonContent('./modules/workbooks/Logic App Workflows.workbook'))
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
