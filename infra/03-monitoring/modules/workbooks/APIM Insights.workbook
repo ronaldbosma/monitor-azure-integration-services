@@ -1010,7 +1010,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\ndependencies\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where operation_Name == operationNameFilter\r\n| join kind=inner requests on $left.operation_ParentId == $right.id\r\n| extend subscription = tostring(customDimensions1[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where isempty(resultCodeFilter) or resultCode1 == resultCodeFilter\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    )\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          details = itemId,\r\n          trace = itemId,\r\n          operation_ParentId\r\n| sort by timestamp desc",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\ndependencies\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where operation_Name == operationNameFilter\r\n| join kind=inner requests on $left.operation_ParentId == $right.id\r\n| extend subscription = tostring(customDimensions1[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where isempty(resultCodeFilter) or resultCode1 == resultCodeFilter\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          name,\r\n          policySource,\r\n          resultCode,\r\n          duration,\r\n          details = itemId,\r\n          trace = itemId,\r\n          operation_ParentId\r\n| sort by timestamp desc",
                     "size": 0,
                     "showAnalytics": true,
                     "timeContextFromParameter": "TimeRange",
@@ -1101,6 +1101,10 @@
                         {
                           "columnId": "name",
                           "label": "Name"
+                        },
+                        {
+                          "columnId": "policySource",
+                          "label": "Source"
                         },
                         {
                           "columnId": "resultCode",
