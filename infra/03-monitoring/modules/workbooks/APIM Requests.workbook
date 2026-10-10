@@ -114,7 +114,7 @@
               "additionalResourceOptions": [],
               "showDefault": false
             },
-            "jsonData": "[\r\n    { \"value\": \"success\", \"label\": \"Success\"},\r\n    { \"value\": \"warning\", \"label\": \"Warning\"},\r\n    { \"value\": \"error\", \"label\": \"Error\"}\r\n]",
+            "jsonData": "[\r\n    { \"value\": \"success\", \"label\": \"Success\"},\r\n    { \"value\": \"warning\", \"label\": \"Warning (4xx)\"},\r\n    { \"value\": \"error\", \"label\": \"Error\"}\r\n]",
             "value": []
           },
           {
@@ -248,7 +248,7 @@
             },
             {
               "seriesName": "warning",
-              "label": "Warning",
+              "label": "Warning (4xx)",
               "color": "yellow"
             },
             {
