@@ -310,7 +310,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by success",
+              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by status",
               "size": 1,
               "showAnalytics": true,
               "title": "Number of requests (time range: {TimeRange:label})",
@@ -328,13 +328,18 @@
               "chartSettings": {
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "True",
+                    "seriesName": "success",
                     "label": "Success",
                     "color": "green"
                   },
                   {
-                    "seriesName": "False",
-                    "label": "Failure",
+                    "seriesName": "warning",
+                    "label": "Warning (4xx)",
+                    "color": "yellow"
+                  },
+                  {
+                    "seriesName": "error",
+                    "label": "Error",
                     "color": "redBright"
                   }
                 ]
@@ -346,7 +351,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where success == false\r\n| extend \r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain}",
+              "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet apiFilter = dynamic([{API}]);\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where success == false\r\n| extend \r\n    status = iif(toint(resultCode) between (400 .. 499), 'warning', 'error'),\r\n    subscription = tostring(customDimensions[\"Subscription Name\"]),\r\n    api = tostring(customDimensions[\"API Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where array_length(apiFilter) == 0 or api in (apiFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by status",
               "size": 1,
               "showAnalytics": true,
               "title": "Number of failed requests (time range: {TimeRange:label})",
@@ -364,7 +369,13 @@
               "chartSettings": {
                 "seriesLabelSettings": [
                   {
-                    "seriesName": "numberOfRequests",
+                    "seriesName": "warning",
+                    "label": "Warning (4xx)",
+                    "color": "yellow"
+                  },
+                  {
+                    "seriesName": "error",
+                    "label": "Error",
                     "color": "redBright"
                   }
                 ]
