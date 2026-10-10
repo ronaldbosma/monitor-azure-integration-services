@@ -734,6 +734,14 @@
                         "style": "link"
                       },
                       {
+                        "id": "f107447d-b746-4213-ae28-b6c2dc4387b1",
+                        "cellValue": "SelectedOperationDetailsTab",
+                        "linkTarget": "parameter",
+                        "linkLabel": "Dependencies",
+                        "subTarget": "Dependencies",
+                        "style": "link"
+                      },
+                      {
                         "id": "e68a15e4-c394-46ff-9681-c6154798005e",
                         "cellValue": "SelectedOperationDetailsTab",
                         "linkTarget": "parameter",
@@ -798,7 +806,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n\trequestSize = toint(customMeasurements[\"Request Size\"]),\r\n\tresponseSize = toint(customMeasurements[\"Response Size\"])\r\n| join kind=leftouter dependencies on $left.id == $right.operation_ParentId\r\n| project status,\r\n          timestamp,\r\n          subscription,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          requestSize,\r\n          responseSize,\r\n          backendResultCode = resultCode1,\r\n          backendDuration = duration1,\r\n          request = itemId,\r\n          trace = itemId,\r\n          id,\r\n          url\r\n| sort by timestamp desc",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nrequests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n| extend \r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    api = tostring(customDimensions[\"API Name\"]),\r\n\trequestSize = toint(customMeasurements[\"Request Size\"]),\r\n\tresponseSize = toint(customMeasurements[\"Response Size\"])\r\n| project status,\r\n          timestamp,\r\n          subscription,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          requestSize,\r\n          responseSize,\r\n          request = itemId,\r\n          trace = itemId,\r\n          id,\r\n          url\r\n| sort by timestamp desc",
                     "size": 0,
                     "showAnalytics": true,
                     "timeContextFromParameter": "TimeRange",
@@ -879,27 +887,6 @@
                           }
                         },
                         {
-                          "columnMatch": "backendResultCode",
-                          "formatter": 0,
-                          "formatOptions": {
-                            "customColumnWidthSetting": "17ch"
-                          }
-                        },
-                        {
-                          "columnMatch": "backendDuration",
-                          "formatter": 4,
-                          "formatOptions": {
-                            "palette": "blue",
-                            "customColumnWidthSetting": "16ch"
-                          },
-                          "numberFormat": {
-                            "unit": 23,
-                            "options": {
-                              "style": "decimal"
-                            }
-                          }
-                        },
-                        {
                           "columnMatch": "request",
                           "formatter": 7,
                           "formatOptions": {
@@ -956,14 +943,6 @@
                         {
                           "columnId": "responseSize",
                           "label": "response size"
-                        },
-                        {
-                          "columnId": "backendResultCode",
-                          "label": "backend result code"
-                        },
-                        {
-                          "columnId": "backendDuration",
-                          "label": "backend duration"
                         }
                       ]
                     }
@@ -974,6 +953,104 @@
                     "value": "Requests"
                   },
                   "name": "SelectedOperationDetailsGroup_Requests"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\ndependencies\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| where operation_Name == operationNameFilter\r\n| join kind=inner requests on $left.operation_ParentId == $right.id\r\n| extend subscription = tostring(customDimensions1[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where isempty(resultCodeFilter) or resultCode1 == resultCodeFilter\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    )\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          details = itemId,\r\n          trace = itemId,\r\n          operation_ParentId\r\n| sort by timestamp desc",
+                    "size": 0,
+                    "showAnalytics": true,
+                    "timeContextFromParameter": "TimeRange",
+                    "showRefreshButton": true,
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.insights/components",
+                    "crossComponentResources": [
+                      "{ApplicationInsights}"
+                    ],
+                    "gridSettings": {
+                      "formatters": [
+                        {
+                          "columnMatch": "status",
+                          "formatter": 11
+                        },
+                        {
+                          "columnMatch": "timestamp",
+                          "formatter": 0,
+                          "formatOptions": {
+                            "customColumnWidthSetting": "20ch"
+                          }
+                        },
+                        {
+                          "columnMatch": "resultCode",
+                          "formatter": 0,
+                          "formatOptions": {
+                            "customColumnWidthSetting": "11ch"
+                          }
+                        },
+                        {
+                          "columnMatch": "duration",
+                          "formatter": 4,
+                          "formatOptions": {
+                            "palette": "blue",
+                            "customColumnWidthSetting": "14ch"
+                          },
+                          "numberFormat": {
+                            "unit": 23,
+                            "options": {
+                              "style": "decimal"
+                            }
+                          }
+                        },
+                        {
+                          "columnMatch": "details",
+                          "formatter": 7,
+                          "formatOptions": {
+                            "linkTarget": "DependencyDetails",
+                            "linkLabel": "details",
+                            "linkIsContextBlade": true,
+                            "appInsightsContext": {
+                              "resourceIdSource": "parameter",
+                              "resourceId": "ApplicationInsights",
+                              "secondaryIdSource": "default"
+                            },
+                            "customColumnWidthSetting": "11ch"
+                          }
+                        },
+                        {
+                          "columnMatch": "trace",
+                          "formatter": 7,
+                          "formatOptions": {
+                            "linkTarget": "DependencyDetails",
+                            "linkLabel": "trace",
+                            "appInsightsContext": {
+                              "resourceIdSource": "parameter",
+                              "resourceId": "ApplicationInsights",
+                              "secondaryIdSource": "default"
+                            },
+                            "customColumnWidthSetting": "10ch"
+                          }
+                        }
+                      ],
+                      "labelSettings": [
+                        {
+                          "columnId": "resultCode",
+                          "label": "result code"
+                        },
+                        {
+                          "columnId": "operation_ParentId",
+                          "label": "parent id"
+                        }
+                      ]
+                    }
+                  },
+                  "conditionalVisibility": {
+                    "parameterName": "SelectedOperationDetailsTab",
+                    "comparison": "isEqualTo",
+                    "value": "Dependencies"
+                  },
+                  "name": "SelectedOperationDetailsGroup_Dependencies"
                 },
                 {
                   "type": 3,
