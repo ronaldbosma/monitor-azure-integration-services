@@ -5,9 +5,6 @@
       "type": 9,
       "content": {
         "version": "KqlParameterItem/1.0",
-        "crossComponentResources": [
-          "{ApplicationInsights}"
-        ],
         "parameters": [
           {
             "id": "308c9a05-291a-42a4-8162-afb54d675d77",
@@ -47,8 +44,10 @@
             "id": "56949e95-e3d6-4415-8d18-55ad5708956c",
             "version": "KqlParameterItem/1.0",
             "name": "TimeRange",
+            "label": "Time",
             "type": 4,
             "isRequired": true,
+            "isGlobal": true,
             "typeSettings": {
               "selectableValues": [
                 {
@@ -99,7 +98,6 @@
               ],
               "allowCustom": true
             },
-            "label": "Time",
             "value": {
               "durationMs": 86400000
             }
@@ -230,6 +228,8 @@
         "size": 1,
         "showAnalytics": true,
         "timeContextFromParameter": "TimeRange",
+        "timeBrushParameterName": "TimeRange",
+        "timeBrushExportOnlyWhenBrushed": true,
         "showRefreshButton": true,
         "showExportToExcel": true,
         "queryType": 0,
