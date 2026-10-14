@@ -182,7 +182,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "where type in~('microsoft.web/sites')\r\n| where kind contains \"workflowapp\"\r\n| project id, name",
+        "query": "where type in~('microsoft.web/sites')\r\n| where kind contains \"workflowapp\"\r\n| project id, name, location",
         "size": 4,
         "queryType": 1,
         "resourceType": "microsoft.resourcegraph/resources",
@@ -201,7 +201,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\nlet workflowFilter = dynamic([{Workflow}]);\r\n\r\nlet runEvents = traces\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Runs\"\r\n| extend eventName = tostring(customDimensions[\"EventName\"])\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nrunEvents\r\n| where eventName == \"WorkflowRunStart\"\r\n| join kind=leftouter (\r\n    runEvents\r\n    | where eventName == \"WorkflowRunEnd\"\r\n  ) on operation_Id, runId\r\n| extend status = iif(isempty(customDimensions1[\"status\"]), \"Running\", replace_string(tostring(customDimensions1[\"status\"]), @'\"', ''))\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| where array_length(workflowFilter) == 0 or operation_Name in (workflowFilter)\r\n| extend statusIcon = case(status==\"Succeeded\", \"success\", status==\"Failed\", \"error\", status==\"Running\", \"pending\", tolower(status))\r\n| project\r\n    statusIcon,\r\n    cloud_RoleName,\r\n    operation_Name,\r\n    startTime = timestamp,\r\n    endTime = timestamp1,\r\n    duration = tolong(customDimensions1[\"prop__durationInMilliseconds\"]),\r\n    workflowType = customDimensions[\"prop__kind\"],\r\n    runId,\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by startTime desc",
+        "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\nlet workflowFilter = dynamic([{Workflow}]);\r\n\r\nlet runEvents = traces\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Runs\"\r\n| extend eventName = tostring(customDimensions[\"EventName\"])\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nrunEvents\r\n| where eventName == \"WorkflowRunStart\"\r\n| join kind=leftouter (\r\n    runEvents\r\n    | where eventName == \"WorkflowRunEnd\"\r\n  ) on operation_Id, runId\r\n| extend status = iif(isempty(customDimensions1[\"status\"]), \"Running\", replace_string(tostring(customDimensions1[\"status\"]), @'\"', ''))\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| where array_length(workflowFilter) == 0 or operation_Name in (workflowFilter)\r\n| extend statusIcon = case(status==\"Succeeded\", \"success\", status==\"Failed\", \"error\", status==\"Running\", \"pending\", tolower(status))\r\n| project\r\n    statusIcon,\r\n    cloud_RoleName,\r\n    operation_Name,\r\n    startTime = timestamp,\r\n    endTime = timestamp1,\r\n    duration = tolong(customDimensions1[\"prop__durationInMilliseconds\"]),\r\n    workflowType = customDimensions[\"prop__kind\"],\r\n    runId,\r\n    view = \"View\",\r\n    details = itemId,\r\n    trace = itemId\r\n| sort by startTime desc",
         "size": 0,
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
@@ -243,7 +243,11 @@
             },
             {
               "columnId": "runId",
-              "label": "Run ID"
+              "label": "RunID"
+            },
+            {
+              "columnId": "view",
+              "label": "View"
             },
             {
               "columnId": "details",
@@ -267,7 +271,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"61518891-aa59-4940-99c7-866b5bc42050\",\"mergeType\":\"rightouter\",\"leftTable\":\"LogicAppsTable\",\"rightTable\":\"WorkflowRunsTable\",\"leftColumn\":\"name\",\"rightColumn\":\"cloud_RoleName\"}],\"projectRename\":[{\"originalName\":\"[LogicAppsTable].id\",\"mergedName\":\"id\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[LogicAppsTable].name\",\"mergedName\":\"name\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].statusIcon\",\"mergedName\":\"Status\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].cloud_RoleName\",\"mergedName\":\"Logic App\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].operation_Name\",\"mergedName\":\"Workflow\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].startTime\",\"mergedName\":\"Start Time\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].endTime\",\"mergedName\":\"End Time\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].duration\",\"mergedName\":\"Duration\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].workflowType\",\"mergedName\":\"Type\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].runId\",\"mergedName\":\"Run ID\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].details\",\"mergedName\":\"Details\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].trace\",\"mergedName\":\"Trace\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable]._ResourceId\"}]}",
+        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"61518891-aa59-4940-99c7-866b5bc42050\",\"mergeType\":\"rightouter\",\"leftTable\":\"LogicAppsTable\",\"rightTable\":\"WorkflowRunsTable\",\"leftColumn\":\"name\",\"rightColumn\":\"cloud_RoleName\"}],\"projectRename\":[{\"originalName\":\"[LogicAppsTable].id\",\"mergedName\":\"LogicAppId\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[LogicAppsTable].name\",\"mergedName\":\"LogicAppName\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[LogicAppsTable].location\",\"mergedName\":\"LogicAppLocation\",\"fromId\":\"unknown\"},{\"originalName\":\"[WorkflowRunsTable].statusIcon\",\"mergedName\":\"Status\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].cloud_RoleName\",\"mergedName\":\"Logic App\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].operation_Name\",\"mergedName\":\"Workflow\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].startTime\",\"mergedName\":\"Start Time\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].endTime\",\"mergedName\":\"End Time\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].duration\",\"mergedName\":\"Duration\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].workflowType\",\"mergedName\":\"Type\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].runId\",\"mergedName\":\"RunID\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].view\",\"mergedName\":\"View\",\"fromId\":\"unknown\"},{\"originalName\":\"[WorkflowRunsTable].details\",\"mergedName\":\"Details\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].trace\",\"mergedName\":\"Trace\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable]._ResourceId\"}]}",
         "size": 0,
         "title": "Workflow runs",
         "showRefreshButton": true,
@@ -278,11 +282,15 @@
         "gridSettings": {
           "formatters": [
             {
-              "columnMatch": "id",
+              "columnMatch": "LogicAppId",
               "formatter": 5
             },
             {
-              "columnMatch": "name",
+              "columnMatch": "LogicAppName",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "LogicAppLocation",
               "formatter": 5
             },
             {
@@ -314,6 +322,18 @@
                 "unit": 23,
                 "options": {
                   "style": "decimal"
+                }
+              }
+            },
+            {
+              "columnMatch": "View",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "OpenBlade",
+                "bladeOpenContext": {
+                  "bladeName": "WorkflowMonitorBlade",
+                  "extensionName": "Microsoft_Azure_EMA",
+                  "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"resourceId\": \"/workflows/{Workflow_column}/runs/{RunID_column}\",\r\n  \"isReadOnly\": 1\r\n}"
                 }
               }
             },
