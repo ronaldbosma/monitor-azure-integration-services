@@ -145,8 +145,7 @@
             },
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
-            "resourceType": "microsoft.insights/components",
-            "value": []
+            "resourceType": "microsoft.insights/components"
           },
           {
             "id": "35012d32-95d6-4239-9b7f-89305445a0f2",
@@ -169,8 +168,7 @@
             },
             "timeContextFromParameter": "TimeRange",
             "queryType": 0,
-            "resourceType": "microsoft.insights/components",
-            "value": []
+            "resourceType": "microsoft.insights/components"
           }
         ],
         "style": "pills",
@@ -369,7 +367,13 @@
             }
           ],
           "rowLimit": 1000,
-          "filter": true
+          "filter": true,
+          "labelSettings": [
+            {
+              "columnId": "RunID",
+              "label": "Run ID"
+            }
+          ]
         }
       },
       "name": "WorkflowRunsWithLogicAppIdTable"
