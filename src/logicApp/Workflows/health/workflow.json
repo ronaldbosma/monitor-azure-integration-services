@@ -32,12 +32,7 @@
                         "interval": "PT5S"
                     }
                 },
-                "runAfter": {},
-                "runtimeConfiguration": {
-                    "contentTransfer": {
-                        "transferMode": "Chunked"
-                    }
-                }
+                "runAfter": {}
             },
             "Check_User_Ratings_API_Health": {
                 "type": "Http",
@@ -53,12 +48,7 @@
                         "interval": "PT5S"
                     }
                 },
-                "runAfter": {},
-                "runtimeConfiguration": {
-                    "contentTransfer": {
-                        "transferMode": "Chunked"
-                    }
-                }
+                "runAfter": {}
             }
         },
         "outputs": {},
@@ -72,5 +62,5 @@
             }
         }
     },
-    "kind": "Stateful"
+    "kind": "Stateless"
 }
