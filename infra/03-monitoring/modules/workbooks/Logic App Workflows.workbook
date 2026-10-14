@@ -210,53 +210,7 @@
         ],
         "visualization": "table",
         "gridSettings": {
-          "rowLimit": 1000,
-          "labelSettings": [
-            {
-              "columnId": "statusIcon",
-              "label": "Status"
-            },
-            {
-              "columnId": "cloud_RoleName",
-              "label": "Logic App"
-            },
-            {
-              "columnId": "operation_Name",
-              "label": "Workflow"
-            },
-            {
-              "columnId": "startTime",
-              "label": "Start Time"
-            },
-            {
-              "columnId": "endTime",
-              "label": "End Time"
-            },
-            {
-              "columnId": "duration",
-              "label": "Duration"
-            },
-            {
-              "columnId": "workflowType",
-              "label": "Type"
-            },
-            {
-              "columnId": "runId",
-              "label": "RunID"
-            },
-            {
-              "columnId": "view",
-              "label": "View"
-            },
-            {
-              "columnId": "details",
-              "label": "Details"
-            },
-            {
-              "columnId": "trace",
-              "label": "Trace"
-            }
-          ]
+          "rowLimit": 1000
         }
       },
       "conditionalVisibility": {
