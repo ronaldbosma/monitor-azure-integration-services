@@ -99,7 +99,7 @@
               "allowCustom": true
             },
             "value": {
-              "durationMs": 86400000
+              "durationMs": 3600000
             }
           },
           {
