@@ -203,7 +203,7 @@
         "query": "let successFilter = '{Success}';\r\nlet functionAppFilter = dynamic([{FunctionApp}]);\r\nlet functionFilter = dynamic([{Function}]);\r\nlet resultCodeFilter = dynamic([{ResultCode}]);\r\n\r\nrequests\r\n| extend functionName = tostring(customDimensions['faas.name'])\r\n| where functionName != '' // Only include Azure Function related requests\r\n| where isempty(successFilter) or success == tobool(successFilter)\r\n| where array_length(functionAppFilter) == 0 or cloud_RoleName in (functionAppFilter)\r\n| where array_length(functionFilter) == 0 or functionName in (functionFilter)\r\n| where array_length(resultCodeFilter) == 0 or resultCode in (resultCodeFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by success\r\n",
         "size": 1,
         "showAnalytics": true,
-        "title": "Number of functions executed (time range: {TimeRange:label})",
+        "title": "Number of functions executed (time range: {TimeRange:label}, grain: {TimeRange:grain})",
         "timeContextFromParameter": "TimeRange",
         "timeBrushParameterName": "TimeRange",
         "timeBrushExportOnlyWhenBrushed": true,
