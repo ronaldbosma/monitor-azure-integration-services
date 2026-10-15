@@ -548,6 +548,7 @@
               "formatter": 5
             }
           ],
+          "rowLimit": 1000,
           "filter": true,
           "labelSettings": [
             {
