@@ -438,7 +438,7 @@
         "query": "requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Actions\"\r\n| where operation_Id == '{SelectedWorkflowOperationID}'\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId == '{SelectedWorkflowRunID}'\r\n| extend \r\n    actionType = customDimensions[\"actionType\"], \r\n    trackedProperties = customDimensions[\"trackedProperties\"]\r\n| project\r\n    status = resultCode,\r\n    name,\r\n    actionType,\r\n    endTime = timestamp,\r\n    duration,\r\n    trackedProperties,\r\n    itemId,\r\n    id\r\n| sort by endTime asc",
         "size": 1,
         "showAnalytics": true,
-        "title": "Completed actions for workflow run {SelectedWorkflowRunID}",
+        "title": "Completed actions for selected workflow run {SelectedWorkflowRunID}",
         "timeContextFromParameter": "TimeRange",
         "showRefreshButton": true,
         "exportedParameters": [
@@ -576,7 +576,7 @@
         "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          type,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
         "size": 1,
         "showAnalytics": true,
-        "title": "Dependencies for action '{SelectedWorkflowActionName}'",
+        "title": "Dependencies for selected action '{SelectedWorkflowActionName}'",
         "timeContextFromParameter": "TimeRange",
         "showRefreshButton": true,
         "showExportToExcel": true,
@@ -663,7 +663,81 @@
           ]
         }
       },
-      "name": "SelectedActionDependenciesTable"
+      "name": "SelectedWorkflowActionDependenciesTable"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "exceptions\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| project timestamp,\r\n          problemId,\r\n          type,\r\n          outerMessage,\r\n          itemId",
+        "size": 1,
+        "showAnalytics": true,
+        "title": "Exceptions for selected action '{SelectedWorkflowActionName}'",
+        "timeContextFromParameter": "TimeRange",
+        "showRefreshButton": true,
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "timestamp",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "type",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "75ch"
+              }
+            },
+            {
+              "columnMatch": "itemId",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "ExceptionDetails",
+                "linkLabel": "Details",
+                "linkIsContextBlade": true,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "11ch"
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "timestamp",
+              "label": "Timestamp"
+            },
+            {
+              "columnId": "problemId",
+              "label": "Problem ID"
+            },
+            {
+              "columnId": "type",
+              "label": "Type"
+            },
+            {
+              "columnId": "outerMessage",
+              "label": "Outer Message"
+            },
+            {
+              "columnId": "itemId",
+              "label": "Details"
+            }
+          ]
+        }
+      },
+      "name": "SelectedWorkflowActionExceptionsTable"
     }
   ],
   "fallbackResourceIds": [
