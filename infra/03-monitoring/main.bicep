@@ -176,22 +176,6 @@ module recalculateRatingForAllMoviesWorkflowNotStartedAlert './modules/alerts/re
 
 // Workbooks
 
-module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
-  scope: resourceGroup(resourceGroupName)
-  params: {
-    environmentName: environmentName
-    location: location
-    tags: tags
-    displayName: 'APIM Requests'
-    serializedData: string(loadJsonContent('./modules/workbooks/APIM Requests.workbook'))
-    placeholders: {
-      AzureSubscriptionId: subscription().subscriptionId
-      ApplicationInsightsId: appInsights.id
-    }
-    sourceId: appInsights.id
-  }
-}
-
 module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -204,6 +188,22 @@ module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
       ApiManagementId: apiManagementService.id
+    }
+    sourceId: appInsights.id
+  }
+}
+
+module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'APIM Requests'
+    serializedData: string(loadJsonContent('./modules/workbooks/APIM Requests.workbook'))
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsightsId: appInsights.id
     }
     sourceId: appInsights.id
   }
