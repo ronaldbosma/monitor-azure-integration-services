@@ -436,11 +436,23 @@
       "content": {
         "version": "KqlItem/1.0",
         "query": "requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Actions\"\r\n| where operation_Id == '{SelectedWorkflowOperationID}'\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId == '{SelectedWorkflowRunID}'\r\n| extend \r\n    actionType = customDimensions[\"actionType\"], \r\n    trackedProperties = customDimensions[\"trackedProperties\"]\r\n| project\r\n    status = resultCode,\r\n    name,\r\n    actionType,\r\n    endTime = timestamp,\r\n    duration,\r\n    trackedProperties,\r\n    itemId,\r\n    id\r\n| sort by endTime asc",
-        "size": 0,
+        "size": 1,
         "showAnalytics": true,
         "title": "Completed actions for workflow run {SelectedWorkflowRunID}",
         "timeContextFromParameter": "TimeRange",
         "showRefreshButton": true,
+        "exportedParameters": [
+          {
+            "fieldName": "id",
+            "parameterName": "SelectedWorkflowActionID",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "name",
+            "parameterName": "SelectedWorkflowActionName",
+            "parameterType": 1
+          }
+        ],
         "showExportToExcel": true,
         "queryType": 0,
         "resourceType": "microsoft.insights/components",
@@ -555,11 +567,103 @@
           ]
         }
       },
-      "conditionalVisibility": {
-        "parameterName": "SelectedWorkflowOperationID",
-        "comparison": "isNotEqualTo"
-      },
       "name": "SelectedWorkflowActionsTable"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          type,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
+        "size": 1,
+        "showAnalytics": true,
+        "title": "Dependencies for action '{SelectedWorkflowActionName}'",
+        "timeContextFromParameter": "TimeRange",
+        "showRefreshButton": true,
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "status",
+              "formatter": 11
+            },
+            {
+              "columnMatch": "timestamp",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "duration",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "blue",
+                "customColumnWidthSetting": "14ch"
+              },
+              "numberFormat": {
+                "unit": 23,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            },
+            {
+              "columnMatch": "itemId",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "DependencyDetails",
+                "linkLabel": "Details",
+                "linkIsContextBlade": true,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                }
+              }
+            }
+          ],
+          "labelSettings": [
+            {
+              "columnId": "status",
+              "label": "Status"
+            },
+            {
+              "columnId": "timestamp",
+              "label": "Timestamp"
+            },
+            {
+              "columnId": "target",
+              "label": "Target"
+            },
+            {
+              "columnId": "type",
+              "label": "Type"
+            },
+            {
+              "columnId": "name",
+              "label": "Name"
+            },
+            {
+              "columnId": "resultCode",
+              "label": "Result Code"
+            },
+            {
+              "columnId": "duration",
+              "label": "Duration"
+            },
+            {
+              "columnId": "itemId",
+              "label": "Details"
+            }
+          ]
+        }
+      },
+      "name": "SelectedActionDependenciesTable"
     }
   ],
   "fallbackResourceIds": [
