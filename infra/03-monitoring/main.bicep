@@ -225,14 +225,14 @@ module azureFunctionsWorkbook './modules/workbooks/workbook.bicep' = {
   }
 }
 
-module logicAppWorkflowsWorkbook './modules/workbooks/workbook.bicep' = {
+module logicAppWorkflowRunsWorkbook './modules/workbooks/workbook.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     environmentName: environmentName
     location: location
     tags: tags
-    displayName: 'Logic App Workflows'
-    serializedData: string(loadJsonContent('./modules/workbooks/Logic App Workflows.workbook'))
+    displayName: 'Logic App Workflow Runs'
+    serializedData: string(loadJsonContent('./modules/workbooks/Logic App Workflow Runs.workbook'))
     placeholders: {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
