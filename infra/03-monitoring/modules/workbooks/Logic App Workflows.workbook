@@ -364,6 +364,9 @@
                   "extensionName": "Microsoft_Azure_EMA",
                   "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"resourceId\": \"/workflows/{Workflow_column}/runs/{RunID_column}\",\r\n  \"isReadOnly\": 1\r\n}"
                 }
+              },
+              "tooltipFormat": {
+                "tooltip": "Open workflow run in designer view. (Note that this doesn't work for stateless workflows that do not have run history enabled.)"
               }
             },
             {
@@ -393,9 +396,12 @@
                   "params": [],
                   "httpMethod": "POST",
                   "title": "Resubmit Workflow Run {RunID_column}",
-                  "description": "### This action will trigger a new run for workflow {Workflow_column} ({LogicAppName_column}) using the same trigger data from run {RunID_column}",
+                  "description": "This action will trigger a new run for workflow {Workflow_column} ({LogicAppName_column}) using the same trigger data from run {RunID_column}.\r\n\r\nNote that this will not work for stateless workflows.",
                   "runLabel": "Resubmit"
                 }
+              },
+              "tooltipFormat": {
+                "tooltip": "Open resubmit view for workflow run"
               }
             },
             {
