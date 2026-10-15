@@ -533,7 +533,7 @@
               "columnMatch": "itemId",
               "formatter": 7,
               "formatOptions": {
-                "linkTarget": "TraceDetails",
+                "linkTarget": "RequestDetails",
                 "linkLabel": "Details",
                 "linkIsContextBlade": true,
                 "appInsightsContext": {
