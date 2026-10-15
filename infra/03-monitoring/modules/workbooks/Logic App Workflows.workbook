@@ -570,174 +570,220 @@
       "name": "SelectedWorkflowActionsTable"
     },
     {
-      "type": 3,
+      "type": 12,
       "content": {
-        "version": "KqlItem/1.0",
-        "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          type,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
-        "size": 1,
-        "showAnalytics": true,
-        "title": "Dependencies for selected action '{SelectedWorkflowActionName}'",
-        "timeContextFromParameter": "TimeRange",
-        "showRefreshButton": true,
-        "showExportToExcel": true,
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "crossComponentResources": [
-          "{ApplicationInsights}"
-        ],
-        "gridSettings": {
-          "formatters": [
-            {
-              "columnMatch": "status",
-              "formatter": 11
-            },
-            {
-              "columnMatch": "timestamp",
-              "formatter": 0,
-              "formatOptions": {
-                "customColumnWidthSetting": "23ch"
-              }
-            },
-            {
-              "columnMatch": "duration",
-              "formatter": 4,
-              "formatOptions": {
-                "palette": "blue",
-                "customColumnWidthSetting": "14ch"
-              },
-              "numberFormat": {
-                "unit": 23,
-                "options": {
-                  "style": "decimal"
-                }
-              }
-            },
-            {
-              "columnMatch": "itemId",
-              "formatter": 7,
-              "formatOptions": {
-                "linkTarget": "DependencyDetails",
-                "linkLabel": "Details",
-                "linkIsContextBlade": true,
-                "appInsightsContext": {
-                  "resourceIdSource": "parameter",
-                  "resourceId": "ApplicationInsights",
-                  "secondaryIdSource": "default"
-                }
-              }
-            }
-          ],
-          "labelSettings": [
-            {
-              "columnId": "status",
-              "label": "Status"
-            },
-            {
-              "columnId": "timestamp",
-              "label": "Timestamp"
-            },
-            {
-              "columnId": "target",
-              "label": "Target"
-            },
-            {
-              "columnId": "type",
-              "label": "Type"
-            },
-            {
-              "columnId": "name",
-              "label": "Name"
-            },
-            {
-              "columnId": "resultCode",
-              "label": "Result Code"
-            },
-            {
-              "columnId": "duration",
-              "label": "Duration"
-            },
-            {
-              "columnId": "itemId",
-              "label": "Details"
-            }
-          ]
-        }
-      },
-      "name": "SelectedWorkflowActionDependenciesTable"
-    },
-    {
-      "type": 3,
-      "content": {
-        "version": "KqlItem/1.0",
-        "query": "exceptions\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| project timestamp,\r\n          problemId,\r\n          type,\r\n          outerMessage,\r\n          itemId",
-        "size": 1,
-        "showAnalytics": true,
-        "title": "Exceptions for selected action '{SelectedWorkflowActionName}'",
-        "timeContextFromParameter": "TimeRange",
-        "showRefreshButton": true,
-        "showExportToExcel": true,
-        "queryType": 0,
-        "resourceType": "microsoft.insights/components",
-        "crossComponentResources": [
-          "{ApplicationInsights}"
-        ],
-        "gridSettings": {
-          "formatters": [
-            {
-              "columnMatch": "timestamp",
-              "formatter": 0,
-              "formatOptions": {
-                "customColumnWidthSetting": "23ch"
-              }
-            },
-            {
-              "columnMatch": "type",
-              "formatter": 0,
-              "formatOptions": {
-                "customColumnWidthSetting": "75ch"
-              }
-            },
-            {
-              "columnMatch": "itemId",
-              "formatter": 7,
-              "formatOptions": {
-                "linkTarget": "ExceptionDetails",
-                "linkLabel": "Details",
-                "linkIsContextBlade": true,
-                "appInsightsContext": {
-                  "resourceIdSource": "parameter",
-                  "resourceId": "ApplicationInsights",
-                  "secondaryIdSource": "default"
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "Details for selected action '{SelectedWorkflowActionName}'",
+        "items": [
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "38496b9c-1e8d-4c96-a736-29c83ee76754",
+                  "cellValue": "SelectedWorkflowActionsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Dependencies",
+                  "subTarget": "Dependencies",
+                  "preText": "Dependencies",
+                  "style": "link"
                 },
-                "customColumnWidthSetting": "11ch"
+                {
+                  "id": "ba93974b-278d-4945-88d2-8cd7b48d3b76",
+                  "cellValue": "SelectedWorkflowActionsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Exceptions",
+                  "subTarget": "Exceptions",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "SelectedWorkflowActionTabs"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          type,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{ApplicationInsights}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "status",
+                    "formatter": 11
+                  },
+                  {
+                    "columnMatch": "timestamp",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "23ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "duration",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "palette": "blue",
+                      "customColumnWidthSetting": "14ch"
+                    },
+                    "numberFormat": {
+                      "unit": 23,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "itemId",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "DependencyDetails",
+                      "linkLabel": "Details",
+                      "linkIsContextBlade": true,
+                      "appInsightsContext": {
+                        "resourceIdSource": "parameter",
+                        "resourceId": "ApplicationInsights",
+                        "secondaryIdSource": "default"
+                      }
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "status",
+                    "label": "Status"
+                  },
+                  {
+                    "columnId": "timestamp",
+                    "label": "Timestamp"
+                  },
+                  {
+                    "columnId": "target",
+                    "label": "Target"
+                  },
+                  {
+                    "columnId": "type",
+                    "label": "Type"
+                  },
+                  {
+                    "columnId": "name",
+                    "label": "Name"
+                  },
+                  {
+                    "columnId": "resultCode",
+                    "label": "Result Code"
+                  },
+                  {
+                    "columnId": "duration",
+                    "label": "Duration"
+                  },
+                  {
+                    "columnId": "itemId",
+                    "label": "Details"
+                  }
+                ]
               }
-            }
-          ],
-          "labelSettings": [
-            {
-              "columnId": "timestamp",
-              "label": "Timestamp"
             },
-            {
-              "columnId": "problemId",
-              "label": "Problem ID"
+            "conditionalVisibility": {
+              "parameterName": "SelectedWorkflowActionsTab",
+              "comparison": "isEqualTo",
+              "value": "Dependencies"
             },
-            {
-              "columnId": "type",
-              "label": "Type"
+            "name": "SelectedWorkflowActionDependenciesTable"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "exceptions\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| project timestamp,\r\n          problemId,\r\n          type,\r\n          outerMessage,\r\n          itemId",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{ApplicationInsights}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "timestamp",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "23ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "type",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "75ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "itemId",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "ExceptionDetails",
+                      "linkLabel": "Details",
+                      "linkIsContextBlade": true,
+                      "appInsightsContext": {
+                        "resourceIdSource": "parameter",
+                        "resourceId": "ApplicationInsights",
+                        "secondaryIdSource": "default"
+                      },
+                      "customColumnWidthSetting": "11ch"
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "timestamp",
+                    "label": "Timestamp"
+                  },
+                  {
+                    "columnId": "problemId",
+                    "label": "Problem ID"
+                  },
+                  {
+                    "columnId": "type",
+                    "label": "Type"
+                  },
+                  {
+                    "columnId": "outerMessage",
+                    "label": "Outer Message"
+                  },
+                  {
+                    "columnId": "itemId",
+                    "label": "Details"
+                  }
+                ]
+              }
             },
-            {
-              "columnId": "outerMessage",
-              "label": "Outer Message"
+            "conditionalVisibility": {
+              "parameterName": "SelectedWorkflowActionsTab",
+              "comparison": "isEqualTo",
+              "value": "Exceptions"
             },
-            {
-              "columnId": "itemId",
-              "label": "Details"
-            }
-          ]
-        }
+            "name": "SelectedWorkflowActionExceptionsTable"
+          }
+        ]
       },
-      "name": "SelectedWorkflowActionExceptionsTable"
+      "name": "SelectedWorkflowActionGroup"
     }
   ],
   "fallbackResourceIds": [
