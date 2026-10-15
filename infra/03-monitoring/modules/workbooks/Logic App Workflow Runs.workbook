@@ -277,6 +277,7 @@
         "size": 0,
         "title": "Workflow runs (time range: {TimeRange:label})",
         "showRefreshButton": true,
+        "exportMultipleValues": true,
         "exportedParameters": [
           {
             "fieldName": "operation_Id",
@@ -286,6 +287,21 @@
           {
             "fieldName": "RunID",
             "parameterName": "SelectedWorkflowRunID",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "LogicAppId",
+            "parameterName": "SelectedWorkflowLogicAppId",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "Workflow",
+            "parameterName": "SelectedWorkflowName",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "TriggerName",
+            "parameterName": "SelectedWorkflowTriggerName",
             "parameterType": 1
           }
         ],
@@ -446,10 +462,40 @@
       "name": "WorkflowRunsWithLogicAppIdTable"
     },
     {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "list",
+        "links": [
+          {
+            "id": "fc70d98c-21a2-4f88-953b-b8846bbf29fe",
+            "linkTarget": "ArmAction",
+            "linkLabel": "Resubmit Selected Workflow Runs",
+            "style": "primary",
+            "linkIsContextBlade": true,
+            "armActionContext": {
+              "path": "{SelectedWorkflowLogicAppId}/hostruntime/runtime/webhooks/workflow/api/management/workflows/{SelectedWorkflowName}/triggers/{SelectedWorkflowTriggerName}/histories/{SelectedWorkflowRunID}/resubmit?api-version=2018-11-01",
+              "headers": [],
+              "params": [],
+              "responseType": "json",
+              "httpMethod": "POST",
+              "applyToMultipleResourcesParameter": "SelectedWorkflowLogicAppId",
+              "description": "This action will trigger new runs using the same trigger data from the selected workflow runs."
+            }
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "SelectedWorkflowOperationID",
+        "comparison": "isNotEqualTo"
+      },
+      "name": "WorkflowRunsButtons"
+    },
+    {
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category in (\"Workflow.Operations.Triggers\", \"Workflow.Operations.Actions\")\r\n| where operation_Id == '{SelectedWorkflowOperationID}'\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId == '{SelectedWorkflowRunID}'\r\n| extend \r\n    type = coalesce(customDimensions[\"actionType\"], customDimensions[\"triggerType\"]),\r\n    trackedProperties = customDimensions[\"trackedProperties\"]\r\n| project\r\n    status = resultCode,\r\n    timestamp,\r\n    name,\r\n    type,\r\n    duration,\r\n    trackedProperties,\r\n    itemId,\r\n    id\r\n| sort by timestamp asc",
+        "query": "let operationIdFilter = dynamic([{SelectedWorkflowOperationID}]);\r\nlet runIdFilter = dynamic([{SelectedWorkflowRunID}]);\r\n\r\nrequests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category in (\"Workflow.Operations.Triggers\", \"Workflow.Operations.Actions\")\r\n| where operation_Id in (operationIdFilter)\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId in (runIdFilter)\r\n| extend \r\n    type = coalesce(customDimensions[\"actionType\"], customDimensions[\"triggerType\"]),\r\n    trackedProperties = customDimensions[\"trackedProperties\"]\r\n| project\r\n    status = resultCode,\r\n    timestamp,\r\n    name,\r\n    type,\r\n    duration,\r\n    trackedProperties,\r\n    itemId,\r\n    id\r\n| sort by timestamp asc",
         "size": 1,
         "showAnalytics": true,
         "title": "Completed trigger and actions for selected workflow run {SelectedWorkflowRunID}",
@@ -581,6 +627,10 @@
             }
           ]
         }
+      },
+      "conditionalVisibility": {
+        "parameterName": "SelectedWorkflowOperationID",
+        "comparison": "isNotEqualTo"
       },
       "name": "SelectedWorkflowActionsTable"
     },
@@ -797,6 +847,10 @@
             "name": "SelectedWorkflowActionExceptionsTable"
           }
         ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "SelectedWorkflowOperationID",
+        "comparison": "isNotEqualTo"
       },
       "name": "SelectedWorkflowActionGroup"
     }
