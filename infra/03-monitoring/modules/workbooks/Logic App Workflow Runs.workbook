@@ -622,7 +622,7 @@
             "type": 3,
             "content": {
               "version": "KqlItem/1.0",
-              "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          type,\r\n          name,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
+              "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          name,\r\n          type,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
               "size": 1,
               "showAnalytics": true,
               "timeContextFromParameter": "TimeRange",
@@ -689,12 +689,12 @@
                     "label": "Target"
                   },
                   {
-                    "columnId": "type",
-                    "label": "Type"
-                  },
-                  {
                     "columnId": "name",
                     "label": "Name"
+                  },
+                  {
+                    "columnId": "type",
+                    "label": "Type"
                   },
                   {
                     "columnId": "resultCode",
