@@ -1,0 +1,808 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "308c9a05-291a-42a4-8162-afb54d675d77",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "isRequired": true,
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "##AzureSubscriptionId##",
+            "label": "Subscription"
+          },
+          {
+            "id": "78d01b22-9160-4479-83e8-8e98780915a4",
+            "version": "KqlParameterItem/1.0",
+            "name": "ApplicationInsights",
+            "type": 5,
+            "isRequired": true,
+            "query": "where type in~('microsoft.insights/components')\r\n| order by name asc\r\n| project value = id, label = name",
+            "crossComponentResources": [
+              "{Subscription}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "queryType": 1,
+            "resourceType": "microsoft.resourcegraph/resources",
+            "value": "##ApplicationInsightsId##",
+            "label": "Application Insights"
+          },
+          {
+            "id": "2f2c3f34-ac0a-4712-8504-a7d71dad9c6a",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time",
+            "type": 4,
+            "isRequired": true,
+            "isGlobal": true,
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "value": {
+              "durationMs": 3600000
+            }
+          },
+          {
+            "id": "a860333a-8362-44cf-ab45-605efb319206",
+            "version": "KqlParameterItem/1.0",
+            "name": "Status",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "jsonData": "[\r\n    { \"value\": \"Cancelled\", \"label\": \"Cancelled\"},\r\n    { \"value\": \"Failed\", \"label\": \"Failed\"},\r\n    { \"value\": \"Running\", \"label\": \"Running\"},\r\n    { \"value\": \"Succeeded\", \"label\": \"Succeeded\"}\r\n]",
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "value": []
+          },
+          {
+            "id": "53626f5d-09a6-4404-b2d7-bb3efbc997c5",
+            "version": "KqlParameterItem/1.0",
+            "name": "LogicApp",
+            "label": "Logic App",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let statusFilter = dynamic([{Status}]);\r\n\r\nlet runEvents = traces\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Runs\"\r\n| extend eventName = tostring(customDimensions[\"EventName\"])\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nrunEvents\r\n| where eventName == \"WorkflowRunStart\"\r\n| join kind=leftouter (\r\n    runEvents\r\n    | where eventName == \"WorkflowRunEnd\"\r\n  ) on operation_Id, runId\r\n| extend status = iif(isempty(customDimensions1[\"status\"]), \"Running\", replace_string(tostring(customDimensions1[\"status\"]), @'\"', ''))\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| distinct cloud_RoleName\r\n| sort by cloud_RoleName asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components"
+          },
+          {
+            "id": "35012d32-95d6-4239-9b7f-89305445a0f2",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workflow",
+            "type": 2,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\n\r\nlet runEvents = traces\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Runs\"\r\n| extend eventName = tostring(customDimensions[\"EventName\"])\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nrunEvents\r\n| where eventName == \"WorkflowRunStart\"\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| join kind=leftouter (\r\n    runEvents\r\n    | where eventName == \"WorkflowRunEnd\"\r\n  ) on operation_Id, runId\r\n| extend status = iif(isempty(customDimensions1[\"status\"]), \"Running\", replace_string(tostring(customDimensions1[\"status\"]), @'\"', ''))\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| distinct operation_Name\r\n| sort by operation_Name asc",
+            "crossComponentResources": [
+              "{ApplicationInsights}"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 0
+            },
+            "timeContextFromParameter": "TimeRange",
+            "queryType": 0,
+            "resourceType": "microsoft.insights/components",
+            "value": []
+          },
+          {
+            "id": "341806fc-66fd-4aae-9d10-e1263bcae9c9",
+            "version": "KqlParameterItem/1.0",
+            "name": "ClientTrackingId",
+            "type": 1,
+            "value": "",
+            "label": "Client Tracking ID"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "parameters - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\nlet workflowFilter = dynamic([{Workflow}]);\r\nlet clientTrackingIdFilter = '{ClientTrackingId}';\r\n\r\nlet runEvents = traces\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Runs\"\r\n| extend eventName = tostring(customDimensions[\"EventName\"])\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nrunEvents\r\n| where eventName == \"WorkflowRunStart\"\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| where array_length(workflowFilter) == 0 or operation_Name in (workflowFilter)\r\n| extend clientTrackingId = tostring(customDimensions[\"prop__clientTrackingId\"])\r\n| where isempty(clientTrackingIdFilter) or clientTrackingId == clientTrackingIdFilter\r\n| join kind=leftouter (\r\n    runEvents\r\n    | where eventName == \"WorkflowRunEnd\"\r\n  ) on operation_Id, runId\r\n| extend status = iif(isempty(customDimensions1[\"status\"]), \"Running\", replace_string(tostring(customDimensions1[\"status\"]), @'\"', ''))\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| make-series numberOfRequests=count() default=0 on timestamp from todatetime(\"{TimeRange:startISO}\") to todatetime(\"{TimeRange:endISO}\") step {TimeRange:grain} by status",
+        "size": 1,
+        "showAnalytics": true,
+        "title": "Number of workflow runs (time range: {TimeRange:label}, grain: {TimeRange:grain})",
+        "timeContextFromParameter": "TimeRange",
+        "timeBrushParameterName": "TimeRange",
+        "timeBrushExportOnlyWhenBrushed": true,
+        "showRefreshButton": true,
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "visualization": "barchart",
+        "chartSettings": {
+          "seriesLabelSettings": [
+            {
+              "seriesName": "Cancelled",
+              "color": "gray"
+            },
+            {
+              "seriesName": "Succeeded",
+              "color": "green"
+            },
+            {
+              "seriesName": "Failed",
+              "color": "redBright"
+            },
+            {
+              "seriesName": "Running",
+              "color": "lightBlue"
+            }
+          ]
+        }
+      },
+      "name": "NumberOfWorkflowRunsGraph"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let statusFilter = dynamic([{Status}]);\r\nlet logicAppFilter = dynamic([{LogicApp}]);\r\nlet workflowFilter = dynamic([{Workflow}]);\r\nlet clientTrackingIdFilter = '{ClientTrackingId}';\r\n\r\nlet runEvents = traces\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Runs\"\r\n| extend eventName = tostring(customDimensions[\"EventName\"])\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nlet triggers=requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category == \"Workflow.Operations.Triggers\"\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| where array_length(workflowFilter) == 0 or operation_Name in (workflowFilter)\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"]);\r\n\r\nrunEvents\r\n| where eventName == \"WorkflowRunStart\"\r\n| where array_length(logicAppFilter) == 0 or cloud_RoleName in (logicAppFilter)\r\n| where array_length(workflowFilter) == 0 or operation_Name in (workflowFilter)\r\n| extend clientTrackingId = tostring(customDimensions[\"prop__clientTrackingId\"])\r\n| where isempty(clientTrackingIdFilter) or clientTrackingId == clientTrackingIdFilter\r\n| join kind=leftouter (\r\n    runEvents\r\n    | where eventName == \"WorkflowRunEnd\"\r\n  ) on operation_Id, runId\r\n| extend status = iif(isempty(customDimensions1[\"status\"]), \"Running\", replace_string(tostring(customDimensions1[\"status\"]), @'\"', ''))\r\n| where array_length(statusFilter) == 0 or status in (statusFilter)\r\n| join kind=leftouter (\r\n    triggers \r\n    | project triggerName=name, operation_Id, runId\r\n  ) on operation_Id, runId\r\n| project\r\n    status,\r\n    cloud_RoleName,\r\n    operation_Name,\r\n    startTime = timestamp,\r\n    endTime = timestamp1,\r\n    duration = tolong(customDimensions1[\"prop__durationInMilliseconds\"]),\r\n    workflowType = customDimensions[\"prop__kind\"],\r\n    view = \"View\",\r\n    triggerName,\r\n    trace = itemId,\r\n    runId,\r\n    clientTrackingId,\r\n    operation_Id\r\n| sort by startTime desc",
+        "size": 0,
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "visualization": "table",
+        "gridSettings": {
+          "rowLimit": 1000
+        }
+      },
+      "conditionalVisibility": {
+        "parameterName": "True",
+        "comparison": "isEqualTo",
+        "value": "False"
+      },
+      "name": "WorkflowRunsTable"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "where type in~('microsoft.web/sites')\r\n| where kind contains \"workflowapp\"\r\n| project id, name, location",
+        "size": 4,
+        "queryType": 1,
+        "resourceType": "microsoft.resourcegraph/resources",
+        "crossComponentResources": [
+          "{Subscription}"
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "True",
+        "comparison": "isEqualTo",
+        "value": "False"
+      },
+      "name": "LogicAppsTable"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "{\"version\":\"Merge/1.0\",\"merges\":[{\"id\":\"61518891-aa59-4940-99c7-866b5bc42050\",\"mergeType\":\"leftouter\",\"leftTable\":\"WorkflowRunsTable\",\"rightTable\":\"LogicAppsTable\",\"leftColumn\":\"cloud_RoleName\",\"rightColumn\":\"name\"}],\"projectRename\":[{\"originalName\":\"[WorkflowRunsTable].status\",\"mergedName\":\"Status\",\"fromId\":\"unknown\"},{\"originalName\":\"[WorkflowRunsTable].cloud_RoleName\",\"mergedName\":\"Logic App\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].operation_Name\",\"mergedName\":\"Workflow\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].startTime\",\"mergedName\":\"Start Time\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].endTime\",\"mergedName\":\"End Time\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].duration\",\"mergedName\":\"Duration\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].workflowType\",\"mergedName\":\"Type\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].view\",\"mergedName\":\"View\",\"fromId\":\"unknown\"},{\"originalName\":\"[WorkflowRunsTable].trace\",\"mergedName\":\"Trace\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].triggerName\",\"mergedName\":\"TriggerName\",\"fromId\":\"unknown\"},{\"originalName\":\"[WorkflowRunsTable].runId\",\"mergedName\":\"RunID\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[WorkflowRunsTable].clientTrackingId\",\"mergedName\":\"Client Tracking ID\",\"fromId\":\"unknown\"},{\"originalName\":\"[WorkflowRunsTable].operation_Id\",\"mergedName\":\"operation_Id\",\"fromId\":\"unknown\"},{\"originalName\":\"[LogicAppsTable].id\",\"mergedName\":\"LogicAppId\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[LogicAppsTable].name\",\"mergedName\":\"LogicAppName\",\"fromId\":\"61518891-aa59-4940-99c7-866b5bc42050\"},{\"originalName\":\"[LogicAppsTable].location\",\"mergedName\":\"LogicAppLocation\",\"fromId\":\"unknown\"}]}",
+        "size": 0,
+        "title": "Workflow runs (time range: {TimeRange:label})",
+        "showRefreshButton": true,
+        "exportedParameters": [
+          {
+            "fieldName": "operation_Id",
+            "parameterName": "SelectedWorkflowOperationID",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "RunID",
+            "parameterName": "SelectedWorkflowRunID",
+            "parameterType": 1
+          }
+        ],
+        "showExportToExcel": true,
+        "queryType": 7,
+        "visualization": "table",
+        "showExpandCollapseGrid": true,
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "Status",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Cancelled",
+                    "representation": "Canceled",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Failed",
+                    "representation": "3",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Running",
+                    "representation": "pending",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Succeeded",
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "Start Time",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "End Time",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "Duration",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "blue",
+                "customColumnWidthSetting": "13ch"
+              },
+              "numberFormat": {
+                "unit": 23,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            },
+            {
+              "columnMatch": "View",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "OpenBlade",
+                "bladeOpenContext": {
+                  "bladeName": "WorkflowMonitorBlade",
+                  "extensionName": "Microsoft_Azure_EMA",
+                  "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"resourceId\": \"/workflows/{Workflow_column}/runs/{RunID_column}\",\r\n  \"isReadOnly\": 1\r\n}"
+                }
+              },
+              "tooltipFormat": {
+                "tooltip": "Open workflow run in designer view. (Note that this doesn't work for stateless workflows that do not have run history enabled.)"
+              }
+            },
+            {
+              "columnMatch": "Trace",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "TraceDetails",
+                "linkLabel": "Trace",
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                },
+                "customColumnWidthSetting": "10ch"
+              }
+            },
+            {
+              "columnMatch": "TriggerName",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "ArmAction",
+                "linkLabel": "Resubmit",
+                "linkIsContextBlade": true,
+                "armActionContext": {
+                  "path": "{LogicAppId_column}/hostruntime/runtime/webhooks/workflow/api/management/workflows/{Workflow_column}/triggers/{TriggerName_column}/histories/{RunID_column}/resubmit?api-version=2018-11-01",
+                  "headers": [],
+                  "params": [],
+                  "httpMethod": "POST",
+                  "title": "Resubmit Workflow Run {RunID_column}",
+                  "description": "This action will trigger a new run for workflow {Workflow_column} ({LogicAppName_column}) using the same trigger data from run {RunID_column}.\r\n\r\nNote that this will not work for stateless workflows.",
+                  "runLabel": "Resubmit"
+                }
+              },
+              "tooltipFormat": {
+                "tooltip": "Open resubmit view for workflow run"
+              }
+            },
+            {
+              "columnMatch": "operation_Id",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "LogicAppId",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "LogicAppName",
+              "formatter": 5
+            },
+            {
+              "columnMatch": "LogicAppLocation",
+              "formatter": 5
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "labelSettings": [
+            {
+              "columnId": "TriggerName",
+              "label": "Resubmit"
+            },
+            {
+              "columnId": "RunID",
+              "label": "Run ID"
+            }
+          ]
+        }
+      },
+      "name": "WorkflowRunsWithLogicAppIdTable"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category in (\"Workflow.Operations.Triggers\", \"Workflow.Operations.Actions\")\r\n| where operation_Id == '{SelectedWorkflowOperationID}'\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId == '{SelectedWorkflowRunID}'\r\n| extend \r\n    type = coalesce(customDimensions[\"actionType\"], customDimensions[\"triggerType\"]),\r\n    trackedProperties = customDimensions[\"trackedProperties\"]\r\n| project\r\n    status = resultCode,\r\n    timestamp,\r\n    name,\r\n    type,\r\n    duration,\r\n    trackedProperties,\r\n    itemId,\r\n    id\r\n| sort by timestamp asc",
+        "size": 1,
+        "showAnalytics": true,
+        "title": "Completed trigger and actions for selected workflow run {SelectedWorkflowRunID}",
+        "timeContextFromParameter": "TimeRange",
+        "showRefreshButton": true,
+        "exportedParameters": [
+          {
+            "fieldName": "id",
+            "parameterName": "SelectedWorkflowActionID",
+            "parameterType": 1
+          },
+          {
+            "fieldName": "name",
+            "parameterName": "SelectedWorkflowActionName",
+            "parameterType": 1
+          }
+        ],
+        "showExportToExcel": true,
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "crossComponentResources": [
+          "{ApplicationInsights}"
+        ],
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "status",
+              "formatter": 18,
+              "formatOptions": {
+                "thresholdsOptions": "icons",
+                "thresholdsGrid": [
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Cancelled",
+                    "representation": "Canceled",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Failed",
+                    "representation": "3",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "==",
+                    "thresholdValue": "Succeeded",
+                    "representation": "success",
+                    "text": "{0}{1}"
+                  },
+                  {
+                    "operator": "Default",
+                    "thresholdValue": null,
+                    "representation": "unknown",
+                    "text": "{0}{1}"
+                  }
+                ]
+              }
+            },
+            {
+              "columnMatch": "timestamp",
+              "formatter": 0,
+              "formatOptions": {
+                "customColumnWidthSetting": "23ch"
+              }
+            },
+            {
+              "columnMatch": "duration",
+              "formatter": 4,
+              "formatOptions": {
+                "palette": "blue",
+                "customColumnWidthSetting": "13ch"
+              },
+              "numberFormat": {
+                "unit": 23,
+                "options": {
+                  "style": "decimal"
+                }
+              }
+            },
+            {
+              "columnMatch": "itemId",
+              "formatter": 7,
+              "formatOptions": {
+                "linkTarget": "RequestDetails",
+                "linkLabel": "Details",
+                "linkIsContextBlade": true,
+                "appInsightsContext": {
+                  "resourceIdSource": "parameter",
+                  "resourceId": "ApplicationInsights",
+                  "secondaryIdSource": "default"
+                }
+              }
+            },
+            {
+              "columnMatch": "id",
+              "formatter": 5
+            }
+          ],
+          "rowLimit": 1000,
+          "filter": true,
+          "labelSettings": [
+            {
+              "columnId": "status",
+              "label": "Status"
+            },
+            {
+              "columnId": "timestamp",
+              "label": "Timestamp"
+            },
+            {
+              "columnId": "name",
+              "label": "Name"
+            },
+            {
+              "columnId": "type",
+              "label": "Type"
+            },
+            {
+              "columnId": "duration",
+              "label": "Duration"
+            },
+            {
+              "columnId": "trackedProperties",
+              "label": "Tracked Properties"
+            },
+            {
+              "columnId": "itemId",
+              "label": "Details"
+            }
+          ]
+        }
+      },
+      "name": "SelectedWorkflowActionsTable"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "Details for selected action '{SelectedWorkflowActionName}'",
+        "items": [
+          {
+            "type": 11,
+            "content": {
+              "version": "LinkItem/1.0",
+              "style": "tabs",
+              "links": [
+                {
+                  "id": "38496b9c-1e8d-4c96-a736-29c83ee76754",
+                  "cellValue": "SelectedWorkflowActionsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Dependencies",
+                  "subTarget": "Dependencies",
+                  "preText": "Dependencies",
+                  "style": "link"
+                },
+                {
+                  "id": "ba93974b-278d-4945-88d2-8cd7b48d3b76",
+                  "cellValue": "SelectedWorkflowActionsTab",
+                  "linkTarget": "parameter",
+                  "linkLabel": "Exceptions",
+                  "subTarget": "Exceptions",
+                  "style": "link"
+                }
+              ]
+            },
+            "name": "SelectedWorkflowActionTabs"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "dependencies\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| extend\r\n    status = case(\r\n        success==true, 'success', \r\n        toint(resultCode) between (400 .. 499), 'warning',\r\n        'error'\r\n    ),\r\n    policySource = tostring(customDimensions[\"Source\"])\r\n| project status,\r\n          timestamp,\r\n          target,\r\n          name,\r\n          type,\r\n          resultCode,\r\n          duration,\r\n          itemId\r\n| sort by timestamp desc",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{ApplicationInsights}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "status",
+                    "formatter": 11
+                  },
+                  {
+                    "columnMatch": "timestamp",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "23ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "duration",
+                    "formatter": 4,
+                    "formatOptions": {
+                      "palette": "blue",
+                      "customColumnWidthSetting": "14ch"
+                    },
+                    "numberFormat": {
+                      "unit": 23,
+                      "options": {
+                        "style": "decimal"
+                      }
+                    }
+                  },
+                  {
+                    "columnMatch": "itemId",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "DependencyDetails",
+                      "linkLabel": "Details",
+                      "linkIsContextBlade": true,
+                      "appInsightsContext": {
+                        "resourceIdSource": "parameter",
+                        "resourceId": "ApplicationInsights",
+                        "secondaryIdSource": "default"
+                      }
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "status",
+                    "label": "Status"
+                  },
+                  {
+                    "columnId": "timestamp",
+                    "label": "Timestamp"
+                  },
+                  {
+                    "columnId": "target",
+                    "label": "Target"
+                  },
+                  {
+                    "columnId": "name",
+                    "label": "Name"
+                  },
+                  {
+                    "columnId": "type",
+                    "label": "Type"
+                  },
+                  {
+                    "columnId": "resultCode",
+                    "label": "Result Code"
+                  },
+                  {
+                    "columnId": "duration",
+                    "label": "Duration"
+                  },
+                  {
+                    "columnId": "itemId",
+                    "label": "Details"
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "SelectedWorkflowActionsTab",
+              "comparison": "isEqualTo",
+              "value": "Dependencies"
+            },
+            "name": "SelectedWorkflowActionDependenciesTable"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "exceptions\r\n| where operation_ParentId == '{SelectedWorkflowActionID}'\r\n| project timestamp,\r\n          problemId,\r\n          type,\r\n          outerMessage,\r\n          itemId",
+              "size": 1,
+              "showAnalytics": true,
+              "timeContextFromParameter": "TimeRange",
+              "showRefreshButton": true,
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.insights/components",
+              "crossComponentResources": [
+                "{ApplicationInsights}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "timestamp",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "23ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "type",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "75ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "itemId",
+                    "formatter": 7,
+                    "formatOptions": {
+                      "linkTarget": "ExceptionDetails",
+                      "linkLabel": "Details",
+                      "linkIsContextBlade": true,
+                      "appInsightsContext": {
+                        "resourceIdSource": "parameter",
+                        "resourceId": "ApplicationInsights",
+                        "secondaryIdSource": "default"
+                      },
+                      "customColumnWidthSetting": "11ch"
+                    }
+                  }
+                ],
+                "labelSettings": [
+                  {
+                    "columnId": "timestamp",
+                    "label": "Timestamp"
+                  },
+                  {
+                    "columnId": "problemId",
+                    "label": "Problem ID"
+                  },
+                  {
+                    "columnId": "type",
+                    "label": "Type"
+                  },
+                  {
+                    "columnId": "outerMessage",
+                    "label": "Outer Message"
+                  },
+                  {
+                    "columnId": "itemId",
+                    "label": "Details"
+                  }
+                ]
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "SelectedWorkflowActionsTab",
+              "comparison": "isEqualTo",
+              "value": "Exceptions"
+            },
+            "name": "SelectedWorkflowActionExceptionsTable"
+          }
+        ]
+      },
+      "name": "SelectedWorkflowActionGroup"
+    }
+  ],
+  "fallbackResourceIds": [
+    "##ApplicationInsightsId##"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

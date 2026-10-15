@@ -46,6 +46,20 @@ param serviceBusNamespaceName string
 var tags tagsType = getTemplateTags(environmentName)
 
 //=============================================================================
+// Existing resources
+//=============================================================================
+
+resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-preview' existing = {
+  name: apiManagementServiceName
+  scope: resourceGroup(resourceGroupName)
+}
+
+resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: appInsightsName
+  scope: resourceGroup(resourceGroupName)
+}
+
+//=============================================================================
 // Resources
 //=============================================================================
 
@@ -157,5 +171,72 @@ module recalculateRatingForAllMoviesWorkflowNotStartedAlert './modules/alerts/re
     location: location
     tags: tags
     logicAppName: logicAppName
+  }
+}
+
+// Workbooks
+
+module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'APIM Insights'
+    serializedData: string(loadJsonContent('./modules/workbooks/APIM Insights.workbook'))
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsightsId: appInsights.id
+      ApiManagementId: apiManagementService.id
+    }
+    sourceId: appInsights.id
+  }
+}
+
+module apimRequestsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'APIM Requests'
+    serializedData: string(loadJsonContent('./modules/workbooks/APIM Requests.workbook'))
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsightsId: appInsights.id
+    }
+    sourceId: appInsights.id
+  }
+}
+
+module azureFunctionsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'Azure Functions'
+    serializedData: string(loadJsonContent('./modules/workbooks/Azure Functions.workbook'))
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsightsId: appInsights.id
+    }
+    sourceId: appInsights.id
+  }
+}
+
+module logicAppWorkflowRunsWorkbook './modules/workbooks/workbook.bicep' = {
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    environmentName: environmentName
+    location: location
+    tags: tags
+    displayName: 'Logic App Workflow Runs'
+    serializedData: string(loadJsonContent('./modules/workbooks/Logic App Workflow Runs.workbook'))
+    placeholders: {
+      AzureSubscriptionId: subscription().subscriptionId
+      ApplicationInsightsId: appInsights.id
+    }
+    sourceId: appInsights.id
   }
 }
