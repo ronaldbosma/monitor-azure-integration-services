@@ -1262,7 +1262,7 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nlet apimRequests = requests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n;\r\n\r\nlet apimExceptions = exceptions\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n;\r\n\r\napimExceptions\r\n| join kind=inner apimRequests on $left.operation_ParentId == $right.id\r\n| project severityLevel,\r\n          timestamp,\r\n          operation_ParentId,\r\n          problemId,\r\n          outerMessage,\r\n          details = itemId,\r\n          trace = itemId",
+                    "query": "let subscriptionFilter = dynamic([{ApimSubscription}]);\r\nlet operationNameFilter = '{SelectedOperationName}';\r\nlet resultCodeFilter = '{SelectedResultCode}';\r\n\r\nlet apimRequests = requests\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n| extend subscription = tostring(customDimensions[\"Subscription Name\"])\r\n| where array_length(subscriptionFilter) == 0 or subscription in (subscriptionFilter)\r\n| where operation_Name == operationNameFilter\r\n| where isempty(resultCodeFilter) or resultCode == resultCodeFilter\r\n;\r\n\r\nlet apimExceptions = exceptions\r\n| where customDimensions[\"Service Type\"] == \"API Management\"\r\n| where customDimensions[\"Service ID\"] == \"{ApiManagement:name}\"\r\n;\r\n\r\napimExceptions\r\n| join kind=inner apimRequests on $left.operation_ParentId == $right.id\r\n| project timestamp,\r\n          operation_ParentId,\r\n          problemId,\r\n          outerMessage,\r\n          details = itemId,\r\n          trace = itemId",
                     "size": 0,
                     "showAnalytics": true,
                     "timeContextFromParameter": "TimeRange",
@@ -1275,13 +1275,6 @@
                     ],
                     "gridSettings": {
                       "formatters": [
-                        {
-                          "columnMatch": "severityLevel",
-                          "formatter": 11,
-                          "formatOptions": {
-                            "customColumnWidthSetting": "15ch"
-                          }
-                        },
                         {
                           "columnMatch": "timestamp",
                           "formatter": 0,
@@ -1343,10 +1336,6 @@
                       ],
                       "filter": true,
                       "labelSettings": [
-                        {
-                          "columnId": "severityLevel",
-                          "label": "Severity"
-                        },
                         {
                           "columnId": "timestamp",
                           "label": "Timestamp"
