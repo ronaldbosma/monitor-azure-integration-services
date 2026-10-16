@@ -80,7 +80,7 @@ resource failedAvailabilityTestAlert 'Microsoft.Insights/metricAlerts@2026-01-01
             }
           ]
 
-          skipMetricValidation: false
+          skipMetricValidation: true
           criterionType: 'StaticThresholdCriterion'
         }
       ]

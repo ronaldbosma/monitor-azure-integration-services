@@ -176,7 +176,7 @@ resource failedApimRequestsAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2
             }
           ]
 
-          skipMetricValidation: false
+          skipMetricValidation: true
           criterionType: 'StaticThresholdCriterion'
         }
       ]
