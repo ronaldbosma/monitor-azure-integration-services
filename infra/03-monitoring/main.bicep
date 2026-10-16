@@ -63,7 +63,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
 // Resources
 //=============================================================================
 
-module availabilityTests './modules/availability-tests.bicep' = {
+module apimStatusAvailabilityTest './modules/apim-status-availability-test.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     environmentName: environmentName
