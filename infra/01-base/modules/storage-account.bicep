@@ -39,3 +39,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
     defaultToOAuthAuthentication: true
   }
 }
+
+//=============================================================================
+// Outputs
+//=============================================================================
+
+output tableEndpoint string = storageAccount.properties.primaryEndpoints.table
+
