@@ -4,7 +4,9 @@
 
 .DESCRIPTION
     Sends the JSON message { "id": "invalid-id" } to the deleted-movies topic using the Service Bus REST API.
-    This will result in a failed Azure Functions execution and the message being dead-lettered in the Service Bus topic.
+    This will result in:
+    - a failed Azure Functions execution
+    - the message being dead-lettered in the Service Bus topic
 
     The message is sent with 'az rest', so the logged in user needs the 'Azure Service Bus Data Sender' role
     on the Service Bus namespace.
@@ -12,8 +14,9 @@
 .PARAMETER SubscriptionId
     The id of the Azure subscription. Defaults to the AZURE_SUBSCRIPTION_ID environment variable.
 
-.PARAMETER ServiceBusNamespaceName
-    The name of the Service Bus namespace. Defaults to the AZURE_SERVICE_BUS_NAMESPACE_NAME environment variable.
+.PARAMETER ServiceBusNamespaceEndpoint
+    The endpoint of the Service Bus namespace (e.g. https://sbns-monitorais-sdc-45gou.servicebus.windows.net:443/).
+    Defaults to the AZURE_SERVICE_BUS_NAMESPACE_ENDPOINT environment variable.
 
 .EXAMPLE
     azd exec ./publish-invalid-movie-deleted-event.ps1
@@ -21,22 +24,22 @@
     Runs the script with the environment variables of the current azd environment.
 
 .EXAMPLE
-    ./publish-invalid-movie-deleted-event.ps1 -SubscriptionId '<subscription-id>' -ServiceBusNamespaceName 'sbns-monitorais-sdc-45gou'
+    ./publish-invalid-movie-deleted-event.ps1 -SubscriptionId '<subscription-id>' -ServiceBusNamespaceEndpoint 'https://sbns-monitorais-sdc-45gou.servicebus.windows.net:443/'
 
     Runs the script directly with explicitly specified values.
 #>
 [CmdletBinding()]
 param(
     [string]$SubscriptionId = $env:AZURE_SUBSCRIPTION_ID,
-    [string]$ServiceBusNamespaceName = $env:AZURE_SERVICE_BUS_NAMESPACE_NAME
+    [string]$ServiceBusNamespaceEndpoint = $env:AZURE_SERVICE_BUS_NAMESPACE_ENDPOINT
 )
 
 $ErrorActionPreference = 'Stop'
 
 # Validate required parameters
 $requiredParameters = @{
-    SubscriptionId          = $SubscriptionId
-    ServiceBusNamespaceName = $ServiceBusNamespaceName
+    SubscriptionId              = $SubscriptionId
+    ServiceBusNamespaceEndpoint = $ServiceBusNamespaceEndpoint
 }
 $missingParameters = $requiredParameters.GetEnumerator() | Where-Object { [string]::IsNullOrWhiteSpace($_.Value) } | ForEach-Object { $_.Key }
 if ($missingParameters) {
@@ -51,13 +54,13 @@ if ($LASTEXITCODE -ne 0) {
 
 # Publish the message to the deleted-movies topic of the Service Bus namespace
 $topicName = 'deleted-movies'
-$uri = "https://$ServiceBusNamespaceName.servicebus.windows.net/$topicName/messages"
+$uri = "$($ServiceBusNamespaceEndpoint.TrimEnd('/'))/$topicName/messages"
 $message = '{ "id": "invalid-id" }'
 
-Write-Host "Sending message $message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceName'"
+Write-Host "Sending message $message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceEndpoint'"
 
 az rest --method post --uri $uri --resource 'https://servicebus.azure.net' `
         --headers 'Content-Type=application/json' --body $message --output none
 if ($LASTEXITCODE -ne 0) {
-    throw "Unable to send the message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceName'."
+    throw "Unable to send the message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceEndpoint'."
 }
