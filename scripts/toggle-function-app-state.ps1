@@ -7,6 +7,10 @@
     the Function App using the Azure CLI. Only 'y' or 'yes' confirms the change.
     A running Function App is stopped; a stopped Function App is started.
     Other states are rejected without changing the Function App.
+
+    When using azd exec, pass --interactive to allow confirmation input.
+    Missing confirmation input is rejected without changing the Function App.
+
     The logged in user needs permission to start and stop the Function App.
 
 .PARAMETER SubscriptionId
@@ -74,6 +78,9 @@ $action = switch ($currentState) {
 
 # Confirm the action with the user
 $confirmation = Read-Host "Perform '$action' on this Function App? [y/N]"
+if ($null -eq $confirmation) {
+    throw "No confirmation input is available. No state change was performed. When using 'azd exec', run 'azd exec --interactive ./toggle-function-app-state.ps1' to enable confirmation input."
+}
 if ($confirmation.Trim() -notin @('y', 'yes')) {
     Write-Host 'State change cancelled.'
     return
