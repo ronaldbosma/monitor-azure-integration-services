@@ -46,21 +46,12 @@ if ($missingParameters) {
     throw "The following parameters are not specified and have no environment variable value: $($missingParameters -join ', '). Specify them explicitly or run the script using 'azd exec'."
 }
 
-# First, ensure the Azure CLI is logged in and set to the correct subscription
-az account set --subscription $SubscriptionId
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to set the Azure subscription. Please make sure that you're logged into the Azure CLI with the same credentials as the Azure Developer CLI."
+# Publish message to deleted-movies topic
+$messageParameters = @{
+    SubscriptionId              = $SubscriptionId
+    ServiceBusNamespaceEndpoint = $ServiceBusNamespaceEndpoint
+    EntityType                  = 'Topic'
+    EntityName                  = 'deleted-movies'
+    Message                     = "{ 'id': 'invalid-id' }"
 }
-
-# Publish the message to the deleted-movies topic of the Service Bus namespace
-$topicName = 'deleted-movies'
-$uri = "$($ServiceBusNamespaceEndpoint.TrimEnd('/'))/$topicName/messages"
-$message = "{ 'id': 'invalid-id' }"
-
-Write-Host "Sending message $message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceEndpoint'"
-
-az rest --method post --uri $uri --resource 'https://servicebus.azure.net' `
-        --headers 'Content-Type=application/json' --body $message --output none
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to send the message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceEndpoint'."
-}
+& (Join-Path $PSScriptRoot 'shared\publish-service-bus-message.ps1') @messageParameters
