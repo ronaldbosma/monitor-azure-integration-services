@@ -10,6 +10,11 @@
     Otherwise, the setting is changed to the table storage endpoint suffixed with '/broken',
     which breaks the connection to the user ratings table.
 
+    When the Function App is unhealthy:
+    - all requests to the Function App will fail.
+    - all requests to the User Ratings API will fail because it uses the Function App as its backend.
+    - the Logic App becomes unhealthy because it verifies the health of the User Ratings API during its health check.
+
     Changing the app setting restarts the Function App, so it might take a moment before the health actually changes.
 
     Asks for confirmation before changing the app setting. Only 'y' or 'yes' confirms the change.
