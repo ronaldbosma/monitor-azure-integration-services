@@ -68,17 +68,17 @@
     The name of the Function App. Defaults to the AZURE_FUNCTION_APP_NAME environment variable.
 
 .EXAMPLE
-    azd exec ./scripts/replace-dashboard-hardcoded-values.ps1
+    azd exec ./replace-dashboard-hardcoded-values.ps1
 
     Runs the script with the environment variables of the current azd environment.
 
 .EXAMPLE
-    azd exec ./scripts/replace-dashboard-hardcoded-values.ps1 -- -FilePath ./my-dashboard.bicep
+    azd exec ./replace-dashboard-hardcoded-values.ps1 -- -FilePath ./my-dashboard.bicep
 
     Runs the script with the environment variables of the current azd environment on a specific file.
 
 .EXAMPLE
-    ./scripts/replace-dashboard-hardcoded-values.ps1 -EnvironmentName 'monitorais' -Location 'swedencentral' `
+    ./replace-dashboard-hardcoded-values.ps1 -EnvironmentName 'monitorais' -Location 'swedencentral' `
         -SubscriptionId '<subscription-id>' -ResourceGroupName 'rg-monitorais-sdc-45gou' `
         -AppInsightsName 'appi-monitorais-sdc-45gou' -ServiceBusNamespaceName 'sbns-monitorais-sdc-45gou' `
         -ApiManagementName 'apim-monitorais-sdc-45gou' -LogicAppName 'logic-monitorais-sdc-45gou' `
