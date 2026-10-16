@@ -40,7 +40,7 @@ module serviceBusEntities 'modules/service-bus-entities.bicep' = {
   }
 }
 
-module storage 'modules/storage.bicep' = {
+module storageTables 'modules/storage-tables.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     storageAccountName: storageAccountName
@@ -58,7 +58,7 @@ module apiManagement 'modules/api-management/api-management.bicep' = {
   }
   dependsOn: [
     serviceBusEntities
-    storage
+    storageTables
   ]
 }
 
