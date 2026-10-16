@@ -10,6 +10,8 @@
     Otherwise, the setting is changed to the table storage endpoint suffixed with '/broken',
     which breaks the connection to the user ratings table.
 
+    Changing the app setting restarts the Function App, so it might take a moment before the health actually changes.
+
     Asks for confirmation before changing the app setting. Only 'y' or 'yes' confirms the change.
 
     When using azd exec, pass --interactive to allow confirmation input.
@@ -108,3 +110,5 @@ az webapp config appsettings set --name $FunctionAppName --resource-group $Resou
 if ($LASTEXITCODE -ne 0) {
     throw "Unable to update app setting '$appSettingName' of Function App '$FunctionAppName' in resource group '$ResourceGroupName'."
 }
+
+Write-Host "App setting updated. It might take a moment for the Function App to restart and the health to change."
