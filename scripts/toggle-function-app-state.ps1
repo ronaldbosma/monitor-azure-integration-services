@@ -53,43 +53,11 @@ if ($missingParameters) {
     throw "The following parameters are not specified and have no environment variable value: $($missingParameters -join ', '). Specify them explicitly or run the script using 'azd exec'."
 }
 
-# First, ensure the Azure CLI is logged in and set to the correct subscription
-az account set --subscription $SubscriptionId
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to set the Azure subscription. Please make sure that you're logged into the Azure CLI with the same credentials as the Azure Developer CLI."
+# Toggle the Function App state
+$toggleParameters = @{
+    SubscriptionId     = $SubscriptionId
+    ResourceGroupName  = $ResourceGroupName
+    WebAppName         = $FunctionAppName
+    AppTypeDisplayName = 'Function App'
 }
-
-# Retrieve the current state of the Function App
-$currentState = az functionapp show --name $FunctionAppName --resource-group $ResourceGroupName --query state --output tsv
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to retrieve the current state of Function App '$FunctionAppName' in resource group '$ResourceGroupName'."
-}
-if ([string]::IsNullOrWhiteSpace($currentState)) {
-    throw "No current state was returned for Function App '$FunctionAppName' in resource group '$ResourceGroupName'."
-}
-
-# Determine the action to perform based on the current state
-Write-Host "Function App '$FunctionAppName' in resource group '$ResourceGroupName' is currently '$currentState'."
-$action = switch ($currentState) {
-    'Running' { 'Stop' }
-    'Stopped' { 'Start' }
-    default { throw "Cannot toggle Function App '$FunctionAppName' while its state is '$currentState'. Expected 'Running' or 'Stopped'." }
-}
-
-# Confirm the action with the user
-$confirmation = Read-Host "Perform '$action' on this Function App? [y/N]"
-if ($null -eq $confirmation) {
-    throw "No confirmation input is available. No state change was performed. When using 'azd exec', run 'azd exec --interactive ./toggle-function-app-state.ps1' to enable confirmation input."
-}
-if ($confirmation.Trim() -notin @('y', 'yes')) {
-    Write-Host 'State change cancelled.'
-    return
-}
-
-# Perform the action on the Function App
-Write-Host "Performing '$action' on Function App '$FunctionAppName' in resource group '$ResourceGroupName'"
-
-az functionapp $action.ToLowerInvariant() --name $FunctionAppName --resource-group $ResourceGroupName --output none
-if ($LASTEXITCODE -ne 0) {
-    throw "Unable to $($action.ToLowerInvariant()) Function App '$FunctionAppName' in resource group '$ResourceGroupName'."
-}
+& (Join-Path $PSScriptRoot 'shared\toggle-web-app-state.ps1') @toggleParameters
