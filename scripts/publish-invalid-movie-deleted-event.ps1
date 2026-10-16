@@ -3,7 +3,7 @@
     Publishes an invalid movie deleted event message to the deleted-movies topic of the Service Bus namespace.
 
 .DESCRIPTION
-    Sends the JSON message `{ "id": "invalid-id" }` to the deleted-movies topic using the Service Bus REST API.
+    Sends the JSON message `{ 'id': 'invalid-id' }` to the deleted-movies topic using the Service Bus REST API.
     This will result in:
     - failed Azure Function executions
     - the message being dead-lettered in the Service Bus topic
@@ -55,7 +55,7 @@ if ($LASTEXITCODE -ne 0) {
 # Publish the message to the deleted-movies topic of the Service Bus namespace
 $topicName = 'deleted-movies'
 $uri = "$($ServiceBusNamespaceEndpoint.TrimEnd('/'))/$topicName/messages"
-$message = '{ "id": "invalid-id" }'
+$message = "{ 'id': 'invalid-id' }"
 
 Write-Host "Sending message $message to topic '$topicName' of Service Bus namespace '$ServiceBusNamespaceEndpoint'"
 
