@@ -81,7 +81,7 @@ resource deadLetteredMessagesAlert 'microsoft.insights/metricAlerts@2026-01-01' 
             }
           ]
 
-          skipMetricValidation: false
+          skipMetricValidation: true
           criterionType: 'StaticThresholdCriterion'
         }
       ]

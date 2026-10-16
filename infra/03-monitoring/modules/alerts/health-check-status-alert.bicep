@@ -73,7 +73,7 @@ resource healthCheckAlert 'microsoft.insights/metricAlerts@2026-01-01' = {
           operator: 'LessThan'
           threshold: 100
 
-          skipMetricValidation: false
+          skipMetricValidation: true
           criterionType: 'StaticThresholdCriterion'
         }
       ]

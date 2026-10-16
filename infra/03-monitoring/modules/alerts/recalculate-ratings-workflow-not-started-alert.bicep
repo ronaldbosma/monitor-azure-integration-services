@@ -80,7 +80,7 @@ resource recalculateRatingsWorkflowNotStartedAlert 'Microsoft.Insights/metricAle
             }
           ]
 
-          skipMetricValidation: false
+          skipMetricValidation: true
           criterionType: 'StaticThresholdCriterion'
         }
       ]

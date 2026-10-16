@@ -146,7 +146,7 @@ resource failedWorkflowAlertBasedOnMetric 'Microsoft.Insights/metricAlerts@2026-
             }
           ]
 
-          skipMetricValidation: false
+          skipMetricValidation: true
           criterionType: 'StaticThresholdCriterion'
         }
       ]
