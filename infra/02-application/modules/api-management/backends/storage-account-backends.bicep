@@ -30,34 +30,6 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
 // Resources
 //=============================================================================
 
-resource blobStorageBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
-  parent: apiManagementService
-  name: 'blob-storage'
-  properties: {
-    description: 'The backend for Blob Storage'
-    url: helpers.getBlobStorageEndpoint(storageAccountName)
-    protocol: 'http'
-    tls: {
-      validateCertificateChain: true
-      validateCertificateName: true
-    }
-  }
-}
-
-resource queueStorageBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
-  parent: apiManagementService
-  name: 'queue-storage'
-  properties: {
-    description: 'The backend for Queue Storage'
-    url: helpers.getQueueStorageEndpoint(storageAccountName)
-    protocol: 'http'
-    tls: {
-      validateCertificateChain: true
-      validateCertificateName: true
-    }
-  }
-}
-
 resource tableStorageBackend 'Microsoft.ApiManagement/service/backends@2025-09-01-preview' = {
   parent: apiManagementService
   name: 'table-storage'
