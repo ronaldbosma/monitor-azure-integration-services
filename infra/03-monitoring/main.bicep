@@ -74,7 +74,7 @@ module apimStatusAvailabilityTest './modules/apim-status-availability-test.bicep
   }
 }
 
-module dashboards './modules/dashboards.bicep' = {
+module environmentOverviewDashboard './modules/environment-overview-dashboard.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     environmentName: environmentName
