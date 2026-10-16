@@ -3,9 +3,9 @@
     Publishes an invalid movie deleted event message to the deleted-movies topic of the Service Bus namespace.
 
 .DESCRIPTION
-    Sends the JSON message { "id": "invalid-id" } to the deleted-movies topic using the Service Bus REST API.
+    Sends the JSON message `{ "id": "invalid-id" }` to the deleted-movies topic using the Service Bus REST API.
     This will result in:
-    - a failed Azure Functions execution
+    - failed Azure Function executions
     - the message being dead-lettered in the Service Bus topic
 
     The message is sent with 'az rest', so the logged in user needs the 'Azure Service Bus Data Sender' role
