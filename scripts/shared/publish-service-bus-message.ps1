@@ -19,28 +19,20 @@
 #>
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory)]
     [string]$SubscriptionId,
+    [Parameter(Mandatory)]
     [string]$ServiceBusNamespaceEndpoint,
+    [Parameter(Mandatory)]
     [ValidateSet('Topic', 'Queue')]
     [string]$EntityType,
+    [Parameter(Mandatory)]
     [string]$EntityName,
+    [Parameter(Mandatory)]
     [string]$Message
 )
 
 $ErrorActionPreference = 'Stop'
-
-# Validate that all required parameters are specified
-$requiredParameters = @{
-    SubscriptionId              = $SubscriptionId
-    ServiceBusNamespaceEndpoint = $ServiceBusNamespaceEndpoint
-    EntityType                  = $EntityType
-    EntityName                  = $EntityName
-    Message                     = $Message
-}
-$missingParameters = $requiredParameters.GetEnumerator() | Where-Object { [string]::IsNullOrWhiteSpace($_.Value) } | ForEach-Object { $_.Key }
-if ($missingParameters) {
-    throw "The following parameters are not specified: $($missingParameters -join ', ')."
-}
 
 # First, ensure the Azure CLI is logged in and set to the correct subscription
 az account set --subscription $SubscriptionId

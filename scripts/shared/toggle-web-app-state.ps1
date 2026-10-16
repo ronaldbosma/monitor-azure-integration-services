@@ -24,25 +24,16 @@
 #>
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory)]
     [string]$SubscriptionId,
+    [Parameter(Mandatory)]
     [string]$ResourceGroupName,
+    [Parameter(Mandatory)]
     [string]$WebAppName,
     [string]$AppTypeDisplayName = 'Web App'
 )
 
 $ErrorActionPreference = 'Stop'
-
-# Validate that all required parameters are specified
-$requiredParameters = @{
-    SubscriptionId     = $SubscriptionId
-    ResourceGroupName  = $ResourceGroupName
-    WebAppName         = $WebAppName
-    AppTypeDisplayName = $AppTypeDisplayName
-}
-$missingParameters = $requiredParameters.GetEnumerator() | Where-Object { [string]::IsNullOrWhiteSpace($_.Value) } | ForEach-Object { $_.Key }
-if ($missingParameters) {
-    throw "The following parameters are not specified: $($missingParameters -join ', ')."
-}
 
 # First, ensure the Azure CLI is logged in and set to the correct subscription
 az account set --subscription $SubscriptionId
