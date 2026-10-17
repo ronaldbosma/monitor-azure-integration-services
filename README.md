@@ -117,7 +117,7 @@ Once the prerequisites are installed on your machine, you can deploy this templa
 
 ### Demo and Test
 
-The [Demo Guide](demos/demo.md) provides a step-by-step walkthrough on how to test and demonstrate the deployed resources.
+The [Demo Guide](demos/README.md) provides a step-by-step walkthrough on how to test and demonstrate the deployed resources.
 
 ### Clean up
 

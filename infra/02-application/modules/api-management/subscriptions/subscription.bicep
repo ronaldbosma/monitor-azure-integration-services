@@ -1,5 +1,5 @@
 //=============================================================================
-// Subscription for integration tests
+// API Management Subscription on all APIs, key is stored in Key Vault
 //=============================================================================
 
 //=============================================================================
@@ -8,6 +8,12 @@
 
 @description('The name of the API Management Service')
 param apiManagementServiceName string
+
+@description('The name of the subscription')
+param name string
+
+@description('The display name of the subscription')
+param displayName string
 
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
@@ -28,20 +34,20 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' existing = {
 // Resources
 //=============================================================================
 
-resource integrationTestsApimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-09-01-preview' = {
+resource apimSubscription 'Microsoft.ApiManagement/service/subscriptions@2025-09-01-preview' = {
   parent: apiManagementService
-  name: 'integration-tests'
+  name: name
   properties: {
-    displayName: 'Integration Tests Subscription'
+    displayName: displayName
     scope: '/apis'
     state: 'active'
   }
 }
 
-resource integrationTestsApimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
-  name: 'integration-tests-apim-subscription-key'
+resource apimSubscriptionKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
+  name: '${name}-apim-subscription-key'
   parent: keyVault
   properties: {
-    value: integrationTestsApimSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
+    value: apimSubscription.listSecrets(apiManagementService.apiVersion).primaryKey
   }
 }
