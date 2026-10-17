@@ -20,7 +20,7 @@ The following resources will be deployed:
 
 The following scenarios are available. Each scenario has its own demo guide with step-by-step instructions. The shared testing instructions below apply to all scenarios.
 
-> TODO: add scenarios
+- [Environment Overview Dashboard](./demo-environment-overview-dashboard.md)
 
 ### Shared testing instructions
 
