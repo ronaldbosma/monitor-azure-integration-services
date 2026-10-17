@@ -16,6 +16,7 @@
 
     When using azd exec, pass --interactive to allow confirmation input.
     Missing confirmation input is rejected without deleting any movies.
+    Specify -NoPrompt to skip the confirmation.
 
     The logged in user needs permission to read secrets from the Key Vault (e.g. the Key Vault Secrets User role).
 
@@ -28,10 +29,18 @@
 .PARAMETER ApiManagementGatewayUrl
     The gateway URL of the API Management service. Defaults to the AZURE_API_MANAGEMENT_GATEWAY_URL environment variable.
 
-.EXAMPLE
+    .PARAMETER NoPrompt
+        Skips the confirmation and deletes all movies immediately.
+
+    .EXAMPLE
     azd exec --interactive ./delete-all-movies.ps1
 
     Prompts to delete all movies using the environment variables of the current azd environment.
+
+.EXAMPLE
+    azd exec ./delete-all-movies.ps1 -NoPrompt
+
+    Deletes all movies without asking for confirmation.
 
 .EXAMPLE
     ./delete-all-movies.ps1 -SubscriptionId '<subscription-id>' `
@@ -43,7 +52,8 @@
 param(
     [string]$SubscriptionId = $env:AZURE_SUBSCRIPTION_ID,
     [string]$KeyVaultName = $env:AZURE_KEY_VAULT_NAME,
-    [string]$ApiManagementGatewayUrl = $env:AZURE_API_MANAGEMENT_GATEWAY_URL
+    [string]$ApiManagementGatewayUrl = $env:AZURE_API_MANAGEMENT_GATEWAY_URL,
+    [switch]$NoPrompt
 )
 
 $ErrorActionPreference = 'Stop'
@@ -91,13 +101,15 @@ Write-Verbose "Found $($movies.Count) movie(s) at '$moviesApiUrl':"
 $movies | Sort-Object -Property title | ForEach-Object { Write-Verbose "  - $($_.title) ($($_.year)) [$($_.id)]" }
 
 # Confirm the action with the user
-$confirmation = Read-Host "Delete all $($movies.Count) movie(s)? Related user ratings will be removed by the integration application. This cannot be undone. [y/N]"
-if ($null -eq $confirmation) {
-    throw "No confirmation input is available. No movies were deleted. When using 'azd exec', pass '--interactive' to enable confirmation input."
-}
-if ($confirmation.Trim() -notin @('y', 'yes')) {
-    Write-Host 'Deletion cancelled.'
-    return
+if (-not $NoPrompt) {
+    $confirmation = Read-Host "Delete all $($movies.Count) movie(s)? Related user ratings will be removed by the integration application. This cannot be undone. [y/N]"
+    if ($null -eq $confirmation) {
+        throw "No confirmation input is available. No movies were deleted. When using 'azd exec', pass '--interactive' to enable confirmation input or specify '-NoPrompt' to skip confirmation."
+    }
+    if ($confirmation.Trim() -notin @('y', 'yes')) {
+        Write-Host 'Deletion cancelled.'
+        return
+    }
 }
 
 # Delete each movie

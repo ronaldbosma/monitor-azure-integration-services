@@ -116,6 +116,12 @@ The [delete-all-movies.ps1](../scripts/delete-all-movies.ps1) script deletes all
 azd exec --interactive ./scripts/delete-all-movies.ps1
 ```
 
+Pass `-NoPrompt` to skip the confirmation.
+
+```powershell
+azd exec ./scripts/delete-all-movies.ps1 -NoPrompt
+```
+
 #### Start or stop the Function App
 
 The [toggle-function-app-state.ps1](../scripts/toggle-function-app-state.ps1) script starts a stopped Function App or stops a running one. It prompts for confirmation; use `azd exec --interactive` to allow input.
