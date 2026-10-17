@@ -84,22 +84,6 @@ The [toggle-function-app-health.ps1](../scripts/toggle-function-app-health.ps1) 
 azd exec --interactive ./scripts/toggle-function-app-health.ps1
 ```
 
-#### Start or stop the Function App
-
-The [toggle-function-app-state.ps1](../scripts/toggle-function-app-state.ps1) script starts a stopped Function App or stops a running one. It prompts for confirmation; use `azd exec --interactive` to allow input.
-
-```powershell
-azd exec --interactive ./scripts/toggle-function-app-state.ps1
-```
-
-#### Start or stop the Logic App
-
-The [toggle-logic-app-state.ps1](../scripts/toggle-logic-app-state.ps1) script starts a stopped Logic App or stops a running one. It prompts for confirmation; use `azd exec --interactive` to allow input.
-
-```powershell
-azd exec --interactive ./scripts/toggle-logic-app-state.ps1
-```
-
 #### Publish an invalid movie-deleted event
 
 The [publish-invalid-movie-deleted-event.ps1](../scripts/publish-invalid-movie-deleted-event.ps1) script publishes an invalid event to the `deleted-movies` Service Bus topic, causing the [MovieDeletedEventHandlerFunction](../src/functionApp/FunctionApp/EventHandlers/MovieDeletedEventHandlerFunction.cs) to fail and the message to be dead-lettered. It requires the **Azure Service Bus Data Sender** role on the namespace.
@@ -122,4 +106,20 @@ The [purge-dead-lettered-movie-deleted-events.ps1](../scripts/purge-dead-lettere
 
 ```powershell
 azd exec ./scripts/purge-dead-lettered-movie-deleted-events.ps1
+```
+
+#### Start or stop the Function App
+
+The [toggle-function-app-state.ps1](../scripts/toggle-function-app-state.ps1) script starts a stopped Function App or stops a running one. It prompts for confirmation; use `azd exec --interactive` to allow input.
+
+```powershell
+azd exec --interactive ./scripts/toggle-function-app-state.ps1
+```
+
+#### Start or stop the Logic App
+
+The [toggle-logic-app-state.ps1](../scripts/toggle-logic-app-state.ps1) script starts a stopped Logic App or stops a running one. It prompts for confirmation; use `azd exec --interactive` to allow input.
+
+```powershell
+azd exec --interactive ./scripts/toggle-logic-app-state.ps1
 ```
