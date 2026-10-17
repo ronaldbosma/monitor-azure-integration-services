@@ -4,6 +4,8 @@ The Environment Overview dashboard brings the main health and activity signals f
 
 ![Environment Overview dashboard](../images/environment-overview-dashboard.png)
 
+The dashboard is defined in [environment-overview-dashboard.bicep](../infra/03-monitoring/modules/environment-overview-dashboard.bicep).
+
 ## Open the dashboard
 
 After deploying the template, open [Dashboards](https://portal.azure.com/#dashboard) in the Azure portal and select **Environment Overview - _your-environment-name_** for your `azd` environment. The dashboard is deployed to the environment's resource group.
