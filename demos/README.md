@@ -24,6 +24,7 @@ The following scenarios are available. Each scenario has its own demo guide with
 - Workbooks
   - [APIM Insights Workbook](./demo-apim-insights-workbook.md)
   - [APIM Requests Workbook](./demo-apim-requests-workbook.md)
+  - [Azure Functions Workbook](./demo-azure-functions-workbook.md)
   - [Logic App Workflow Runs Workbook](./demo-logic-app-workflow-runs-workbook.md)
 
 ### Shared testing instructions
