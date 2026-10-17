@@ -1,6 +1,6 @@
 # Monitor Azure Integration Services
 
-An Azure Developer CLI (`azd`) template using Bicep that demonstrates various ways to monitor Azure Integration Services.
+An Azure Developer CLI (`azd`) template using Bicep that demonstrates various ways to monitor Azure Integration Services, including dashboards, workbooks, alerts and health models.
 
 ## Overview
 
