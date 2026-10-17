@@ -26,6 +26,8 @@ The following scenarios are available. Each scenario has its own demo guide with
 
 The application can be explored manually using the REST Client extension in Visual Studio Code, or automatically using the .NET integration tests. The setup below applies to all scenarios.
 
+To load test data, see the [Create demo movies and user ratings](#create-demo-movies-and-user-ratings) section.
+
 #### Manual testing using Visual Studio Code
 
 The repository includes [`tests.http`](../tests/tests.http), which contains requests for the Movies and User Ratings APIs.
