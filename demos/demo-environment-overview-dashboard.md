@@ -25,6 +25,4 @@ Some charts and tables may be empty until the corresponding resource has receive
 
 ## Generate activity
 
-Use the [shared testing instructions](./README.md#shared-testing-instructions) to generate traffic to the various Azure Integration Services.
-
-To demonstrate failures and alerts, follow the relevant [demo scripts](./README.md#demo-scripts). For example, you can break and restore API or Function App health, publish invalid Service Bus messages, or stop and start the Function App or Logic App. Refresh the dashboard and adjust its time range to see the resulting telemetry. Restore any changed health or resource state when you are done.
+Use the [shared testing instructions](./README.md#shared-testing-instructions) to generate traffic to the various Azure Integration Services. To demonstrate failures and alerts, use the relevant [demo scripts](./README.md#demo-scripts).
