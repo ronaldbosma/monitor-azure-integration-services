@@ -21,6 +21,8 @@ The following resources will be deployed:
 The following scenarios are available. Each scenario has its own demo guide with instructions. The shared testing instructions can be used with all scenarios.
 
 - [Environment Overview Dashboard](./demo-environment-overview-dashboard.md)
+- Workbooks
+  - [Logic App Workflow Runs Workbook](./demo-logic-app-workflow-runs-workbook.md)
 
 ### Shared testing instructions
 
