@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-    Creates 25 fictional movies and adds two user ratings to 20 of them.
+    Creates 25 fictional movies and adds three user ratings to 20 of them.
 
 .DESCRIPTION
     Creates movies with realistic fictional titles, descriptions and release years using
-    the Movies API, then adds two ratings per movie for the first 20 movies using the
+    the Movies API, then adds three ratings per movie for the first 20 movies using the
     User Ratings API. The remaining five movies are left unrated.
     HTTP requests are performed using 'az rest'.
 
