@@ -2,9 +2,6 @@
 
 An Azure Developer CLI (`azd`) template using Bicep that demonstrates various ways to monitor Azure Integration Services.
 
-> [!IMPORTANT]  
-> This template is under construction
-
 ## Overview
 
 This template deploys the following resources:
