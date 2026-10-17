@@ -14,7 +14,7 @@ After deploying the template, open the resource group for your `azd` environment
 
 ## Explore workflow runs
 
-1. Review the chart to compare run counts by status over time.
+1. Review the chart to compare run counts by status over time. Drag across a time interval in the chart to update **Time** and refresh the workbook for that interval.
 1. Use the **Status**, **Logic App**, and **Workflow** filters to narrow the results. Enter a **Client Tracking ID** to find runs associated with a specific request.
 1. Select a run in the table to see its completed triggers and actions. 
 1. Use **View** to view the workflow in the designer.  
