@@ -27,6 +27,8 @@ The following scenarios are available. Each scenario has its own demo guide with
   - [Azure Functions Workbook](./demo-azure-functions-workbook.md)
   - [Logic App Workflow Runs Workbook](./demo-logic-app-workflow-runs-workbook.md)
 
+> TODO: add demos for alerts and health models
+
 ### Shared testing instructions
 
 The application can be explored manually using the REST Client extension in Visual Studio Code, or automatically using the .NET integration tests. The setup below applies to all scenarios.
