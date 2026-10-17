@@ -34,7 +34,7 @@ The infrastructure uses [azd layered provisioning](https://learn.microsoft.com/e
 **Monitoring layer** deploys the resources used for monitoring the integration application:
 
 - A dashboard that gives an overview of the deployed environment.
-- Workbooks to view APIM requests, Azure Functions and Logic App workflow runs.
+- Workbooks to gain insights into API Management requests, Azure Functions and Logic App workflow runs.
 - Alerts for various failure scenarios.
 - An availability test on the API Management status endpoint.
 - **[TODO]** Health Models.
@@ -53,16 +53,23 @@ See the following diagram for an overview of the integration application:
 ![Integration Application Overview](./images/integration-application-overview.drawio.png)
 
 The application consists of:
-- A **Movies API** to manage movies.  
-  It directly integrates with the movies storage table. When a movie is deleted, an event is published on a Service Bus topic.
-- A **User Ratings API** to retrieve and register user ratings.  
-  It is backed by several Azure Functions.
-- A **User Ratings Function App** for managing user ratings.  
-  The user ratings are stored in a storage table. Several HTTP-triggered functions form the backend of the User Ratings API. It also has a function that triggers on a 'movie deleted' event to remove all user ratings related to the movie.
-- A **Recalculate Rating for All Movies workflow**.  
-  This workflow is executed every 5 minutes. It retrieves all movies and sends a recalculate command message on a queue for each movie.
-- A **Recalculate Rating for Single Movie workflow**.  
-  It retrieves all user ratings for a specific movie, calculates the average and updates the movie's rating. If no user ratings are found, the workflow execution is cancelled.
+- API Management:
+  - A **Movies API** to manage movies.  
+    It directly integrates with the movies storage table. When a movie is deleted, an event is published on a Service Bus topic.
+  - A **User Ratings API** to retrieve and register user ratings.  
+    It is backed by several Azure Functions.
+- Function App:
+  - **User Ratings functions** for managing user ratings.  
+    The user ratings are stored in a storage table. Several HTTP-triggered functions form the backend of the User Ratings API. It also has a function that triggers on a 'movie deleted' event to remove all user ratings related to the movie.
+  - A **Health function**.  
+    The health function is used by the Function App's health check feature to check its health every minute. The function checks that it can access the necessary resources.
+- Logic App:
+  - A **Recalculate Rating for All Movies workflow**.  
+    This workflow is executed every 5 minutes. It retrieves all movies and sends a recalculate command message on a queue for each movie.
+  - A **Recalculate Rating for Single Movie workflow**.  
+    It retrieves all user ratings for a specific movie, calculates the average and updates the movie's rating. If no user ratings are found, the workflow execution is cancelled.
+  - A **Health workflow**.  
+    The health workflow is used by the Logic App's health check feature to check its health every minute. The workflow checks the health of the Movies API and User Ratings API.
 
 ## Getting Started
 
