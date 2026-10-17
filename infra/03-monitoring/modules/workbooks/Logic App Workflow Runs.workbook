@@ -449,7 +449,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category in (\"Workflow.Operations.Triggers\", \"Workflow.Operations.Actions\")\r\n| where operation_Id == '{SelectedWorkflowOperationID}'\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId == '{SelectedWorkflowRunID}'\r\n| extend \r\n    type = coalesce(customDimensions[\"actionType\"], customDimensions[\"triggerType\"]),\r\n    trackedProperties = customDimensions[\"trackedProperties\"]\r\n| project\r\n    status = resultCode,\r\n    timestamp,\r\n    name,\r\n    type,\r\n    duration,\r\n    trackedProperties,\r\n    itemId,\r\n    id\r\n| sort by timestamp asc",
+        "query": "requests\r\n| extend category = tostring(customDimensions[\"Category\"])\r\n| where category in (\"Workflow.Operations.Triggers\", \"Workflow.Operations.Actions\")\r\n| where operation_Id == '{SelectedWorkflowOperationID}'\r\n| extend runId = tostring(parse_json(tostring(customDimensions[\"resource\"]))[\"runId\"])\r\n| where runId == '{SelectedWorkflowRunID}'\r\n| extend \r\n    type = coalesce(customDimensions[\"actionType\"], customDimensions[\"triggerType\"]),\r\n    trackedProperties = customDimensions[\"trackedProperties\"],\r\n    retries = iif(\r\n        isnull(customDimensions[\"retryHistory\"]), \r\n        long(null), \r\n        array_length(parse_json(tostring(customDimensions[\"retryHistory\"])))\r\n      )\r\n| project\r\n    status = resultCode,\r\n    timestamp,\r\n    name,\r\n    type,\r\n    duration,\r\n    trackedProperties,\r\n    retries,\r\n    itemId,\r\n    id\r\n| sort by timestamp asc",
         "size": 1,
         "showAnalytics": true,
         "title": "Completed trigger and actions for selected workflow run {SelectedWorkflowRunID}",
@@ -574,6 +574,10 @@
             {
               "columnId": "trackedProperties",
               "label": "Tracked Properties"
+            },
+            {
+              "columnId": "retries",
+              "label": "Retries"
             },
             {
               "columnId": "itemId",
