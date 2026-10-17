@@ -108,6 +108,14 @@ The [purge-dead-lettered-movie-deleted-events.ps1](../scripts/purge-dead-lettere
 azd exec ./scripts/purge-dead-lettered-movie-deleted-events.ps1
 ```
 
+#### Delete all movies and related user ratings
+
+The [delete-all-movies.ps1](../scripts/delete-all-movies.ps1) script deletes all movies using the Movies API. The integration application then removes all related user ratings, clearing the storage tables. This operation cannot be undone. It reads the subscription key from the `tester-apim-subscription-key` secret in Key Vault, so it requires the **Key Vault Secrets User** role on the Key Vault. It prompts for confirmation; use `azd exec --interactive` to allow input.
+
+```powershell
+azd exec --interactive ./scripts/delete-all-movies.ps1
+```
+
 #### Start or stop the Function App
 
 The [toggle-function-app-state.ps1](../scripts/toggle-function-app-state.ps1) script starts a stopped Function App or stops a running one. It prompts for confirmation; use `azd exec --interactive` to allow input.
