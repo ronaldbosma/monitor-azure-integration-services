@@ -41,6 +41,9 @@ The infrastructure uses [azd layered provisioning](https://learn.microsoft.com/e
 
 On top of the infrastructure, this template defines two services that deploy Azure Functions and Logic App workflows to their respective resources.
 
+> [!IMPORTANT]  
+> This template is not production-ready; it uses minimal cost SKUs and omits network isolation, advanced security, governance and resiliency. Harden security, implement enterprise controls and/or replace modules with [Azure Verified Modules](https://azure.github.io/Azure-Verified-Modules/) before any production use.
+
 ### Integration Application
 
 The integration application lets users manage movies and submit or update ratings. It recalculates movie ratings periodically based on the user ratings.
