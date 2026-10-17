@@ -10,7 +10,7 @@ To use this workbook without deploying the entire template, follow the [manual d
 
 ## Open the workbook
 
-After deploying the template, open the resource group for your `azd` environment in the Azure portal and open **Logic App Workflow Runs**. Set the time range to include the activity you want to inspect. Workflow telemetry can take a few minutes to appear.
+After deploying the template, open the resource group for your `azd` environment in the Azure portal and open the **Logic App Workflow Runs** workbook. Set the time range to include the activity you want to inspect. Workflow telemetry can take a few minutes to appear.
 
 ## Explore workflow runs
 
