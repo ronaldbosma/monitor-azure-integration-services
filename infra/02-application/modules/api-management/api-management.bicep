@@ -161,9 +161,20 @@ module userRatingsApi 'apis/user-ratings-api/user-ratings-api.bicep' = {
 
 // Subscriptions
 
-module integrationTestsSubscription 'subscriptions/integration-tests-subscription.bicep' = {
+module integrationTestsSubscription 'subscriptions/subscription.bicep' = {
   params: {
     apiManagementServiceName: apiManagementServiceName
+    name: 'integration-tests'
+    displayName: 'Integration Tests Subscription'
+    keyVaultName: keyVaultName
+  }
+}
+
+module testerSubscription 'subscriptions/subscription.bicep' = {
+  params: {
+    apiManagementServiceName: apiManagementServiceName
+    name: 'tester'
+    displayName: 'Manual Tester Subscription'
     keyVaultName: keyVaultName
   }
 }

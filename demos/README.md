@@ -33,7 +33,7 @@ The repository includes [`tests.http`](../tests/tests.http), which contains requ
 To send requests using the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) extension:
 
 1. Install the REST Client extension in Visual Studio Code.
-1. Locate the **Built-in all-access** subscription in API Management and copy its primary key.
+1. Locate the **Manual Tester Subscription** in API Management and copy its primary key.
 1. Open the Command Palette (`Ctrl+Shift+P`) and choose `Preferences: Open User Settings (JSON)`.
 1. Add an environment to your user settings with the API Management hostname and subscription key. Replace the example key with your own:
 
