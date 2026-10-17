@@ -18,7 +18,7 @@ The following resources will be deployed:
 
 ### Scenarios
 
-The following scenarios are available. Each scenario has its own demo guide with step-by-step instructions. The shared testing instructions below apply to all scenarios.
+The following scenarios are available. Each scenario has its own demo guide with instructions. The shared testing instructions can be used with all scenarios.
 
 - [Environment Overview Dashboard](./demo-environment-overview-dashboard.md)
 
