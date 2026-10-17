@@ -13,7 +13,7 @@
     The id of the Azure subscription. Defaults to the AZURE_SUBSCRIPTION_ID environment variable.
 
 .PARAMETER ServiceBusNamespaceEndpoint
-    The endpoint of the Service Bus namespace (e.g. https://sbns-monitorais-sdc-45gou.servicebus.windows.net:443/).
+    The endpoint of the Service Bus namespace (e.g. https://sbns-monitorais-frc-u7eei.servicebus.windows.net:443/).
     Defaults to the AZURE_SERVICE_BUS_NAMESPACE_ENDPOINT environment variable.
 
 .EXAMPLE
@@ -22,7 +22,7 @@
     Runs the script with the environment variables of the current azd environment.
 
 .EXAMPLE
-    ./purge-dead-lettered-movie-deleted-events.ps1 -SubscriptionId '<subscription-id>' -ServiceBusNamespaceEndpoint 'https://sbns-monitorais-sdc-45gou.servicebus.windows.net:443/'
+    ./purge-dead-lettered-movie-deleted-events.ps1 -SubscriptionId '<subscription-id>' -ServiceBusNamespaceEndpoint 'https://sbns-monitorais-frc-u7eei.servicebus.windows.net:443/'
 
     Runs the script directly with explicitly specified values.
 #>

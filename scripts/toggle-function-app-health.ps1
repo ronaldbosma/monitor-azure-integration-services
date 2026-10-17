@@ -43,7 +43,7 @@
 
 .EXAMPLE
     ./toggle-function-app-health.ps1 -SubscriptionId '<subscription-id>' `
-        -ResourceGroupName 'rg-monitorais-sdc-45gou' -FunctionAppName 'func-monitorais-sdc-45gou' `
+        -ResourceGroupName 'rg-monitorais-frc-u7eei' -FunctionAppName 'func-monitorais-frc-u7eei' `
         -StorageAccountTableEndpoint 'https://stmonitoraissdc45gou.table.core.windows.net/'
 
     Runs the script directly with explicitly specified values.

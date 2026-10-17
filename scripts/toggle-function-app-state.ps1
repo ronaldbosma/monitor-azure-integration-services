@@ -29,7 +29,7 @@
 
 .EXAMPLE
     ./toggle-function-app-state.ps1 -SubscriptionId '<subscription-id>' `
-        -ResourceGroupName 'rg-monitorais-sdc-45gou' -FunctionAppName 'func-monitorais-sdc-45gou'
+        -ResourceGroupName 'rg-monitorais-frc-u7eei' -FunctionAppName 'func-monitorais-frc-u7eei'
 
     Runs the script directly with explicitly specified values.
 #>

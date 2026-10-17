@@ -25,12 +25,12 @@ The start of the time window to query availability metrics for. Defaults to curr
 The list of availability test names to verify. Defaults to the five built-in tests.
 
 .EXAMPLE
-PS> .\verify-availability-tests.ps1 -ResourceGroupName "rg-monitorais-sdc-45gou" -AppInsightsName "appi-monitorais-sdc-45gou"
+PS> .\verify-availability-tests.ps1 -ResourceGroupName "rg-monitorais-frc-u7eei" -AppInsightsName "appi-monitorais-frc-u7eei"
 
 Runs the verification with default retry settings and tests.
 
 .EXAMPLE
-PS> .\verify-availability-tests.ps1 -ResourceGroupName "rg-monitorais-sdc-45gou" -AppInsightsName "appi-monitorais-sdc-45gou" -MaxRetries 45 -RetryIntervalSeconds 5 -StartTime (Get-Date).AddMinutes(-15) -TestNames @('Test A','Test B')
+PS> .\verify-availability-tests.ps1 -ResourceGroupName "rg-monitorais-frc-u7eei" -AppInsightsName "appi-monitorais-frc-u7eei" -MaxRetries 45 -RetryIntervalSeconds 5 -StartTime (Get-Date).AddMinutes(-15) -TestNames @('Test A','Test B')
 
 Runs verification with custom retry settings, a custom start time, and a custom list of test names.
 #>

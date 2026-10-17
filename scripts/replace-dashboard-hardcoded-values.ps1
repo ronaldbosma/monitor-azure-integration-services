@@ -23,9 +23,9 @@
     The 'INSERT LOCATION' placeholder of an exported dashboard is also replaced by the location parameter.
     For each value, the following replacements are made (case-insensitive):
       1. Entire property values are replaced by a reference.
-         E.g. 'sbns-monitorais-sdc-45gou' becomes serviceBusNamespace.name
+         E.g. 'sbns-monitorais-frc-u7eei' becomes serviceBusNamespace.name
       2. Values inside longer strings are replaced by an interpolated reference.
-         E.g. 'Messages for sbns-monitorais-sdc-45gou' becomes 'Messages for ${serviceBusNamespace.name}'
+         E.g. 'Messages for sbns-monitorais-frc-u7eei' becomes 'Messages for ${serviceBusNamespace.name}'
 
     Before these replacements, the following dashboard specific replacements are made:
       - The resource symbol Environment_Overview_<environment name> becomes environmentOverviewDashboard
@@ -79,10 +79,10 @@
 
 .EXAMPLE
     ./replace-dashboard-hardcoded-values.ps1 -EnvironmentName 'monitorais' -Location 'swedencentral' `
-        -SubscriptionId '<subscription-id>' -ResourceGroupName 'rg-monitorais-sdc-45gou' `
-        -AppInsightsName 'appi-monitorais-sdc-45gou' -ServiceBusNamespaceName 'sbns-monitorais-sdc-45gou' `
-        -ApiManagementName 'apim-monitorais-sdc-45gou' -LogicAppName 'logic-monitorais-sdc-45gou' `
-        -FunctionAppName 'func-monitorais-sdc-45gou'
+        -SubscriptionId '<subscription-id>' -ResourceGroupName 'rg-monitorais-frc-u7eei' `
+        -AppInsightsName 'appi-monitorais-frc-u7eei' -ServiceBusNamespaceName 'sbns-monitorais-frc-u7eei' `
+        -ApiManagementName 'apim-monitorais-frc-u7eei' -LogicAppName 'logic-monitorais-frc-u7eei' `
+        -FunctionAppName 'func-monitorais-frc-u7eei'
 
     Runs the script directly with explicitly specified values.
 #>
@@ -166,12 +166,12 @@ foreach ($replacement in $replacements.GetEnumerator()) {
     $reference = $replacement.Value
     $interpolatedReference = '${' + $reference + '}'
 
-    # Entire property value, e.g. 'sbns-monitorais-sdc-45gou' => serviceBusNamespace.name
+    # Entire property value, e.g. 'sbns-monitorais-frc-u7eei' => serviceBusNamespace.name
     $propertyValuePattern = "'$escapedValue'"
     $propertyValueCount = [regex]::Matches($content, $propertyValuePattern, $regexOptions).Count
     $content = [regex]::Replace($content, $propertyValuePattern, { param($m) $reference }, $regexOptions)
 
-    # Value inside a longer string, e.g. sbns-monitorais-sdc-45gou => ${serviceBusNamespace.name}
+    # Value inside a longer string, e.g. sbns-monitorais-frc-u7eei => ${serviceBusNamespace.name}
     $inlineCount = [regex]::Matches($content, $escapedValue, $regexOptions).Count
     $content = [regex]::Replace($content, $escapedValue, { param($m) $interpolatedReference }, $regexOptions)
 

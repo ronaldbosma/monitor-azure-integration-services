@@ -29,7 +29,7 @@
 
 .EXAMPLE
     ./toggle-logic-app-state.ps1 -SubscriptionId '<subscription-id>' `
-        -ResourceGroupName 'rg-monitorais-sdc-45gou' -LogicAppName 'logic-monitorais-sdc-45gou'
+        -ResourceGroupName 'rg-monitorais-frc-u7eei' -LogicAppName 'logic-monitorais-frc-u7eei'
 
     Runs the script directly with explicitly specified values.
 #>
