@@ -13,7 +13,7 @@ This template deploys the following resources:
 
 The infrastructure uses [azd layered provisioning](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/layered-provisioning) _(currently in beta)_ and is organized into three layers:
 
-**Base layer** deploys the necessary resources on which the integration application is build:
+**Base layer** deploys the necessary resources on which the integration application is built:
 
 - Azure Integration Services:
   - API Management for exposing the Movies and User Ratings APIs.
@@ -25,7 +25,7 @@ The infrastructure uses [azd layered provisioning](https://learn.microsoft.com/e
   - Key Vault for securely storing secrets.
   - Storage Account for the Function & Logic App, and for storage tables.
 
-**Application layer** deploys the aplication related infrastracture resources:
+**Application layer** deploys the application related infrastracture resources:
 
 - A Movies and User Ratings API in API Management.
 - A Movies and User Ratings table in the storage account.
