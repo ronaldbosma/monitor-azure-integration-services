@@ -7,6 +7,42 @@ An Azure Developer CLI (`azd`) template using Bicep that demonstrates various wa
 
 ## Overview
 
+This template deploys the following resources:
+
+![Overview](images/overview.drawio.png)
+
+The infrastructure uses [azd layered provisioning](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/layered-provisioning) _(currently in beta)_ and is organized into three layers:
+
+**Base layer** deploys the necessary resources on which the integration application is build:
+
+- Azure Integration Services:
+  - API Management for exposing the Movies and User Ratings APIs.
+  - Function App for user ratings related logic.
+  - Logic App for workflows to recalculate movie ratings.
+  - Service Bus Namespace for queueing and pub/sub.
+- Supporting resources:
+  - Application Insights and Log Analytics workspace for monitoring and logging.
+  - Key Vault for securely storing secrets.
+  - Storage Account for the Function & Logic App, and for storage tables.
+
+**Application layer** deploys the aplication related infrastracture resources:
+
+- A Movies and User Ratings API in API Management.
+- A Movies and User Ratings table in the storage account.
+- A queue and topic in the Service Bus Namespace.
+
+**Monitoring layer** deploys the resources used for monitoring the integration application:
+
+- A dashboard that gives an overview of the deployed environment.
+- Workbooks to view APIM requests, Azure Functions and Logic App workflow runs.
+- Alerts for various failure scenarios.
+- An availability test on the API Management status endpoint.
+- **[TODO]** Health Models.
+
+On top of the infrastructure, this template defines two services that deploy Azure Functions and Logic App workflows to their respective resources.
+
+### Integration Application
+
 See the following diagram for an overview of the integration application that is deployed by this template:
 
 ![Integration Application Overview](./images/integration-application-overview.drawio.png)
