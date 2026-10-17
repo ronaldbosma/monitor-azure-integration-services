@@ -23,6 +23,7 @@ The following scenarios are available. Each scenario has its own demo guide with
 - [Environment Overview Dashboard](./demo-environment-overview-dashboard.md)
 - Workbooks
   - [APIM Insights Workbook](./demo-apim-insights-workbook.md)
+  - [APIM Requests Workbook](./demo-apim-requests-workbook.md)
   - [Logic App Workflow Runs Workbook](./demo-logic-app-workflow-runs-workbook.md)
 
 ### Shared testing instructions
