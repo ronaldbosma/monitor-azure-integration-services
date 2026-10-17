@@ -208,6 +208,7 @@ $movies = @(
 $userIds = @(
     [guid]::NewGuid().ToString()
     [guid]::NewGuid().ToString()
+    [guid]::NewGuid().ToString()
 )
 $createdMovieCount = 0
 $createdRatingCount = 0
@@ -217,16 +218,11 @@ $requestBodyPath = [System.IO.Path]::GetTempFileName()
 try {
     for ($movieIndex = 0; $movieIndex -lt $movies.Count; $movieIndex++) {
         $movie = $movies[$movieIndex]
-        $movieId = [guid]::NewGuid().ToString()
-        $movieBody = @{
-            id = $movieId
-            title = $movie.title
-            description = $movie.description
-            year = $movie.year
-        } | ConvertTo-Json -Compress
+        $movie.id = [guid]::NewGuid().ToString()
+        $movieBody = $movie | ConvertTo-Json -Compress
         [System.IO.File]::WriteAllText($requestBodyPath, $movieBody)
 
-        Write-Host "Creating movie '$($movie.title)' ($($movie.year)) [$movieId]"
+        Write-Host "Creating movie '$($movie.title)' ($($movie.year)) [$($movie.id)]"
         az rest --method post --url $moviesApiUrl --headers $headers --body "@$requestBodyPath" --skip-authorization-header --output none
         if ($LASTEXITCODE -ne 0) {
             throw "Unable to create movie '$($movie.title)'. Created $createdMovieCount movie(s) and $createdRatingCount user rating(s) before this failure. Existing data has not been rolled back."
@@ -237,7 +233,7 @@ try {
             foreach ($userId in $userIds) {
                 $rating = Get-Random -Minimum 1 -Maximum 11
                 $ratingBody = @{
-                    movieId = $movieId
+                    movieId = $movie.id
                     userId = $userId
                     rating = $rating
                 } | ConvertTo-Json -Compress
