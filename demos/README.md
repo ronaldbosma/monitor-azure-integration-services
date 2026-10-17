@@ -2,7 +2,7 @@
 
 This demo introduces an Azure application that demonstrates ways to monitor Azure Integration Services, including dashboards, workbooks, alerts and health checks.
 
-See the following diagram for an overview:
+See the following diagram for an overview of the application:
 
 ![Integration Application Overview](../images/integration-application-overview.drawio.png)
 
