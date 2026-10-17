@@ -108,6 +108,16 @@ The [purge-dead-lettered-movie-deleted-events.ps1](../scripts/purge-dead-lettere
 azd exec ./scripts/purge-dead-lettered-movie-deleted-events.ps1
 ```
 
+#### Create demo movies and user ratings
+
+The [create-demo-movies.ps1](../scripts/create-demo-movies.ps1) script creates 25 fictional movies with realistic titles, descriptions and release years. It adds two user ratings to each of the first 20 movies (40 ratings total), leaving five movies unrated. Movie ratings are recalculated asynchronously by the integration application. It reads the subscription key from the `tester-apim-subscription-key` secret in Key Vault, so it requires the **Key Vault Secrets User** role on the Key Vault.
+
+```powershell
+azd exec ./scripts/create-demo-movies.ps1
+```
+
+The script stops on the first failed request without rolling back previously created data. Movie titles must be unique; delete the demo movies before running it again.
+
 #### Delete all movies and related user ratings
 
 The [delete-all-movies.ps1](../scripts/delete-all-movies.ps1) script deletes all movies using the Movies API. The integration application then removes all related user ratings, clearing the storage tables. This operation cannot be undone. It reads the subscription key from the `tester-apim-subscription-key` secret in Key Vault, so it requires the **Key Vault Secrets User** role on the Key Vault. It prompts for confirmation; use `azd exec --interactive` to allow input.
