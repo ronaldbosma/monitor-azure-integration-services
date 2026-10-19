@@ -1,6 +1,6 @@
 # Monitor Azure Integration Services - Demo
 
-This demo introduces an Azure application that demonstrates ways to monitor Azure Integration Services, including dashboards, workbooks, alerts and health checks.
+This demo introduces an Azure application that demonstrates ways to monitor Azure Integration Services, including dashboards, workbooks, health checks, alerts and health models.
 
 See the following diagram for an overview of the application:
 
@@ -27,7 +27,7 @@ The following scenarios are available. Each scenario has its own demo guide with
   - [Azure Functions Workbook](./demo-azure-functions-workbook.md)
   - [Logic App Workflow Runs Workbook](./demo-logic-app-workflow-runs-workbook.md)
 
-> TODO: add demos for alerts and health models
+> TODO: add demos for health checks, alerts and health models
 
 ### Shared testing instructions
 

@@ -1,6 +1,6 @@
 # Monitor Azure Integration Services
 
-An Azure Developer CLI (`azd`) template using Bicep that demonstrates various ways to monitor Azure Integration Services, including dashboards, workbooks, alerts and health models (TODO).
+An Azure Developer CLI (`azd`) template using Bicep that demonstrates various ways to monitor Azure Integration Services, including dashboards, workbooks, health checks, alerts and health models (TODO).
 
 ## Overview
 
@@ -32,6 +32,7 @@ The infrastructure uses [azd layered provisioning](https://learn.microsoft.com/e
 
 - A dashboard that gives an overview of the deployed environment.
 - Workbooks to gain insights into API Management requests, Azure Functions and Logic App workflow runs.
+- Health checks on the Function and Logic App.
 - Alerts for various failure scenarios.
 - An availability test on the API Management status endpoint.
 - **[TODO]** Health Models.
