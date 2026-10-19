@@ -55,7 +55,8 @@ Ensure you have enabled enhanced telemetry for your Logic App by configuring the
    "extensions": {
       "workflow": {
          "Settings": {
-            "Runtime.ApplicationInsightTelemetryVersion": "v2"
+            "Runtime.ApplicationInsightTelemetryVersion": "v2",
+            "Runtime.ApplicationInsights.PreserveIncomingOperationId": "true"
          }
       }
    }
