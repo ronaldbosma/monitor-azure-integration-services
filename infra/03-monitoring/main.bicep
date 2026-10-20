@@ -54,6 +54,12 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
   scope: resourceGroup(resourceGroupName)
 }
 
+@nullIfNotFound()
+resource apimAutoscaleSettings 'Microsoft.Insights/autoscalesettings@2022-10-01' existing = {
+  name: '${apiManagementServiceName}-autoscale'
+  scope: resourceGroup(resourceGroupName)
+}
+
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: appInsightsName
   scope: resourceGroup(resourceGroupName)
@@ -188,6 +194,7 @@ module apimInsightsWorkbook './modules/workbooks/workbook.bicep' = {
       AzureSubscriptionId: subscription().subscriptionId
       ApplicationInsightsId: appInsights.id
       ApiManagementId: apiManagementService.id
+      ApiManagementAutoscaleSettingsId: apimAutoscaleSettings.?id ?? ''
     }
     sourceId: appInsights.id
   }

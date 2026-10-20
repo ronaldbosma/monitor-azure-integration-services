@@ -74,7 +74,7 @@
             },
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
-            "value": null
+            "value": "##ApiManagementAutoscaleSettingsId##"
           },
           {
             "id": "fc26c796-69c2-46b9-ba25-9746454e1621",
