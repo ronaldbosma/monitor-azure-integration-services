@@ -35,7 +35,7 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
 // Resources
 //=============================================================================
 
-@retryOn(['BadRequest'], 3) // Retry on BadRequest errors because retrieving the function key might fail on first deployment of a new environment
+@retryOn(['BadRequest'], 10) // Retry on BadRequest errors because retrieving the function key might fail on first deployment of a new environment
 resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
   name: 'function-app-api-key'
   parent: keyVault
