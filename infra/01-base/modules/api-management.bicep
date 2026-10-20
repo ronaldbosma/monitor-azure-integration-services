@@ -149,6 +149,30 @@ resource apimInsightsDiagnostics 'Microsoft.ApiManagement/service/diagnostics@20
   }
 }
 
+// Add auto scale settings for API Management if the SKU is not Consumption or Developer
+resource apimAutoscaleSettings 'Microsoft.Insights/autoscalesettings@2022-10-01' = if (apiManagementSettings.sku != 'Consumption' && apiManagementSettings.sku != 'Developer') {
+  name: '${apiManagementSettings.serviceName}-autoscale'
+  location: location
+  tags: tags
+  properties: {
+    name: '${apiManagementSettings.serviceName}-autoscale'
+    enabled: true
+    targetResourceUri: apiManagementService.id
+
+    profiles: [
+      {
+        name: 'Default'
+        capacity: {
+          minimum: '1'
+          maximum: '1'
+          default: '1'
+        }
+        rules: []
+      }
+    ]
+  }
+}
+
 //=============================================================================
 // Outputs
 //=============================================================================
