@@ -106,6 +106,8 @@ Once the prerequisites are installed on your machine, you can deploy this templa
    azd auth login
    ```
 
+1. Before deploying, review the [Configuration](#configuration) section for useful options such as selecting the API Management SKU.
+
 1. Run the `azd up` command to provision the resources in your Azure subscription. This deployment typically takes around 9 minutes to complete. _(Use `azd provision` to only deploy the infrastructure.)_
 
    ```cmd
@@ -127,6 +129,20 @@ Once you're done and want to clean up, run the `azd down` command. By including 
 ```cmd
 azd down --purge
 ```
+
+## Configuration
+
+### API Management SKU
+
+By default, the API Management service is deployed with the Consumption SKU. This is configured through the `apiManagementSku` parameter in [main.bicepparam](/infra/01-base/main.bicepparam).
+
+To change it to a different value, like `BasicV2`, run the following command:
+
+```cmd
+azd env set AZURE_API_MANAGEMENT_SKU BasicV2
+```
+
+If API Management is already deployed, you cannot change the SKU across tier families in place (for example, from `BasicV2` to `Developer`). See [Troubleshooting](#troubleshooting) for resolution options.
 
 ## Contents
 
@@ -276,3 +292,38 @@ If you already have a Workflow Standard WS1 tier (`SKU=WS1`) Logic App deployed 
 ```
 
 Use the `azd down --purge` command to delete the resources, then deploy the template in a different region.
+
+### Changing SkuType from 'A' to 'B' is not Supported.
+
+If you deployed API Management with one SKU, then changed it as described in [this config section](#api-management-sku) and redeployed, you might see the following error:
+
+```
+ERROR: A resource with this name already exists or is in a conflicting state.
+
+Suggestion: Check for existing or soft-deleted resources in the Azure portal.
+
+deployment failed: error deploying infrastructure: deploying to subscription: 
+
+Deployment Error Details:
+ChangingSkuTypeNotSupported: Changing SkuType from 'BasicV2' to 'Developer' is not Supported.
+```
+
+API Management does not support changing the SKU of an existing instance from one tier family to another. To resolve this issue, use one of the following approaches:
+
+1. Revert the SKU setting to the previously deployed value.
+
+   Use the same value that was previously used for the `AZURE_API_MANAGEMENT_SKU` environment variable, as described in [this config section](#api-management-sku).
+
+1. Recreate the environment with the new SKU.
+
+   Remove the current environment first, then set the desired SKU and deploy again:
+  
+   ```cmd
+   azd down --purge
+   ```
+
+   After cleanup, set `AZURE_API_MANAGEMENT_SKU` to the new value and run `azd up`.
+
+1. Manually delete and purge the API Management instance, then redeploy.
+
+   If you remove APIM manually, make sure the service is also purged (not left in soft-deleted state), otherwise redeployment with the same name can still fail.

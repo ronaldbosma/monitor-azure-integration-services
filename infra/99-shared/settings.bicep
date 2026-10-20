@@ -1,6 +1,7 @@
 // API Management
 
 @description('The SKU of the API Management service')
+@export()
 type apimSkuType = 'Consumption' | 'Developer' | 'Basic' | 'Standard' | 'Premium' | 'BasicV2' | 'StandardV2' | 'PremiumV2'
 
 @description('The settings for the API Management service')
