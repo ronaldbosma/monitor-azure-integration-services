@@ -10,7 +10,7 @@ targetScope = 'subscription'
 
 import { getResourceName, generateInstanceId } from '../99-shared/naming-conventions.bicep'
 import { getTemplateTags } from '../99-shared/helpers.bicep'
-import { apiManagementSettingsType, appInsightsSettingsType, functionAppSettingsType, logicAppSettingsType, serviceBusSettingsType } from '../99-shared/settings.bicep'
+import { apiManagementSettingsType, apimSkuType, appInsightsSettingsType, functionAppSettingsType, logicAppSettingsType, serviceBusSettingsType } from '../99-shared/settings.bicep'
 import { tagsType } from '../99-shared/types.bicep'
 
 //=============================================================================
@@ -26,6 +26,9 @@ param location string
 @description('The name of the environment to deploy to')
 param environmentName string
 
+@description('The SKU of the API Management service')
+param apiManagementSku apimSkuType
+
 //=============================================================================
 // Variables
 //=============================================================================
@@ -37,7 +40,7 @@ var resourceGroupName string = getResourceName('resourceGroup', environmentName,
 
 var apiManagementSettings apiManagementSettingsType = {
   serviceName: getResourceName('apiManagement', environmentName, location, instanceId)
-  sku: 'Consumption'
+  sku: apiManagementSku
 }
 
 var appInsightsSettings appInsightsSettingsType = {
@@ -206,3 +209,6 @@ output AZURE_KEY_VAULT_URI string = keyVault.outputs.vaultUri
 output AZURE_LOGIC_APP_ENDPOINT string = logicApp.outputs.endpoint
 output AZURE_SERVICE_BUS_NAMESPACE_ENDPOINT string = serviceBus.outputs.serviceBusEndpoint
 output AZURE_STORAGE_ACCOUNT_TABLE_ENDPOINT string = storageAccount.outputs.tableEndpoint
+
+// Return settings
+output AZURE_API_MANAGEMENT_SKU string = apiManagementSku
