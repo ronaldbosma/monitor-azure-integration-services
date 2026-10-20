@@ -10,32 +10,42 @@ To use this workbook without deploying the entire template, follow the [manual d
 
 After deploying the template, open the resource group for your `azd` environment in the Azure portal and open the **APIM Insights** workbook. Set the time range to include the activity you want to inspect. Workflow telemetry can take a few minutes to appear.
 
-The **Capacity and Scaling**, **Overview**, and **Operation Details** groups are collapsed by default. Expand a group by clicking its heading.
+The **Capacity and Scaling (v1 tier)**, **Capacity and Scaling (v2 tier)**, **Overview**, and **Operation Details** groups are collapsed by default. Expand a group by clicking its heading.
 
 All graphs support **time brushing**: drag across a time interval in any graph to update the **Time** parameter. All graphs and tables in the workbook then update to reflect the selected time range.
 
 Use the [shared testing instructions](./README.md#shared-testing-instructions) to generate traffic through the Movies and User Ratings APIs, then refresh the workbook.
 
-## 1. Capacity and Scaling
+## 1. Capacity and Scaling (v1 tier)
 
-1. Review **API Management Capacity** to see how gateway capacity changes over time. The availability of this metric depends on the API Management tier; it is not available for the Consumption tier.
+The **API Management Capacity** metric is available only for certain v1 tiers, so this graph may not show data for every v1 tier.
+
+1. Review **API Management Capacity** to see how gateway capacity changes over time.
 1. If your API Management service has an autoscale setting, select it in **API Management Autoscaling**. The optional **API Management Autoscale** graph shows the observed capacity (instance count) over time.
-1. Compare capacity and scaling changes with request volume and duration in the next section. Leave **API Management Autoscaling** empty when no autoscale setting applies; the autoscale graph remains hidden.
+1. Compare capacity and scaling changes with request volume and duration in the **Overview** section.
 
 <!-- Add the Capacity and Scaling screenshot here when available. -->
 
-## 2. Overview
+## 2. Capacity and Scaling (v2 tier)
 
-![APIM Insights workbook - Overview](../images/apim-insights-workbook-section-2-overview.png)
+The graphs in the **Capacity and Scaling (v2 tier)** group show CPU and memory utilization over time for v2 tiers.
+
+1. Review **API Management CPU** and **API Management Memory** to see how gateway resource utilization changes over time.
+1. If your API Management service has an autoscale setting, select it in **API Management Autoscaling**. The optional **API Management Autoscale** graph shows the observed capacity (number of units) over time.
+1. Compare CPU, Memory and scaling changes with request volume and duration in the **Overview** section.
+
+## 3. Overview
+
+![APIM Insights workbook - Overview](../images/apim-insights-workbook-section-3-overview.png)
 
 1. Use **Subscription** to filter by API Management subscription and **API** to narrow the results to specific APIs. Leave these filters empty to include all values.
 1. Review **Number of requests** to compare successful requests (green), errors (red), and warnings for unsuccessful requests with HTTP 4xx result codes (yellow).
 1. Review **Number of failed requests** to focus on errors and warnings without successful traffic.
 1. Compare **Request duration** across average, median, p80, and p95 to identify latency spikes.
 
-## 3. Operation Details
+## 4. Operation Details
 
-![APIM Insights workbook - Operation Details](../images/apim-insights-workbook-section-3-operation-details.png)
+![APIM Insights workbook - Operation Details](../images/apim-insights-workbook-section-4-operation-details.png)
 
 1. Use **Subscription** to filter by API Management subscription and **API** to narrow the results to specific APIs. Leave these filters empty to include all values.
 1. Review **Aggregation per API operation** to compare request counts, failure counts and ratios, duration percentiles, and request and response sizes.
