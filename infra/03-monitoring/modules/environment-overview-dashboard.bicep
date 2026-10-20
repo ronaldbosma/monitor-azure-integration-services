@@ -359,7 +359,7 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 }
                 {
                   name: 'Query'
-                  value: 'requests\n| where customDimensions[\'faas.name\'] != \'\' or customDimensions[\'Category\'] == \'Host.Results\'\n| extend function = tostring(coalesce(customDimensions[\'faas.name\'], name))\n| summarize \n    success=countif(success==true), \n    lastSuccess=maxif(timestamp, success==true),\n    failed=countif(success==false), \n    lastFailure=maxif(timestamp, success==false)\n  by function, cloud_RoleName\n| project \n    function, \n    lastFailure, \n    failed, \n    lastSuccess, \n    success, \n    functionApp = cloud_RoleName\n| sort by lastFailure desc, function asc\n'
+                  value: 'requests\n| where customDimensions[\'faas.name\'] != \'\'\n| extend function = tostring(customDimensions[\'faas.name\'])\n| summarize \n    success=countif(success==true), \n    lastSuccess=maxif(timestamp, success==true),\n    failed=countif(success==false), \n    lastFailure=maxif(timestamp, success==false)\n  by function, cloud_RoleName\n| project \n    function, \n    lastFailure, \n    failed, \n    lastSuccess, \n    success, \n    functionApp = cloud_RoleName\n| sort by lastFailure desc, function asc\n'
                   isOptional: true
                 }
                 {
@@ -592,7 +592,7 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                     succeeded: '102px'
                     workflow: '225px'
                   }
-                  Query: 'let runEvents = traces\n| extend category = tostring(customDimensions["Category"])\n| where category == "Workflow.Operations.Runs"\n| extend eventName = tostring(customDimensions["EventName"])\n| extend runId = tostring(parse_json(tostring(customDimensions["resource"]))["runId"]);\n\nrunEvents\n| where eventName == "WorkflowRunStart"\n| join kind=leftouter (\n    runEvents\n    | where eventName == "WorkflowRunEnd"\n  ) on operation_Id, runId // The runId identifies a unique workflow run, the operation_Id alone is not enough\n| extend status = iif(isempty(customDimensions1["status"]), "Running", replace_string(tostring(customDimensions1["status"]), @\'"\', \'\'))\n| summarize\n    succeeded = countif(status == \'Succeeded\'),\n    lastSucceeded = maxif(timestamp, status == \'Succeeded\'),\n    failed = countif(status == \'Failed\'),\n    lastFailure = maxif(timestamp, status == \'Failed\'),\n    cancelled = countif(status == \'Cancelled\'),\n    lastCancelled = maxif(timestamp, status == \'Cancelled\'),\n    running = countif(status == \'Running\')\n  by operation_Name, cloud_RoleName\n| sort by lastFailure desc, operation_Name asc\n| project\n    workflow = operation_Name,\n    lastFailure,\n    failed,\n    cancelled,\n    succeeded,\n    running,\n    lastSucceeded,\n    lastCancelled,\n    logicApp = cloud_RoleName'
+                  Query: 'let runEvents = traces\n| extend category = tostring(customDimensions["Category"])\n| where category == "Workflow.Operations.Runs"\n| extend eventName = tostring(customDimensions["EventName"])\n| extend runId = tostring(parse_json(tostring(customDimensions["resource"]))["runId"]);\n\nrunEvents\n| where eventName == "WorkflowRunStart"\n| join kind=leftouter (\n    runEvents\n    | where eventName == "WorkflowRunEnd"\n  ) on operation_Id, runId // The runId identifies a unique workflow run, the operation_Id alone is not enough\n| extend status = iif(isempty(customDimensions1["status"]), "Running", replace_string(tostring(customDimensions1["status"]), @\'"\', \'\'))\n| summarize\n    succeeded = countif(status == \'Succeeded\'),\n    lastSucceeded = maxif(timestamp1, status == \'Succeeded\'),\n    failed = countif(status == \'Failed\'),\n    lastFailure = maxif(timestamp1, status == \'Failed\'),\n    cancelled = countif(status == \'Cancelled\'),\n    lastCancelled = maxif(timestamp1, status == \'Cancelled\'),\n    running = countif(status == \'Running\')\n  by operation_Name, cloud_RoleName\n| sort by lastFailure desc, operation_Name asc\n| project\n    workflow = operation_Name,\n    lastFailure,\n    failed,\n    cancelled,\n    succeeded,\n    running,\n    lastSucceeded,\n    lastCancelled,\n    logicApp = cloud_RoleName'
                 }
               }
               partHeader: {
@@ -1322,16 +1322,16 @@ resource environmentOverviewDashboard 'Microsoft.Portal/dashboards@2025-04-01-pr
                 value: 'Past hour'
               }
               filteredPartIds: [
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c32'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c34'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c36'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c38'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c3a'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c3c'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c3e'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c40'
-                'StartboardPart-LogsDashboardPart-21672f85-8a83-40dc-b25e-9545d4d76c42'
-                'StartboardPart-MonitorChartPart-21672f85-8a83-40dc-b25e-9545d4d76c46'
+                'StartboardPart-MonitorChartPart-1ea0b439-3c7b-44ec-b69d-84e613b7e039'
+                'StartboardPart-MonitorChartPart-1ea0b439-3c7b-44ec-b69d-84e613b7e03b'
+                'StartboardPart-LogsDashboardPart-1ea0b439-3c7b-44ec-b69d-84e613b7e03d'
+                'StartboardPart-MonitorChartPart-1ea0b439-3c7b-44ec-b69d-84e613b7e03f'
+                'StartboardPart-LogsDashboardPart-1ea0b439-3c7b-44ec-b69d-84e613b7e041'
+                'StartboardPart-MonitorChartPart-1ea0b439-3c7b-44ec-b69d-84e613b7e043'
+                'StartboardPart-LogsDashboardPart-1ea0b439-3c7b-44ec-b69d-84e613b7e045'
+                'StartboardPart-MonitorChartPart-1ea0b439-3c7b-44ec-b69d-84e613b7e047'
+                'StartboardPart-LogsDashboardPart-1ea0b439-3c7b-44ec-b69d-84e613b7e049'
+                'StartboardPart-MonitorChartPart-1ea0b439-3c7b-44ec-b69d-84e613b7e04d'
               ]
             }
           }
