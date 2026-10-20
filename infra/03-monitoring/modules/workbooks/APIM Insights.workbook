@@ -150,7 +150,7 @@
       "content": {
         "version": "NotebookGroup/1.0",
         "groupType": "editable",
-        "title": "Capacity and Scaling",
+        "title": "Capacity and Scaling (v1 tier)",
         "expandable": true,
         "items": [
           {
@@ -168,13 +168,14 @@
               ],
               "timeContextFromParameter": "TimeRange",
               "timeContext": {
-                "durationMs": 3600000
+                "durationMs": 0
               },
               "metrics": [
                 {
                   "namespace": "microsoft.apimanagement/service",
                   "metric": "microsoft.apimanagement/service-Capacity-Capacity",
-                  "aggregation": 4
+                  "aggregation": 4,
+                  "splitBy": null
                 },
                 {
                   "namespace": "microsoft.apimanagement/service",
@@ -190,7 +191,7 @@
                 "rowLimit": 10000
               }
             },
-            "name": "ApimCapacityGraph"
+            "name": "ApimCapacityGraphV1Tier"
           },
           {
             "type": 10,
@@ -207,13 +208,14 @@
               ],
               "timeContextFromParameter": "TimeRange",
               "timeContext": {
-                "durationMs": 3600000
+                "durationMs": 0
               },
               "metrics": [
                 {
                   "namespace": "microsoft.insights/autoscalesettings",
                   "metric": "microsoft.insights/autoscalesettings--ObservedCapacity",
-                  "aggregation": 4
+                  "aggregation": 4,
+                  "splitBy": null
                 }
               ],
               "title": "API Management Autoscale (time range: {TimeRange:label})",
@@ -228,11 +230,142 @@
               "parameterName": "ApiManagementAutoscaleSettings",
               "comparison": "isNotEqualTo"
             },
-            "name": "ApimAutoscaleGraph"
+            "name": "ApimAutoscaleGraphV1Tier"
           }
         ]
       },
-      "name": "CapacityGroup"
+      "name": "CapacityGroupV1Tier"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "Capacity and Scaling (v2 tier)",
+        "expandable": true,
+        "items": [
+          {
+            "type": 10,
+            "content": {
+              "chartId": "workbook92587369-c1ab-4794-b68e-0e322c298507",
+              "version": "MetricsItem/2.0",
+              "size": 1,
+              "chartType": 2,
+              "resourceType": "microsoft.apimanagement/service",
+              "metricScope": 0,
+              "resourceParameter": "ApiManagement",
+              "resourceIds": [
+                "{ApiManagement}"
+              ],
+              "timeContextFromParameter": "TimeRange",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "metrics": [
+                {
+                  "namespace": "microsoft.apimanagement/service",
+                  "metric": "microsoft.apimanagement/service-Capacity-CpuPercent_Gateway",
+                  "aggregation": 4,
+                  "splitBy": null
+                },
+                {
+                  "namespace": "microsoft.apimanagement/service",
+                  "metric": "microsoft.apimanagement/service-Capacity-CpuPercent_Gateway",
+                  "aggregation": 3
+                }
+              ],
+              "title": "API Management CPU (time range: {TimeRange:label})",
+              "showOpenInMe": true,
+              "timeBrushParameterName": "TimeRange",
+              "timeBrushExportOnlyWhenBrushed": true,
+              "gridSettings": {
+                "rowLimit": 10000
+              }
+            },
+            "name": "ApimCpuGraphV2Tier"
+          },
+          {
+            "type": 10,
+            "content": {
+              "chartId": "workbook92587369-c1ab-4794-b68e-0e322c298507",
+              "version": "MetricsItem/2.0",
+              "size": 1,
+              "chartType": 2,
+              "resourceType": "microsoft.apimanagement/service",
+              "metricScope": 0,
+              "resourceParameter": "ApiManagement",
+              "resourceIds": [
+                "{ApiManagement}"
+              ],
+              "timeContextFromParameter": "TimeRange",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "metrics": [
+                {
+                  "namespace": "microsoft.apimanagement/service",
+                  "metric": "microsoft.apimanagement/service-Capacity-MemoryPercent_Gateway",
+                  "aggregation": 4,
+                  "splitBy": null
+                },
+                {
+                  "namespace": "microsoft.apimanagement/service",
+                  "metric": "microsoft.apimanagement/service-Capacity-MemoryPercent_Gateway",
+                  "aggregation": 3
+                }
+              ],
+              "title": "API Management Memory (time range: {TimeRange:label})",
+              "showOpenInMe": true,
+              "timeBrushParameterName": "TimeRange",
+              "timeBrushExportOnlyWhenBrushed": true,
+              "gridSettings": {
+                "rowLimit": 10000
+              }
+            },
+            "name": "ApimMemoryGraphV2Tier"
+          },
+          {
+            "type": 10,
+            "content": {
+              "chartId": "workbook926fe369-c792-4aab-b896-114e7136fbb3",
+              "version": "MetricsItem/2.0",
+              "size": 1,
+              "chartType": 2,
+              "resourceType": "microsoft.insights/autoscalesettings",
+              "metricScope": 0,
+              "resourceParameter": "ApiManagementAutoscaleSettings",
+              "resourceIds": [
+                "{ApiManagementAutoscaleSettings}"
+              ],
+              "timeContextFromParameter": "TimeRange",
+              "timeContext": {
+                "durationMs": 0
+              },
+              "metrics": [
+                {
+                  "namespace": "microsoft.insights/autoscalesettings",
+                  "metric": "microsoft.insights/autoscalesettings--ObservedCapacity",
+                  "aggregation": 4,
+                  "splitBy": null
+                }
+              ],
+              "title": "API Management Autoscale (time range: {TimeRange:label})",
+              "showOpenInMe": true,
+              "timeBrushParameterName": "TimeRange",
+              "timeBrushExportOnlyWhenBrushed": true,
+              "gridSettings": {
+                "rowLimit": 10000
+              }
+            },
+            "conditionalVisibility": {
+              "parameterName": "ApiManagementAutoscaleSettings",
+              "comparison": "isNotEqualTo"
+            },
+            "name": "ApimAutoscaleGraphV2Tier"
+          }
+        ]
+      },
+      "name": "CapacityGroupV2Tier"
     },
     {
       "type": 9,
