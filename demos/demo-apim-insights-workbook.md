@@ -18,7 +18,7 @@ Use the [shared testing instructions](./README.md#shared-testing-instructions) t
 
 ## 1. Capacity and Scaling (v1 tier)
 
-The graphs in the **Capacity and Scaling (v2 tier)** group show capacity utilization over time for v1 tiers (when supported).
+The graphs in the **Capacity and Scaling (v1 tier)** group show capacity utilization over time for v1 tiers (when supported).
 
 ![APIM Insights workbook - Capacity and Scaling (v1 tier)](../images/apim-insights-workbook-section-1-capacity-and-scaling-v1.png)
 
