@@ -69,6 +69,11 @@ module functionAppSettings 'modules/function-app-settings.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
   }
+  // Deployment of Function App backend in APIM sometimes fails because the Function App is restarting due to these updates
+  // So, we first deploy the API Management related resources before updating the Function App app settings
+  dependsOn: [
+    apiManagement
+  ]
 }
 
 module logicAppSettings 'modules/logic-app-settings.bicep' = {
