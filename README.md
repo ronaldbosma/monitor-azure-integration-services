@@ -136,6 +136,8 @@ azd down --purge
 
 By default, the API Management service is deployed with the Consumption SKU. This is configured through the `apiManagementSku` parameter in [main.bicepparam](/infra/01-base/main.bicepparam).
 
+The Consumption and Developer tiers do not support auto scaling. Use a different SKU if you want to demo the capacity and scaling graphs in the [APIM Insights workbook](./demos/demo-apim-insights-workbook.md).
+
 To change it to a different value, like `BasicV2`, run the following command:
 
 ```cmd
