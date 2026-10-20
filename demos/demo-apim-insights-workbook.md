@@ -20,21 +20,25 @@ Use the [shared testing instructions](./README.md#shared-testing-instructions) t
 
 The **API Management Capacity** metric is available only for certain v1 tiers, so this graph may not show data for every v1 tier.
 
+![APIM Insights workbook - Capacity and Scaling (v1 tier)](../images/apim-insights-workbook-section-1-capacity-and-scaling-v1.png)
+
 1. Review **API Management Capacity** to see how gateway capacity changes over time.
 1. If your API Management service has an autoscale setting, select it in **API Management Autoscaling**. The optional **API Management Autoscale** graph shows the observed capacity (instance count) over time.
 1. Compare capacity and scaling changes with request volume and duration in the **Overview** section.
 
-<!-- Add the Capacity and Scaling screenshot here when available. -->
-
 ## 2. Capacity and Scaling (v2 tier)
 
 The graphs in the **Capacity and Scaling (v2 tier)** group show CPU and memory utilization over time for v2 tiers.
+
+![APIM Insights workbook - Capacity and Scaling (v2 tier)](../images/apim-insights-workbook-section-2-capacity-and-scaling-v2.png)
 
 1. Review **API Management CPU** and **API Management Memory** to see how gateway resource utilization changes over time.
 1. If your API Management service has an autoscale setting, select it in **API Management Autoscaling**. The optional **API Management Autoscale** graph shows the observed capacity (number of units) over time.
 1. Compare CPU, Memory and scaling changes with request volume and duration in the **Overview** section.
 
 ## 3. Overview
+
+The graphs in the **Overview** group give an overview of the number and duration of all requests over time.
 
 ![APIM Insights workbook - Overview](../images/apim-insights-workbook-section-3-overview.png)
 
@@ -44,6 +48,8 @@ The graphs in the **Capacity and Scaling (v2 tier)** group show CPU and memory u
 1. Compare **Request duration** across average, median, p80, and p95 to identify latency spikes.
 
 ## 4. Operation Details
+
+The **Operation Details** section can be used to gain more insights into specific operations.
 
 ![APIM Insights workbook - Operation Details](../images/apim-insights-workbook-section-4-operation-details.png)
 
