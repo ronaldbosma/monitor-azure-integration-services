@@ -59,6 +59,9 @@ module apiManagement 'modules/api-management/api-management.bicep' = {
   dependsOn: [
     serviceBusEntities
     storageTables
+    // Deployment of Function App backend in APIM sometimes fails with a BadRequest error (message: Encountered an error (InternalServerError) from host runtime)
+    // So, we first update the Function App app settings before deploying the API Management related resources
+    functionAppSettings
   ]
 }
 
@@ -69,11 +72,6 @@ module functionAppSettings 'modules/function-app-settings.bicep' = {
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
   }
-  // Deployment of Function App backend in APIM sometimes fails because the Function App is restarting due to these updates
-  // So, we first deploy the API Management related resources before updating the Function App app settings
-  dependsOn: [
-    apiManagement
-  ]
 }
 
 module logicAppSettings 'modules/logic-app-settings.bicep' = {
