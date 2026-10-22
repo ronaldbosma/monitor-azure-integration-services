@@ -106,11 +106,7 @@ module serviceBus 'modules/service-bus.bicep' = {
     location: location
     tags: tags
     serviceBusSettings: serviceBusSettings
-    logAnalyticsWorkspaceName: appInsightsSettings.logAnalyticsWorkspaceName
   }
-  dependsOn: [
-    appInsights
-  ]
 }
 
 module storageAccount 'modules/storage-account.bicep' = {
