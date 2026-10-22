@@ -187,6 +187,7 @@ resource apimDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   scope: apiManagementService
   properties: {
     workspaceId: logAnalyticsWorkspace.id
+    // Configure the destination type as Dedicated; the standard APIM workbooks only work with resource-specific tables.
     logAnalyticsDestinationType: 'Dedicated'
     logs: [
       {
