@@ -59,7 +59,7 @@ $action = switch ($currentState) {
 }
 
 # Confirm the action with the user
-$confirmation = Read-Host "Perform '$action' on this $AppTypeDisplayName? [y/N]"
+$confirmation = Read-Host "Perform '$action' on this $($AppTypeDisplayName)? [y/N]"
 if ($null -eq $confirmation) {
     throw "No confirmation input is available. No state change was performed. When using 'azd exec', pass '--interactive' to enable confirmation input."
 }
