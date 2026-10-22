@@ -82,6 +82,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   tags: tags
 }
 
+module appInsights 'modules/app-insights.bicep' = {
+  scope: resourceGroup
+  params: {
+    location: location
+    tags: tags
+    appInsightsSettings: appInsightsSettings
+  }
+}
+
 module keyVault 'modules/key-vault.bicep' = {
   scope: resourceGroup
   params: {
@@ -90,13 +99,18 @@ module keyVault 'modules/key-vault.bicep' = {
     keyVaultName: keyVaultName
   }
 }
+
 module serviceBus 'modules/service-bus.bicep' = {
   scope: resourceGroup
   params: {
     location: location
     tags: tags
     serviceBusSettings: serviceBusSettings
+    logAnalyticsWorkspaceName: appInsightsSettings.logAnalyticsWorkspaceName
   }
+  dependsOn: [
+    appInsights
+  ]
 }
 
 module storageAccount 'modules/storage-account.bicep' = {
@@ -110,15 +124,6 @@ module storageAccount 'modules/storage-account.bicep' = {
   dependsOn: [
     appInsights
   ]
-}
-
-module appInsights 'modules/app-insights.bicep' = {
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    appInsightsSettings: appInsightsSettings
-  }
 }
 
 module apiManagement 'modules/api-management.bicep' = {
@@ -185,6 +190,9 @@ module assignRolesToDeployer '../99-shared/assign-roles-to-principal.bicep' = {
   }
   dependsOn: [
     appInsights
+    keyVault
+    serviceBus
+    storageAccount
   ]
 }
 
