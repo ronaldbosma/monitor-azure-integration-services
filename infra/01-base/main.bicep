@@ -105,7 +105,11 @@ module storageAccount 'modules/storage-account.bicep' = {
     location: location
     tags: tags
     storageAccountName: storageAccountName
+    logAnalyticsWorkspaceName: appInsightsSettings.logAnalyticsWorkspaceName
   }
+  dependsOn: [
+    appInsights
+  ]
 }
 
 module appInsights 'modules/app-insights.bicep' = {
