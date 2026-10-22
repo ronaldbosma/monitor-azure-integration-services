@@ -6,7 +6,7 @@
 // Imports
 //=============================================================================
 
-import { logicAppSettingsType } from '../../99-shared/settings.bicep'
+import { appInsightsSettingsType, logicAppSettingsType } from '../../99-shared/settings.bicep'
 import { tagsType } from '../../99-shared/types.bicep'
 
 //=============================================================================
@@ -22,8 +22,8 @@ param tags tagsType
 @description('The settings for the Logic App that will be created')
 param logicAppSettings logicAppSettingsType
 
-@description('The name of the App Insights instance that will be used by the Logic App')
-param appInsightsName string
+@description('The settings of the App Insights instance that will be used by the Logic App')
+param appInsightsSettings appInsightsSettingsType
 
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
@@ -75,7 +75,11 @@ var appSettings resourceInput<'Microsoft.Web/sites/config@2025-03-01'>.propertie
 //=============================================================================
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: appInsightsName
+  name: appInsightsSettings.appInsightsName
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2026-03-01' existing = {
+  name: appInsightsSettings.logAnalyticsWorkspaceName
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
@@ -144,10 +148,32 @@ module assignRolesToLogicAppSystemAssignedIdentity '../../99-shared/assign-roles
   params: {
     principalId: logicApp.identity.principalId
     principalType: 'ServicePrincipal'
-    appInsightsName: appInsightsName
+    appInsightsName: appInsightsSettings.appInsightsName
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
+  }
+}
+
+// Diagnostic settings for the Logic App
+
+#disable-next-line use-recent-api-versions // There isn't a newer version at the moment
+resource logicAppDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${logicApp.name}-diag'
+  scope: logicApp
+  properties: {
+    workspaceId: logAnalyticsWorkspace.id
+    logAnalyticsDestinationType: 'Dedicated'
+    logs: [
+      {
+        category: 'WorkflowRuntime'
+        enabled: true
+      }
+      {
+        category: 'FunctionAppLogs'
+        enabled: true
+      }
+    ]
   }
 }
 

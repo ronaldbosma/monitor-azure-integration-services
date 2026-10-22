@@ -144,7 +144,7 @@ module functionApp 'modules/function-app.bicep' = {
     location: location
     tags: tags
     functionAppSettings: functionAppSettings
-    appInsightsName: appInsightsSettings.appInsightsName
+    appInsightsSettings: appInsightsSettings
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
     storageAccountName: storageAccountName
@@ -162,7 +162,7 @@ module logicApp 'modules/logic-app.bicep' = {
     location: location
     tags: tags
     logicAppSettings: logicAppSettings
-    appInsightsName: appInsightsSettings.appInsightsName
+    appInsightsSettings: appInsightsSettings
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
     storageAccountName: storageAccountName
