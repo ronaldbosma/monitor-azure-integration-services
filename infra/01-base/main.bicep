@@ -123,7 +123,7 @@ module apiManagement 'modules/api-management.bicep' = {
     location: location
     tags: tags
     apiManagementSettings: apiManagementSettings
-    appInsightsName: appInsightsSettings.appInsightsName
+    appInsightsSettings: appInsightsSettings
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
     storageAccountName: storageAccountName
