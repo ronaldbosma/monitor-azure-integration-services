@@ -82,6 +82,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   tags: tags
 }
 
+module appInsights 'modules/app-insights.bicep' = {
+  scope: resourceGroup
+  params: {
+    location: location
+    tags: tags
+    appInsightsSettings: appInsightsSettings
+  }
+}
+
 module keyVault 'modules/key-vault.bicep' = {
   scope: resourceGroup
   params: {
@@ -90,6 +99,7 @@ module keyVault 'modules/key-vault.bicep' = {
     keyVaultName: keyVaultName
   }
 }
+
 module serviceBus 'modules/service-bus.bicep' = {
   scope: resourceGroup
   params: {
@@ -105,16 +115,11 @@ module storageAccount 'modules/storage-account.bicep' = {
     location: location
     tags: tags
     storageAccountName: storageAccountName
+    logAnalyticsWorkspaceName: appInsightsSettings.logAnalyticsWorkspaceName
   }
-}
-
-module appInsights 'modules/app-insights.bicep' = {
-  scope: resourceGroup
-  params: {
-    location: location
-    tags: tags
-    appInsightsSettings: appInsightsSettings
-  }
+  dependsOn: [
+    appInsights
+  ]
 }
 
 module apiManagement 'modules/api-management.bicep' = {
@@ -123,7 +128,7 @@ module apiManagement 'modules/api-management.bicep' = {
     location: location
     tags: tags
     apiManagementSettings: apiManagementSettings
-    appInsightsName: appInsightsSettings.appInsightsName
+    appInsightsSettings: appInsightsSettings
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
     storageAccountName: storageAccountName
@@ -140,7 +145,7 @@ module functionApp 'modules/function-app.bicep' = {
     location: location
     tags: tags
     functionAppSettings: functionAppSettings
-    appInsightsName: appInsightsSettings.appInsightsName
+    appInsightsSettings: appInsightsSettings
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
     storageAccountName: storageAccountName
@@ -158,7 +163,7 @@ module logicApp 'modules/logic-app.bicep' = {
     location: location
     tags: tags
     logicAppSettings: logicAppSettings
-    appInsightsName: appInsightsSettings.appInsightsName
+    appInsightsSettings: appInsightsSettings
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusSettings.namespaceName
     storageAccountName: storageAccountName
@@ -181,6 +186,9 @@ module assignRolesToDeployer '../99-shared/assign-roles-to-principal.bicep' = {
   }
   dependsOn: [
     appInsights
+    keyVault
+    serviceBus
+    storageAccount
   ]
 }
 

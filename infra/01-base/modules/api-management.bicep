@@ -6,7 +6,7 @@
 // Imports
 //=============================================================================
 
-import { apiManagementSettingsType } from '../../99-shared/settings.bicep'
+import { apiManagementSettingsType, appInsightsSettingsType } from '../../99-shared/settings.bicep'
 import { tagsType } from '../../99-shared/types.bicep'
 
 //=============================================================================
@@ -22,8 +22,8 @@ param tags tagsType
 @description('The settings for the API Management Service that will be created')
 param apiManagementSettings apiManagementSettingsType
 
-@description('The name of the App Insights instance that will be used by API Management')
-param appInsightsName string
+@description('The settings for the App Insights instance that will be used by API Management')
+param appInsightsSettings appInsightsSettingsType
 
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
@@ -69,7 +69,11 @@ var customProperties resourceInput<'Microsoft.ApiManagement/service@2025-09-01-p
 //=============================================================================
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: appInsightsName
+  name: appInsightsSettings.appInsightsName
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2026-03-01' existing = {
+  name: appInsightsSettings.logAnalyticsWorkspaceName
 }
 
 //=============================================================================
@@ -102,7 +106,7 @@ module assignRolesToApimSystemAssignedIdentity '../../99-shared/assign-roles-to-
   params: {
     principalId: apiManagementService.identity.principalId
     principalType: 'ServicePrincipal'
-    appInsightsName: appInsightsName
+    appInsightsName: appInsightsSettings.appInsightsName
     keyVaultName: keyVaultName
     serviceBusNamespaceName: serviceBusNamespaceName
     storageAccountName: storageAccountName
@@ -125,7 +129,7 @@ resource appInsightsConnectionStringNamedValue 'Microsoft.ApiManagement/service/
 // - we need diagnostics settings that specify what to log to the logger
 
 resource apimAppInsightsLogger 'Microsoft.ApiManagement/service/loggers@2025-09-01-preview' = {
-  name: appInsightsName
+  name: appInsightsSettings.appInsightsName
   parent: apiManagementService
   properties: {
     loggerType: 'applicationInsights'
@@ -173,6 +177,27 @@ resource apimAutoscaleSettings 'Microsoft.Insights/autoscalesettings@2022-10-01'
     ]
   }
 }
+
+// Diagnostics settings for API Management
+// These can be deployed for a Conspumption tier, but don't actualy do anything for this tier
+
+#disable-next-line use-recent-api-versions // There isn't a newer version at the moment
+resource apimDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${apiManagementSettings.serviceName}-diag'
+  scope: apiManagementService
+  properties: {
+    workspaceId: logAnalyticsWorkspace.id
+    // Configure the destination type as Dedicated; the standard APIM workbooks only work with resource-specific tables.
+    logAnalyticsDestinationType: 'Dedicated'
+    logs: [
+      {
+        categoryGroup: 'AllLogs'
+        enabled: true
+      }
+    ]
+  }
+}
+
 
 //=============================================================================
 // Outputs
