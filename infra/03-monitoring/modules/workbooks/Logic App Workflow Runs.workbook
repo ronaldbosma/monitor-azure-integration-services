@@ -370,7 +370,7 @@
                 "bladeOpenContext": {
                   "bladeName": "DesignerEditorV2.ReactView",
                   "extensionName": "Microsoft_Azure_EMA",
-                  "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"runId\": \"{RunID_column}\",\r\n\t\"isMonitoringView~\": true,\r\n  \"isReadOnly~\": true\r\n}"
+                  "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"runId\": \"{RunID_column}\",\r\n  \"isMonitoringView~\": true,\r\n  \"isReadOnly~\": true\r\n}"
                 }
               },
               "tooltipFormat": {
