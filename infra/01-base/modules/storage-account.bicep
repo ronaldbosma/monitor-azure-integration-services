@@ -37,7 +37,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2026-03
 // Resources
 //=============================================================================
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-09-01' = {
   name: storageAccountName
   location: location
   tags: tags
@@ -51,7 +51,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
   }
 }
 
-resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2026-04-01'  = {
+resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2026-09-01'  = {
   name: 'default'
   parent: storageAccount
 }
