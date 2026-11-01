@@ -82,7 +82,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2026-03
   name: appInsightsSettings.logAnalyticsWorkspaceName
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-09-01' existing = {
   name: storageAccountName
 }
 
