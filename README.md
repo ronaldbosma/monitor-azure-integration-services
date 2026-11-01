@@ -340,7 +340,8 @@ ERROR: A resource with this name already exists or is in a conflicting state.
 
 Suggestion: Check for existing or soft-deleted resources in the Azure portal.
 
-deployment failed: step "provision-application" failed: deploying layer provision-application: error deploying infrastructure: deploying to subscription: 
+deployment failed: step "provision-application" failed: deploying layer provision-application: 
+  error deploying infrastructure: deploying to subscription: 
 
 Deployment Error Details:
 BadRequest: Encountered an error (InternalServerError) from host runtime.
