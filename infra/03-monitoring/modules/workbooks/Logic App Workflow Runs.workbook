@@ -368,9 +368,9 @@
               "formatOptions": {
                 "linkTarget": "OpenBlade",
                 "bladeOpenContext": {
-                  "bladeName": "WorkflowMonitorBlade",
+                  "bladeName": "DesignerEditorV2.ReactView",
                   "extensionName": "Microsoft_Azure_EMA",
-                  "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"resourceId\": \"/workflows/{Workflow_column}/runs/{RunID_column}\",\r\n  \"isReadOnly\": 1\r\n}"
+                  "bladeJsonParameters": "{\r\n  \"id\": \"{LogicAppId_column}/workflows/{Workflow_column}\",\r\n  \"location\": \"{LogicAppLocation_column}\",\r\n  \"runId\": \"{RunID_column}\",\r\n  \"isMonitoringView~\": true,\r\n  \"isReadOnly~\": true\r\n}"
                 }
               },
               "tooltipFormat": {
