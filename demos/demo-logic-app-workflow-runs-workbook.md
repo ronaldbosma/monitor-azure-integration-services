@@ -4,9 +4,9 @@ The Logic App Workflow Runs workbook helps investigate Logic App workflow runs, 
 
 ![Logic App Workflow Runs workbook](../images/logic-app-workflow-runs-workbook.png)
 
-The workbook is deployed with the monitoring resources from [Logic App Workflow Runs.workbook](../infra/03-monitoring/modules/workbooks/Logic%20App%20Workflow%20Runs.workbook).
+The workbook is deployed with the monitoring resources from [Logic App Workflow Runs.workbook](../infra/03-monitoring/modules/workbooks/Logic%20App%20Workflow%20Runs.workbook). To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
 
-To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
+For a detailed explanation of the workbook, see the blog post [Logic App Workflow Runs Workbook](https://ronaldbosma.github.io/blog/2026/11/03/logic-app-workflow-runs-workbook/).
 
 ## Open the workbook
 
