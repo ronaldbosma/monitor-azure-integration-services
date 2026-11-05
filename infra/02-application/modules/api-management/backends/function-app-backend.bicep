@@ -52,7 +52,7 @@ resource functionAppHost 'Microsoft.Web/sites/host@2025-03-01' existing = {
 
 // We're creating a Function App key for the API Management backend to use
 // instead of using listKeys to retrieve an existing key,
-// because listKeys requires the function app running and accessible,
+// because listKeys requires the Function App host runtime to be fully initialized,
 // which may not be the case during initial deployment of an environment.
 resource functionAppKey 'Microsoft.Web/sites/host/functionKeys@2025-03-01' = {
   name: 'apim'
