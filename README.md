@@ -329,25 +329,3 @@ API Management does not support changing the SKU of an existing instance from on
 1. Manually delete and purge the API Management instance, then redeploy.
 
    If you remove APIM manually, make sure the service is also purged (not left in soft-deleted state), otherwise redeployment with the same name can still fail.
-
-
-### A resource with this name already exists or is in a conflicting state.
-
-Sometimes the following error occurs during an initial deployment of a new environment.
-
-```
-ERROR: A resource with this name already exists or is in a conflicting state.
-
-Suggestion: Check for existing or soft-deleted resources in the Azure portal.
-
-deployment failed: step "provision-application" failed: deploying layer provision-application: 
-  error deploying infrastructure: deploying to subscription: 
-
-Deployment Error Details:
-BadRequest: Encountered an error (InternalServerError) from host runtime.
-```
-
-It usually occurs in the application layer during the deployment of the Function App backend in API Management. It will try to retrieve the API key of the Function App, which fails because the Function App isn't available yet. Follow these steps to fix the issue:
-
-- First provision the application layer again using `azd provision application`.
-- Then deploy the services using `azd deploy`.

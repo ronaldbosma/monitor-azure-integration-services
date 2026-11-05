@@ -12,6 +12,10 @@ param apiManagementServiceName string
 @description('The name of the Function App')
 param functionAppName string
 
+@description('The API key for the Function App backend')
+@secure()
+param apiKey string = base64(newGuid())
+
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
 
@@ -35,12 +39,21 @@ resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
 // Resources
 //=============================================================================
 
-@retryOn(['BadRequest'], 10) // Retry on BadRequest errors because retrieving the function key might fail on first deployment of a new environment
+@onlyIfNotExists() // Only create the secret if it doesn't already exist to prevent a mismatch between the secret and function app API key
 resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
-  name: 'function-app-api-key'
+  name: 'apim-function-app-api-key'
   parent: keyVault
   properties: {
-    value: listKeys('${functionApp.id}/host/default', functionApp.apiVersion).functionKeys.default
+    value: apiKey
+  }
+}
+
+module functionAppApiKey './../../../../99-shared/function-app-api-key.bicep' = {
+  params: {
+    functionAppName: functionAppName
+    name: 'apim'
+    // To make sure that the secret value matches the API Key, we use the value from the Key Vault secret instead of the apiKey parameter
+    value: keyVault.getSecret(functionAppApiKeySecret.name)
   }
 }
 
