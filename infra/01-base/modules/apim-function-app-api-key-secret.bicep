@@ -1,5 +1,5 @@
 //=============================================================================
-// Function App API key secret
+// Function App API key secret for API Management
 //=============================================================================
 
 //=============================================================================
@@ -25,7 +25,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' existing = {
 //=============================================================================
 
 @onlyIfNotExists() // Only create the secret if it doesn't already exist to prevent a mismatch between the secret and function app API key
-resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
+resource apimFunctionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
   name: 'apim-function-app-api-key'
   parent: keyVault
   properties: {
