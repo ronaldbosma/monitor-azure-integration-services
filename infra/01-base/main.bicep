@@ -136,6 +136,9 @@ module apiManagement 'modules/api-management.bicep' = {
   dependsOn: [
     appInsights
     keyVault
+    // By deploying APIM after the Function App, the Function App host runtime has more time to initialize.
+    // This will reduce the likelihood of encountering initialization errors when retrieving the Function App key for the APIM backend in the application layer.
+    functionApp
   ]
 }
 
