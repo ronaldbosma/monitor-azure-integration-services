@@ -9,7 +9,7 @@
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
 
-@description('The API key for the Function App backend')
+@description('The API key for API Management to access the Function App')
 @secure()
 param apiKey string = base64(newGuid())
 
