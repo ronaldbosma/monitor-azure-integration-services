@@ -29,6 +29,10 @@ resource apiManagementService 'Microsoft.ApiManagement/service@2025-09-01-previe
   name: apiManagementServiceName
 }
 
+resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' existing = {
+  name: keyVaultName
+}
+
 //=============================================================================
 // Resources
 //=============================================================================
@@ -40,6 +44,7 @@ module functionAppBackend 'backends/function-app-backend.bicep' = {
     apiManagementServiceName: apiManagementServiceName
     functionAppName: functionAppName
     keyVaultName: keyVaultName
+    apiKey: keyVault.getSecret('apim-function-app-api-key')
   }
 }
 

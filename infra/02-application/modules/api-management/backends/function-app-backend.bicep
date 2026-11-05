@@ -14,7 +14,7 @@ param functionAppName string
 
 @description('The API key for the Function App backend')
 @secure()
-param apiKey string = base64(newGuid())
+param apiKey string
 
 @description('The name of the Key Vault that will contain the secrets')
 param keyVaultName string
@@ -31,29 +31,35 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' existing = {
   name: keyVaultName
 }
 
+resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' existing = {
+  name: 'apim-function-app-api-key'
+  parent: keyVault
+}
+
+
 resource functionApp 'Microsoft.Web/sites@2025-03-01' existing = {
   name: functionAppName
+}
+
+resource functionAppHost 'Microsoft.Web/sites/host@2025-03-01' existing = {
+  name: 'default'
+  parent: functionApp
 }
 
 //=============================================================================
 // Resources
 //=============================================================================
 
-@onlyIfNotExists() // Only create the secret if it doesn't already exist to prevent a mismatch between the secret and function app API key
-resource functionAppApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
-  name: 'apim-function-app-api-key'
-  parent: keyVault
+// We're creating a Function App key for the API Management backend to use
+// instead of using listKeys to retrieve an existing key,
+// because listKeys requires the function app running and accessible,
+// which may not be the case during initial deployment of an environment.
+resource functionAppKey 'Microsoft.Web/sites/host/functionKeys@2025-03-01' = {
+  name: 'apim'
+  parent: functionAppHost
   properties: {
-    value: apiKey
-  }
-}
-
-module functionAppApiKey './../../../../99-shared/function-app-api-key.bicep' = {
-  params: {
-    functionAppName: functionAppName
     name: 'apim'
-    // To make sure that the secret value matches the API Key, we use the value from the Key Vault secret instead of the apiKey parameter
-    value: keyVault.getSecret(functionAppApiKeySecret.name)
+    value: apiKey
   }
 }
 
