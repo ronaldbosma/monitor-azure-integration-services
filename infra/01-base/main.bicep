@@ -192,6 +192,19 @@ module assignRolesToDeployer '../99-shared/assign-roles-to-principal.bicep' = {
   ]
 }
 
+// Creating the Function App API key secret for API Management in the Key Vault
+// is part of the base layer so we can reference it in the application layer
+// using `keyVault.getSecret('apim-function-app-api-key')`.
+module apimFunctionAppApiKey 'modules/apim-function-app-api-key.bicep' = {
+  scope: resourceGroup
+  params: {
+    keyVaultName: keyVaultName
+  }
+  dependsOn: [
+    keyVault
+  ]
+}
+
 //=============================================================================
 // Outputs
 //=============================================================================
