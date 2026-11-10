@@ -4,9 +4,9 @@ The APIM Requests workbook helps investigate individual API Management requests,
 
 ![APIM Requests workbook](../images/apim-requests-workbook.png)
 
-The workbook is deployed with the monitoring resources from [APIM Requests.workbook](../infra/03-monitoring/modules/workbooks/APIM%20Requests.workbook).
+The workbook is deployed with the monitoring resources from [APIM Requests.workbook](../infra/03-monitoring/modules/workbooks/APIM%20Requests.workbook). To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
 
-To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
+For a detailed explanation of the workbook, see the blog post [API Management Requests Workbook](https://ronaldbosma.github.io/blog/2026/11/10/api-management-requests-workbook/).
 
 ## Open the workbook
 
