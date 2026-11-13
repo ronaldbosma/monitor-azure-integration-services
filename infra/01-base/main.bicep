@@ -52,7 +52,7 @@ var appInsightsSettings appInsightsSettingsType = {
 var functionAppSettings functionAppSettingsType = {
   functionAppName: getResourceName('functionApp', environmentName, location, instanceId)
   appServicePlanName: getResourceName('appServicePlan', environmentName, location, 'functionapp-${instanceId}')
-  netFrameworkVersion: 'v10.0'
+  netFrameworkVersion: 'v11.0'
   linuxFxVersion: 'DOTNET-ISOLATED|10.0'
 }
 
