@@ -311,7 +311,7 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          dotnet ./artifacts/integration-tests/IntegrationTests.dll --report-trx --results-directory ./artifacts/integration-tests/TestResults
+          dotnet ./artifacts/integration-tests/IntegrationTests.dll --report-gh
         working-directory: ./
         env:
           # Pass the necessary deployed resource properties as environment variables so the integration tests can access them.
@@ -320,14 +320,6 @@ jobs:
           AZURE_KEY_VAULT_URI: ${{ needs.deploy.outputs.AZURE_KEY_VAULT_URI }}
           AZURE_RESOURCE_GROUP: ${{ needs.deploy.outputs.AZURE_RESOURCE_GROUP }}
           AZURE_LOGIC_APP_NAME: ${{ needs.deploy.outputs.AZURE_LOGIC_APP_NAME }}
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: integration-test-results
-          path: ./artifacts/integration-tests/TestResults/
-          retention-days: 1
 
       - name: Verify Availability Tests
         run: |
