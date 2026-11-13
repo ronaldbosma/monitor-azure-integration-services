@@ -1,16 +1,14 @@
 using System.Text.Json;
 
 using Azure.Data.Tables;
-using Azure.Messaging.ServiceBus;
 using Azure.Identity;
+using Azure.Messaging.ServiceBus;
 using Azure.Monitor.OpenTelemetry.Exporter;
 
 using FunctionApp.HealthChecks;
 
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Azure.Functions.Worker.OpenTelemetry;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 using OpenTelemetry.Trace;
 

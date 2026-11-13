@@ -62,7 +62,7 @@ The requests are ordered to walk through the APIs: check the health endpoints, l
 
 #### Automated integration tests
 
-The repository includes .NET 10 integration tests in [tests/IntegrationTests](../tests/IntegrationTests). The tests use your local `azd` environment variables from `.azure/<environment-name>/.env` to connect to the deployed resources. Make sure the `azd` environment is set to the correct deployment before running the tests.
+The repository includes .NET 11 integration tests in [tests/IntegrationTests](../tests/IntegrationTests). The tests use your local `azd` environment variables from `.azure/<environment-name>/.env` to connect to the deployed resources. Make sure the `azd` environment is set to the correct deployment before running the tests.
 
 To run the integration tests from the command line, navigate to the `tests/IntegrationTests` folder and run:
 
