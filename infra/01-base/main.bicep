@@ -53,7 +53,7 @@ var functionAppSettings functionAppSettingsType = {
   functionAppName: getResourceName('functionApp', environmentName, location, instanceId)
   appServicePlanName: getResourceName('appServicePlan', environmentName, location, 'functionapp-${instanceId}')
   netFrameworkVersion: 'v11.0'
-  linuxFxVersion: 'DOTNET-ISOLATED|10.0'
+  linuxFxVersion: 'DOTNET-ISOLATED|11.0'
 }
 
 var logicAppSettings logicAppSettingsType = {
