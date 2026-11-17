@@ -2,9 +2,9 @@
 
 The APIM Insights workbook helps investigate API Management capacity, request volume, failures, and performance, from an overview of API activity to the requests, dependencies, traces, and exceptions for a selected API operation.
 
-The workbook is deployed with the monitoring resources from [APIM Insights.workbook](../infra/03-monitoring/modules/workbooks/APIM%20Insights.workbook).
+The workbook is deployed with the monitoring resources from [APIM Insights.workbook](../infra/03-monitoring/modules/workbooks/APIM%20Insights.workbook). To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
 
-To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
+For a detailed explanation of the workbook, see the blog post [API Management Insights Workbook](https://ronaldbosma.github.io/blog/2026/11/17/api-management-insights-workbook/).
 
 ## Open the workbook
 
