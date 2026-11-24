@@ -4,9 +4,9 @@ The Azure Functions workbook helps investigate function executions, from request
 
 ![Azure Functions workbook](../images/azure-functions-workbook.png)
 
-The workbook is deployed with the monitoring resources from [Azure Functions.workbook](../infra/03-monitoring/modules/workbooks/Azure%20Functions.workbook).
+The workbook is deployed with the monitoring resources from [Azure Functions.workbook](../infra/03-monitoring/modules/workbooks/Azure%20Functions.workbook). To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
 
-To use this workbook without deploying the entire template, follow the [manual deployment instructions](#manually-deploy-the-workbook).
+For a detailed explanation of the workbook, see the blog post [Azure Functions Workbook](https://ronaldbosma.github.io/blog/2026/11/24/azure-functions-workbook/).
 
 ## Open the workbook
 
