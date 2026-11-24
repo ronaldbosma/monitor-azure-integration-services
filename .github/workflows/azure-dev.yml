@@ -205,6 +205,7 @@ jobs:
       AZURE_API_MANAGEMENT_NAME: ${{ steps.get-outputs.outputs.AZURE_API_MANAGEMENT_NAME }}
       AZURE_APPLICATION_INSIGHTS_NAME: ${{ steps.get-outputs.outputs.AZURE_APPLICATION_INSIGHTS_NAME }}
       AZURE_FUNCTION_APP_NAME: ${{ steps.get-outputs.outputs.AZURE_FUNCTION_APP_NAME }}
+      AZURE_FUNCTION_APP_ENDPOINT: ${{ steps.get-outputs.outputs.AZURE_FUNCTION_APP_ENDPOINT }}
       AZURE_KEY_VAULT_NAME: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_NAME }}
       AZURE_KEY_VAULT_URI: ${{ steps.get-outputs.outputs.AZURE_KEY_VAULT_URI }}
       AZURE_LOGIC_APP_NAME: ${{ steps.get-outputs.outputs.AZURE_LOGIC_APP_NAME }}
@@ -265,6 +266,7 @@ jobs:
             "AZURE_API_MANAGEMENT_NAME",
             "AZURE_APPLICATION_INSIGHTS_NAME",
             "AZURE_FUNCTION_APP_NAME",
+            "AZURE_FUNCTION_APP_ENDPOINT",
             "AZURE_KEY_VAULT_NAME",
             "AZURE_KEY_VAULT_URI",
             "AZURE_LOGIC_APP_NAME",
@@ -309,6 +311,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID || vars.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID || vars.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Verify Function App Health
+        run: |
+          ./.github/workflows/scripts/check-function-app-health.ps1 `
+            -FunctionAppEndpoint "${{ needs.deploy.outputs.AZURE_FUNCTION_APP_ENDPOINT }}"
+
       - name: Run Integration Tests
         run: |
           dotnet ./artifacts/integration-tests/IntegrationTests.dll --report-gh
@@ -323,7 +330,7 @@ jobs:
 
       - name: Verify Availability Tests
         run: |
-          .\.github\workflows\scripts\verify-availability-tests.ps1 `
+          ./.github/workflows/scripts/verify-availability-tests.ps1 `
             -ResourceGroupName "${{ needs.deploy.outputs.AZURE_RESOURCE_GROUP }}" `
             -AppInsightsName "${{ needs.deploy.outputs.AZURE_APPLICATION_INSIGHTS_NAME }}"
 
