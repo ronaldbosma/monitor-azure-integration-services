@@ -313,7 +313,7 @@ jobs:
 
       - name: Verify Function App Health
         run: |
-          ./github/workflows/scripts/check-function-app-health.ps1 `
+          ./.github/workflows/scripts/check-function-app-health.ps1 `
             -FunctionAppEndpoint "${{ needs.deploy.outputs.AZURE_FUNCTION_APP_ENDPOINT }}"
 
       - name: Run Integration Tests
@@ -330,7 +330,7 @@ jobs:
 
       - name: Verify Availability Tests
         run: |
-          ./github/workflows/scripts/verify-availability-tests.ps1 `
+          ./.github/workflows/scripts/verify-availability-tests.ps1 `
             -ResourceGroupName "${{ needs.deploy.outputs.AZURE_RESOURCE_GROUP }}" `
             -AppInsightsName "${{ needs.deploy.outputs.AZURE_APPLICATION_INSIGHTS_NAME }}"
 
