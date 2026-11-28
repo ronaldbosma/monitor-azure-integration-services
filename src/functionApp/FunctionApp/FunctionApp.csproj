@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>e83d6a28-fe9b-4265-ad5f-4398a9967e29</UserSecretsId>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
     <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
