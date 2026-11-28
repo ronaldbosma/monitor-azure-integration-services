@@ -153,6 +153,7 @@ jobs:
 
       - name: Package Function App
         run: |
+          dotnet restore ./src/functionApp/FunctionApp/FunctionApp.csproj --locked-mode
           azd package functionApp --output-path ./artifacts/functionapp-package.zip --no-prompt
 
       - name: Package Logic App
@@ -161,7 +162,8 @@ jobs:
 
       - name: Build Integration Tests
         run: |
-          dotnet build ./tests/IntegrationTests/IntegrationTests.csproj --configuration Release --output ./artifacts/integration-tests
+          dotnet restore ./tests/IntegrationTests/IntegrationTests.csproj --locked-mode
+          dotnet build ./tests/IntegrationTests/IntegrationTests.csproj --no-restore --configuration Release --output ./artifacts/integration-tests
 
       - name: Upload Function App Package
         uses: actions/upload-artifact@v7
